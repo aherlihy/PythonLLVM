@@ -1,0 +1,27 @@
+clang version 3.3 (tags/RELEASE_33/final)
+Target: i386-pc-linux-gnu
+Thread model: posix
+ "/home/anna/anaconda/bin/clang" -cc1 -triple i386-pc-linux-gnu -emit-obj -disable-free -main-file-name toy.cpp -mrelocation-model static -fmath-errno -masm-verbose -mconstructor-aliases -target-cpu pentium4 -target-linker-version 2.17.50.0.6 -momit-leaf-frame-pointer -v -g -resource-dir /home/anna/anaconda/bin/../lib/clang/3.3 -D _DEBUG -D _GNU_SOURCE -D __STDC_CONSTANT_MACROS -D __STDC_FORMAT_MACROS -D __STDC_LIMIT_MACROS -I /home/anna/anaconda/include -internal-isystem /usr/lib/gcc/i686-linux-gnu/4.6/../../../../include/c++/4.6 -internal-isystem /usr/lib/gcc/i686-linux-gnu/4.6/../../../../include/c++/4.6/i686-linux-gnu -internal-isystem /usr/lib/gcc/i686-linux-gnu/4.6/../../../../include/c++/4.6/backward -internal-isystem /usr/lib/gcc/i686-linux-gnu/4.6/../../../../include/i686-linux-gnu/c++/4.6 -internal-isystem /usr/local/include -internal-isystem /home/anna/anaconda/bin/../lib/clang/3.3/include -internal-externc-isystem /usr/include/i386-linux-gnu -internal-externc-isystem /include -internal-externc-isystem /usr/include -O3 -fdeprecated-macro -fdebug-compilation-dir /home/anna/thesis/PythonLLVM/llvm_tutorial -ferror-limit 19 -fmessage-length 0 -mstackrealign -fobjc-runtime=gcc -fobjc-default-synthesize-properties -fcxx-exceptions -fexceptions -fdiagnostics-show-option -backend-option -vectorize-loops -o /tmp/toy-TRUzwv.o -x c++ toy.cpp
+clang -cc1 version 3.3 based upon LLVM 3.3 default target i386-pc-linux-gnu
+ignoring nonexistent directory "/usr/lib/gcc/i686-linux-gnu/4.6/../../../../include/i686-linux-gnu/c++/4.6"
+ignoring nonexistent directory "/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /home/anna/anaconda/include
+ /usr/lib/gcc/i686-linux-gnu/4.6/../../../../include/c++/4.6
+ /usr/lib/gcc/i686-linux-gnu/4.6/../../../../include/c++/4.6/i686-linux-gnu
+ /usr/lib/gcc/i686-linux-gnu/4.6/../../../../include/c++/4.6/backward
+ /usr/local/include
+ /home/anna/anaconda/bin/../lib/clang/3.3/include
+ /usr/include/i386-linux-gnu
+ /usr/include
+End of search list.
+ "/usr/bin/ld" -z relro --hash-style=gnu --build-id --eh-frame-hdr -m elf_i386 -dynamic-linker /lib/ld-linux.so.2 -o a.out /usr/lib/gcc/i686-linux-gnu/4.6/../../../i386-linux-gnu/crt1.o /usr/lib/gcc/i686-linux-gnu/4.6/../../../i386-linux-gnu/crti.o /usr/lib/gcc/i686-linux-gnu/4.6/crtbegin.o -L/home/anna/anaconda/lib/ -L/home/anna/anaconda/lib -L/usr/lib/gcc/i686-linux-gnu/4.6 -L/usr/lib/gcc/i686-linux-gnu/4.6/../../../i386-linux-gnu -L/lib/i386-linux-gnu -L/usr/lib/i386-linux-gnu -L/usr/lib/gcc/i686-linux-gnu/4.6/../../.. -L/lib -L/usr/lib -lcurses /tmp/toy-TRUzwv.o -lz -lpthread -lrt -ldl -lm -lLLVMInstrumentation -lLLVMArchive -lLLVMLinker -lLLVMIRReader -lLLVMBitReader -lLLVMAsmParser -lLLVMDebugInfo -lLLVMOption -lLLVMipo -lLLVMVectorize -lLLVMBitWriter -lLLVMTableGen -lLLVMSystemZCodeGen -lLLVMSystemZAsmParser -lLLVMSystemZDesc -lLLVMSystemZInfo -lLLVMSystemZAsmPrinter -lLLVMHexagonCodeGen -lLLVMHexagonAsmPrinter -lLLVMHexagonDesc -lLLVMHexagonInfo -lLLVMNVPTXCodeGen -lLLVMNVPTXDesc -lLLVMNVPTXInfo -lLLVMNVPTXAsmPrinter -lLLVMMBlazeDisassembler -lLLVMMBlazeCodeGen -lLLVMMBlazeDesc -lLLVMMBlazeAsmPrinter -lLLVMMBlazeAsmParser -lLLVMMBlazeInfo -lLLVMCppBackendCodeGen -lLLVMCppBackendInfo -lLLVMMSP430CodeGen -lLLVMMSP430Desc -lLLVMMSP430Info -lLLVMMSP430AsmPrinter -lLLVMXCoreDisassembler -lLLVMXCoreCodeGen -lLLVMXCoreDesc -lLLVMXCoreInfo -lLLVMXCoreAsmPrinter -lLLVMMipsDisassembler -lLLVMMipsCodeGen -lLLVMMipsAsmParser -lLLVMMipsDesc -lLLVMMipsInfo -lLLVMMipsAsmPrinter -lLLVMARMDisassembler -lLLVMARMCodeGen -lLLVMARMAsmParser -lLLVMARMDesc -lLLVMARMInfo -lLLVMARMAsmPrinter -lLLVMAArch64Disassembler -lLLVMAArch64CodeGen -lLLVMAArch64AsmParser -lLLVMAArch64Desc -lLLVMAArch64Info -lLLVMAArch64AsmPrinter -lLLVMAArch64Utils -lLLVMPowerPCCodeGen -lLLVMPowerPCDesc -lLLVMPowerPCAsmPrinter -lLLVMPowerPCAsmParser -lLLVMPowerPCInfo -lLLVMSparcCodeGen -lLLVMSparcDesc -lLLVMSparcInfo -lLLVMX86Disassembler -lLLVMX86AsmParser -lLLVMX86CodeGen -lLLVMSelectionDAG -lLLVMAsmPrinter -lLLVMX86Desc -lLLVMX86Info -lLLVMX86AsmPrinter -lLLVMX86Utils -lLLVMMCDisassembler -lLLVMMCParser -lLLVMInterpreter -lLLVMMCJIT -lLLVMJIT -lLLVMCodeGen -lLLVMObjCARCOpts -lLLVMScalarOpts -lLLVMInstCombine -lLLVMTransformUtils -lLLVMipa -lLLVMAnalysis -lLLVMRuntimeDyld -lLLVMExecutionEngine -lLLVMTarget -lLLVMMC -lLLVMObject -lLLVMCore -lLLVMSupport -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/i686-linux-gnu/4.6/crtend.o /usr/lib/gcc/i686-linux-gnu/4.6/../../../i386-linux-gnu/crtn.o
+/usr/bin/ld: cannot find -lLLVMArchive
+/usr/bin/ld: cannot find -lLLVMMBlazeDisassembler
+/usr/bin/ld: cannot find -lLLVMMBlazeCodeGen
+/usr/bin/ld: cannot find -lLLVMMBlazeDesc
+/usr/bin/ld: cannot find -lLLVMMBlazeAsmPrinter
+/usr/bin/ld: cannot find -lLLVMMBlazeAsmParser
+/usr/bin/ld: cannot find -lLLVMMBlazeInfo
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
