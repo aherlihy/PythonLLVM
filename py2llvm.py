@@ -12,13 +12,7 @@ def main():
 
     if len(sys.argv) < 2:
         usage()
-
-    ast = compiler.parseFile(sys.argv[1])
-    print "-------AST--------"
-    print ast
-    print "-----end AST------"
-    compiler.walk(ast, CodeGenLLVM())
-
+    print py2llvm(sys.argv[1])
 
 if __name__ == '__main__':
     main()
