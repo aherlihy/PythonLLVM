@@ -1,5 +1,5 @@
 #include <boost/python.hpp>
-
+#include "testC.h"
 using namespace boost::python;
 
 /*
@@ -21,6 +21,10 @@ struct PureBase {
     PureBase() {}
     virtual ~PureBase() {}
     virtual int f() = 0;
+};
+struct testA {
+    testA(testC c) {}
+    int testing() { return 1; }
 };
 struct PureBaseWrap : PureBase, wrapper<PureBase>
 {
@@ -81,6 +85,11 @@ BOOST_PYTHON_MODULE(python_example)
           init<...>() exposes the constructor 
           pure_virtual indicates which methods are pure virtual
     */
+    class_<testC>("testC")
+    ;
+    class_<testA>("testA", init<testC>())
+        .def("testing", &testA::testing)
+    ;
     class_<PureBaseWrap, boost::noncopyable>("PureBase")
         .def("f", pure_virtual(&PureBase::f))
         ;                                                                              
