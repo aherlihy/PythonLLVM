@@ -4,8 +4,9 @@ from MUDA import *
 
 #1+1
 
-def test(a = vec):
-    return 1+1    
+def test(a=int):
+    return a+1    
 #    return a + a
-def test2():
-    return 5
+def main():
+    x = test(10);
+    return x

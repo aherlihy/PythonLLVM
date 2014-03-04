@@ -745,7 +745,7 @@ entry:
             , 'logf'   : ( llFloatType, [llFloatType] )
             , 'sqrtf'  : ( llFloatType, [llFloatType] )
             #, 'vsel'   : ( llFVec4Type, [llFVec4Type, llFVec4Type, llIVec4Type] )
-            # FOR SOME REASON, DECLARED TWICE CAUSES LLVM ERRORS
+            # FOR SOME REASON, REDEFINITION OF vsel BREAKS LLI, TODO:FIX
             }
 
         for k, v in d.items():
