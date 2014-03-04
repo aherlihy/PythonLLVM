@@ -715,20 +715,20 @@ class CodeGenLLVM:
     def emitCommonHeader(self):
 
         s = """
-define <4xfloat> @vsel(<4xfloat> %a, <4xfloat> %b, <4xi32> %mask) {
+define <4 x float> @vsel(<4 x float> %a, <4 x float> %b, <4 x i32> %mask) {
 entry:
-    %a.i     = bitcast <4xfloat> %a to <4xi32>
-    %b.i     = bitcast <4xfloat> %b to <4xi32>
-    %tmp0    = and <4xi32> %b.i, %mask
-    %tmp.addr = alloca <4xi32>
-    store <4xi32> <i32 -1, i32 -1, i32 -1, i32 -1>, <4xi32>* %tmp.addr
-    %allone  = load <4xi32>* %tmp.addr
-    %invmask = xor <4xi32> %allone, %mask
-    %tmp1    = and <4xi32> %a.i, %invmask
-    %tmp2    = or <4xi32> %tmp0, %tmp1
-    %r       = bitcast <4xi32> %tmp2 to <4xfloat>
+    %a.i     = bitcast <4 x float> %a to <4 x i32>
+    %b.i     = bitcast <4 x float> %b to <4 x i32>
+    %tmp0    = and <4 x i32> %b.i, %mask
+    %tmp.addr = alloca <4 x i32>
+    store <4 x i32> <i32 -1, i32 -1, i32 -1, i32 -1>, <4 x i32>* %tmp.addr
+    %allone  = load <4 x i32>* %tmp.addr
+    %invmask = xor <4 x i32> %allone, %mask
+    %tmp1    = and <4 x i32> %a.i, %invmask
+    %tmp2    = or <4 x i32> %tmp0, %tmp1
+    %r       = bitcast <4 x i32> %tmp2 to <4 x float>
 
-    ret <4xfloat> %r
+    ret <4 x float> %r
 }
 
 """
@@ -736,7 +736,7 @@ entry:
 
     #
     #
-    #
+    # THIS IS WHERE HEADER DEFS LIVE
     def emitExternalSymbols(self):
 
         d = {
@@ -744,7 +744,8 @@ entry:
             , 'expf'   : ( llFloatType, [llFloatType] )
             , 'logf'   : ( llFloatType, [llFloatType] )
             , 'sqrtf'  : ( llFloatType, [llFloatType] )
-            , 'vsel'   : ( llFVec4Type, [llFVec4Type, llFVec4Type, llIVec4Type] )
+            #, 'vsel'   : ( llFVec4Type, [llFVec4Type, llFVec4Type, llIVec4Type] )
+            # FOR SOME REASON, DECLARED TWICE CAUSES LLVM ERRORS
             }
 
         for k, v in d.items():
