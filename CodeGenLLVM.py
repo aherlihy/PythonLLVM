@@ -50,6 +50,7 @@ class CodeGenLLVM:
     """
 
     def __init__(self):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         self.body             = ""
         self.globalscope      = ""
@@ -66,6 +67,7 @@ class CodeGenLLVM:
 
 
     def visitModule(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         # emitExternalSymbols() should be called before self.visit(node.node)
         self.emitExternalSymbols()
@@ -86,6 +88,7 @@ class CodeGenLLVM:
 
 
     def visitReturn(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         ty   = typer.inferType(node.value)
         #print "; Return ty = ", ty
@@ -109,6 +112,7 @@ class CodeGenLLVM:
         return self.builder.ret(expr)
 
     def mkFunctionSignature(self, retTy, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         # Argument should have default value which represents type of argument.
         if len(node.argnames) != len(node.defaults):
@@ -150,6 +154,7 @@ class CodeGenLLVM:
         return func
 
     def visitFunction(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         """
         Do nasty trick to handle return type of function correctly.
@@ -270,6 +275,7 @@ class CodeGenLLVM:
 
 
     def visitStmt(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         for node in node.nodes:
 
@@ -278,6 +284,7 @@ class CodeGenLLVM:
             self.visit(node)
 
     def visitAssign(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         if len(node.nodes) != 1:
             raise Exception("TODO:", node)
@@ -331,6 +338,7 @@ class CodeGenLLVM:
         # No return
 
     def visitIf(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         print "; ", node.tests
         print "; ", node.else_
@@ -338,6 +346,7 @@ class CodeGenLLVM:
         raise Exception("muda")
 
     def emitVCompare(self, op, lInst, rInst):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         d = { "==" : llvm.core.RPRED_OEQ
             , "!=" : llvm.core.RPRED_ONE
@@ -406,6 +415,7 @@ class CodeGenLLVM:
         return r3
 
     def visitCompare(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         #print "; ", node.expr
         #print "; ", node.ops[0]
@@ -421,20 +431,41 @@ class CodeGenLLVM:
 
         op  = node.ops[0][0]
 
+
+        d = { "==" : llvm.core.RPRED_OEQ
+            , "!=" : llvm.core.RPRED_ONE
+            , ">"  : llvm.core.RPRED_OGT
+            , ">=" : llvm.core.RPRED_OGE
+            , "<"  : llvm.core.RPRED_OLT
+            , "<=" : llvm.core.RPRED_OLE
+            }
+
+
         if rTy == vec:
             return self.emitVCompare(op, lLLInst, rLLInst)
+        elif rTy == int:
+            result = self.builder.icmp(d[op], lLLInst, rLLInst, 'cmptmp')
+            return self.builder.uitofp(result, llvm.core.Type.float(), 'booltmp')
+        elif rTy == float:
+            result = self.builder.fcmp(d[op], lLLInst, rLLInst, 'cmptmp')
+            return self.builder.uitofp(result, llvm.core.Type.float(), 'flttmp')
+        else:  
+            raise Exception("unable to compare type " + rTy)
 
         #if op == "<":
             #print "muda"
         #elif op == ">":
             #print "muda"
         #else:
+        
+
         if (op !="<") and (op != ">"):
             raise Exception("Unknown operator:", op)
 
         raise Exception("muda")
 
     def visitUnarySub(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         ty       = typer.inferType(node.expr)
         e        = self.visit(node.expr)
@@ -446,6 +477,7 @@ class CodeGenLLVM:
         return subInst
 
     def visitGetattr(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         d = { 'x' : llvm.core.Constant.int(llIntType, 0)
             , 'y' : llvm.core.Constant.int(llIntType, 1)
@@ -473,6 +505,7 @@ class CodeGenLLVM:
 
 
     def visitAdd(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         lTy = typer.inferType(node.left)
         rTy = typer.inferType(node.right)
@@ -491,6 +524,7 @@ class CodeGenLLVM:
         return addInst
 
     def visitSub(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         lTy = typer.inferType(node.left)
         rTy = typer.inferType(node.right)
@@ -510,6 +544,7 @@ class CodeGenLLVM:
 
 
     def visitMul(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         lTy = typer.inferType(node.left)
         rTy = typer.inferType(node.right)
@@ -529,6 +564,7 @@ class CodeGenLLVM:
 
 
     def visitDiv(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         lTy = typer.inferType(node.left)
         rTy = typer.inferType(node.right)
@@ -552,6 +588,7 @@ class CodeGenLLVM:
 
 
     def handleInitializeTypeCall(self, ty, args):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         llty = toLLVMTy(ty)
 
@@ -585,11 +622,13 @@ class CodeGenLLVM:
             return r3
 
     def emitVSel(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         self.builder.call
         f3 = self.builder.call(func, [e3], ftmp3.name)
 
     def visitCallFunc(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         assert isinstance(node.node, compiler.ast.Name)
 
@@ -644,6 +683,7 @@ class CodeGenLLVM:
 
 
     def visitList(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         return [self.visit(a) for a in node.nodes]
 
@@ -651,7 +691,9 @@ class CodeGenLLVM:
     # Leaf
     #
     def visitName(self, node):
-
+        print ";----" + sys._getframe().f_code.co_name + "----"
+        #TODO add functionality for True and False
+   
         sym = symbolTable.lookup(node.name)
 
         tmpSym = symbolTable.genUniqueSymbol(sym.type)
@@ -665,6 +707,7 @@ class CodeGenLLVM:
 
 
     def visitDiscard(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         self.visit(node.expr)
 
@@ -674,6 +717,7 @@ class CodeGenLLVM:
 
 
     def mkLLConstInst(self, ty, value):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         # ty = typer.inferType(node)
         # print "; [Typer] %s => %s" % (str(node), str(ty))
@@ -707,12 +751,14 @@ class CodeGenLLVM:
         return loadInst
 
     def visitConst(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         ty = typer.inferType(node)
 
         return self.mkLLConstInst(ty, node.value)
 
     def emitCommonHeader(self):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         s = """
 define <4 x float> @vsel(<4 x float> %a, <4 x float> %b, <4 x i32> %mask) {
@@ -738,6 +784,7 @@ entry:
     #
     # THIS IS WHERE HEADER DEFS LIVE
     def emitExternalSymbols(self):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         d = {
               'fabsf'  : ( llFloatType, [llFloatType] )
@@ -755,6 +802,7 @@ entry:
             self.externals[k] = f
 
     def getExternalSymbolInstruction(self, name):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         if self.externals.has_key(name):
             return self.externals[name]
@@ -762,6 +810,7 @@ entry:
             raise Exception("Unknown external symbol:", name, self.externals)
 
     def isExternalSymbol(self, name):
+        print ";----" + sys._getframe().f_code.co_name + "----"
         if self.externals.has_key(name):
             return True
         else:
@@ -771,6 +820,7 @@ entry:
     # Vector math
     #
     def isVectorMathFunction(self, name):
+        print ";----" + sys._getframe().f_code.co_name + "----"
         d = {
               'vabs'  : 'fabsf'
             , 'vexp'  : 'expf'
@@ -784,6 +834,7 @@ entry:
             return False
 
     def emitVMath(self, fname, llargs):
+        print ";----" + sys._getframe().f_code.co_name + "----"
         """
         TODO: Use MUDA's optimized vector math function for LLVM.
         """
@@ -833,6 +884,7 @@ entry:
         # return r2
 
     def emitVAbs(self, llargs):
+        print ";----" + sys._getframe().f_code.co_name + "----"
 
         return self.emitVMath("fabsf", llargs)
 
@@ -844,6 +896,7 @@ def _test():
 
 def py2llvm(filename):
     ast = compiler.parseFile(filename)
+    print ";" +  str(ast)
     codegen = compiler.walk(ast, CodeGenLLVM())
 
     main = codegen.getString()
@@ -857,7 +910,7 @@ def main():
         _test()
 
     ast = compiler.parseFile(sys.argv[1])
-    # print ast
+    #print ast
 
     compiler.walk(ast, CodeGenLLVM())
 
