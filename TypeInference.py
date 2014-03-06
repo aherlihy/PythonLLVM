@@ -247,6 +247,9 @@ class TypeInference(object):
         print "; => not found. name=", name
         return None
 
+    def inferCompare(self, node):
+        return float
+
 
     def inferConst(self, node):
 

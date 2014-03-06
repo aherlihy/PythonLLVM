@@ -276,12 +276,15 @@ class CodeGenLLVM:
 
     def visitStmt(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
-
+        print "LEN OF STMT=" + str(len(node.nodes))
+        # TODO: fix hack involving returning most recent value for Stmt
+        recent = None
         for node in node.nodes:
 
             #print "; [stmt]", node
 
-            self.visit(node)
+            recent = self.visit(node)
+        return recent
 
     def visitAssign(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
@@ -339,11 +342,44 @@ class CodeGenLLVM:
 
     def visitIf(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
+        print node.tests 
+        cond = self.visit(node.tests[0][0])
 
-        print "; ", node.tests
-        print "; ", node.else_
+        condition_bool = self.builder.fcmp(llvm.core.FCMP_OEQ, cond, llvm.core.Constant.real(llvm.core.Type.double(), 0), 'ifcond')
+        # get function
+        function = self.builder.basic_block.function
+        
+        # create blocks
+        then_block = function.append_basic_block('then')
+        else_block = function.append_basic_block('else')
+        merge_block = function.append_basic_block('ifcond')
 
-        raise Exception("muda")
+        self.builder.cbranch(condition_bool, then_block, else_block) 
+        
+        # emit then
+        self.builder.position_at_end(then_block)
+        print("ABOUT TO VISIT THEN NODE")
+        then_val = self.visit(node.tests[0][1])
+        print "RET FROM THEN" 
+        self.builder.branch(merge_block)
+        # update then for phi 
+        then_block = self.builder.basic_block
+
+        # emit else
+        self.builder.position_at_end(else_block)
+        else_val = self.visit(node.else_)
+        self.builder.branch(merge_block)
+        else_block = self.builder.basic_block
+
+        # emit merge
+        self.builder.position_at_end(merge_block)
+        phi = self.builder.phi(llvm.core.Type.double(), 'iftmp')
+        print "then val: " + str(then_val)
+        print "else val: " + str(else_val)
+        phi.add_incoming(then_val, then_block)
+        phi.add_incoming(else_val, else_block)
+
+        #return phi
 
     def emitVCompare(self, op, lInst, rInst):
         print ";----" + sys._getframe().f_code.co_name + "----"
@@ -432,21 +468,28 @@ class CodeGenLLVM:
         op  = node.ops[0][0]
 
 
-        d = { "==" : llvm.core.RPRED_OEQ
-            , "!=" : llvm.core.RPRED_ONE
-            , ">"  : llvm.core.RPRED_OGT
-            , ">=" : llvm.core.RPRED_OGE
-            , "<"  : llvm.core.RPRED_OLT
-            , "<=" : llvm.core.RPRED_OLE
-            }
 
 
         if rTy == vec:
             return self.emitVCompare(op, lLLInst, rLLInst)
         elif rTy == int:
+            d = { "==" : llvm.core.ICMP_EQ
+                , "!=" : llvm.core.ICMP_NE
+                , ">"  : llvm.core.ICMP_UGT
+                , ">=" : llvm.core.ICMP_UGE
+                , "<"  : llvm.core.ICMP_ULT
+                , "<=" : llvm.core.ICMP_ULE
+                }
             result = self.builder.icmp(d[op], lLLInst, rLLInst, 'cmptmp')
             return self.builder.uitofp(result, llvm.core.Type.float(), 'booltmp')
         elif rTy == float:
+            d = { "==" : llvm.core.FCMP_OEQ
+                , "!=" : llvm.core.FCMP_ONE
+                , ">"  : llvm.core.FCMP_OGT
+                , ">=" : llvm.core.FCMP_OGE
+                , "<"  : llvm.core.FCMP_OLT
+                , "<=" : llvm.core.FCMP_OLE
+                }
             result = self.builder.fcmp(d[op], lLLInst, rLLInst, 'cmptmp')
             return self.builder.uitofp(result, llvm.core.Type.float(), 'flttmp')
         else:  
