@@ -8,5 +8,5 @@ def test(a=int):
     return a+1    
 #    return a + a
 def main():
-    x = test(10);
+    x = test(10)
     return x
