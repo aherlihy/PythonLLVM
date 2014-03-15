@@ -1,6 +1,6 @@
 import re
 import compiler
-
+import sys
 from SymbolTable import *
 from MUDA import *
 
@@ -21,7 +21,7 @@ class TypeInference(object):
     """
 
     def __init__(self, symTable):
-
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
         assert isinstance(symTable, SymbolTable)
 
         # First class types
@@ -47,6 +47,7 @@ class TypeInference(object):
 
 
     def isFloatType(self, ty):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
         if (ty == float or
             ty == vec     ):
             return True
@@ -55,18 +56,21 @@ class TypeInference(object):
 
 
     def isNameOfFirstClassType(self, name):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
         if self.typeDic.has_key(name):
             return self.typeDic[name]
 
         return None
 
     def getIntrinsicFunctionFromName(self, name):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
         if self.intrinsics.has_key(name):
             return self.intrinsics[name]
 
         return None
 
     def inferType(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
         """
         Return type if type inference was succeeded, None if failed.
         """
@@ -95,15 +99,18 @@ class TypeInference(object):
         return method(node) 
 
     def inferModule(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
 
         return self.inferType(node.node)
     
 
     def inferStmt(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
 
         return self.inferType(node.nodes[0])
 
     def checkSwizzleLetter(self, name):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
 
         assert len(name) >= 1 and len(name) < 5
 
@@ -114,6 +121,7 @@ class TypeInference(object):
         return True
 
     def inferGetattr(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
         """
         a.x
         a.xyz
@@ -140,10 +148,12 @@ class TypeInference(object):
             return ty
 
     def inferDiscard(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
 
         return self.inferType(node.expr)
 
     def inferCallFunc(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
 
         assert isinstance(node.node, compiler.ast.Name)
 
@@ -160,10 +170,12 @@ class TypeInference(object):
 
 
     def inferUnarySub(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
 
         return self.inferType(node.expr)
 
     def inferAdd(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
     
         left  = self.inferType(node.left)
         right = self.inferType(node.right) 
@@ -177,6 +189,7 @@ class TypeInference(object):
 
 
     def inferSub(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
     
         left  = self.inferType(node.left)
         right = self.inferType(node.right) 
@@ -189,6 +202,7 @@ class TypeInference(object):
         return left
 
     def inferMul(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
     
         left  = self.inferType(node.left)
         right = self.inferType(node.right) 
@@ -202,6 +216,7 @@ class TypeInference(object):
 
 
     def inferDiv(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
     
         left  = self.inferType(node.left)
         right = self.inferType(node.right) 
@@ -219,6 +234,7 @@ class TypeInference(object):
     #
 
     def inferAssName(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
 
         name = node.name
 
@@ -231,12 +247,13 @@ class TypeInference(object):
         return None
     
     def inferName(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
 
         name = node.name
 
         # Firstly, name of type?
         if self.typeDic.has_key(name):
-            print "; => found type for ", name
+            print "; => found type for ", name, "=", self.typeDic[name]
             return self.typeDic[name]
 
         # Next, lookup symbol from the symbol table.
@@ -248,10 +265,12 @@ class TypeInference(object):
         return None
 
     def inferCompare(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
         return float
 
 
     def inferConst(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
 
         value = node.value
 

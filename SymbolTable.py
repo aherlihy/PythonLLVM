@@ -36,6 +36,8 @@ class Symbol(object):
         
         if len(self.attrs) > 0:
             s += " attrs: "
+        else:
+            s += " attrs=[]"
 
         for k in self.attrs:
             s += "%s = %s" % (k, self.__dict__[k])
@@ -56,6 +58,18 @@ class SymbolTable:
 
         self.genNum  = 0
 
+    def __str__(self):
+        """
+        s = "["
+        for x in self.symbols:
+            s+=x[0]+"\n"
+            for z in x[1].keys():
+                s+= str(z) + ":" + str(x[1][z]) + "\n"
+        s+="]"
+        return s
+        """
+        return str(self.symbols)
+    
     def popScope(self):
 
         assert len(self.symbols) > 1
@@ -136,7 +150,8 @@ class SymbolTable:
             
             if i > nMax:
                 raise Exception("Can't define unique symbol.")
-
+    def returnSymbols(self):
+        return self.symbols
 def _test():
     import doctest
     doctest.testmod()

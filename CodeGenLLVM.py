@@ -5,8 +5,8 @@ import re
 import compiler
 
 import llvm.core
-
-# from VecTypes import *
+# original=commented
+from VecTypes import *
 from MUDA import *
 from TypeInference import *
 from SymbolTable import *
@@ -22,6 +22,7 @@ llFVec4Type    = llvm.core.Type.vector(llFloatType, 4)
 llFVec4PtrType = llvm.core.Type.pointer(llFVec4Type)
 llIVec4Type    = llvm.core.Type.vector(llIntType, 4)
 
+# converts from python to LLVM type
 def toLLVMTy(ty):
 
     floatTy = llvm.core.Type.float()
@@ -276,15 +277,9 @@ class CodeGenLLVM:
 
     def visitStmt(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
-        print "LEN OF STMT=" + str(len(node.nodes))
-        # TODO: fix hack involving returning most recent value for Stmt
-        recent = None
         for node in node.nodes:
 
-            #print "; [stmt]", node
-
-            recent = self.visit(node)
-        return recent
+            self.visit(node)
 
     def visitAssign(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
@@ -295,16 +290,15 @@ class CodeGenLLVM:
         #print "; [Asgn]"
         rTy     = typer.inferType(node.expr)
         #print "; [Asgn]. rTy = ", rTy
-
-        #print "; [Asgn]. node.expr = ", node.expr
+        
+        print ";RHS [Asgn]. node.expr = ", node.expr
         rLLInst = self.visit(node.expr)
         #print "; [Asgn]. rhs = ", rLLInst
-
+        
         lhsNode = node.nodes[0]
 
         lTy = None
         if isinstance(lhsNode, compiler.ast.AssName):
-
             sym = symbolTable.find(lhsNode.name)
             if sym is None:
                 # The variable appears here firstly.
@@ -324,63 +318,94 @@ class CodeGenLLVM:
                 lTy = sym.type
 
 
-
         if rTy != lTy:
             raise Exception("ERR: TypeMismatch: lTy = %s, rTy = %s: %s" % (lTy, rTy, node))
 
         lSym = symbolTable.find(lhsNode.name)
 
         storeInst = self.builder.store(rLLInst, lSym.llstorage)
-
         #print ";", storeInst
 
         #print "; [Asgn]", node
         #print "; [Asgn] nodes = ", node.nodes
         #print "; [Asgn] expr  = ", node.expr
-
         # No return
 
     def visitIf(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
-        print node.tests 
+        is_else = (node.else_ is not None)
         cond = self.visit(node.tests[0][0])
-
-        condition_bool = self.builder.fcmp(llvm.core.FCMP_OEQ, cond, llvm.core.Constant.real(llvm.core.Type.double(), 0), 'ifcond')
+        # TODO: cast return value from cond to truth value
+        condition_bool = self.builder.fcmp(llvm.core.FCMP_ONE, cond, llvm.core.Constant.real(llvm.core.Type.float(), 0), 'ifcond')
         # get function
         function = self.builder.basic_block.function
         
         # create blocks
-        then_block = function.append_basic_block('then')
-        else_block = function.append_basic_block('else')
-        merge_block = function.append_basic_block('ifcond')
-
-        self.builder.cbranch(condition_bool, then_block, else_block) 
-        
+        then_block = function.append_basic_block('if_then')
+        if(is_else):
+            else_block = function.append_basic_block('if_else')
+        merge_block = function.append_basic_block('if_merge')
+        if(is_else):
+            self.builder.cbranch(condition_bool, then_block, else_block) 
+        else:
+            self.builder.cbranch(condition_bool, then_block, merge_block) 
+            
         # emit then
         self.builder.position_at_end(then_block)
-        print("ABOUT TO VISIT THEN NODE")
+        symbolTable.pushScope("if_")
         then_val = self.visit(node.tests[0][1])
-        print "RET FROM THEN" 
+        symbolTable.popScope() 
         self.builder.branch(merge_block)
         # update then for phi 
         then_block = self.builder.basic_block
-
-        # emit else
-        self.builder.position_at_end(else_block)
-        else_val = self.visit(node.else_)
-        self.builder.branch(merge_block)
-        else_block = self.builder.basic_block
+        if(is_else):
+            # emit else
+            self.builder.position_at_end(else_block)
+            symbolTable.pushScope("else_")
+            else_val = self.visit(node.else_)
+            symbolTable.popScope()
+            self.builder.branch(merge_block)
+            else_block = self.builder.basic_block
 
         # emit merge
         self.builder.position_at_end(merge_block)
-        phi = self.builder.phi(llvm.core.Type.double(), 'iftmp')
-        print "then val: " + str(then_val)
-        print "else val: " + str(else_val)
-        phi.add_incoming(then_val, then_block)
-        phi.add_incoming(else_val, else_block)
+        #TODO: insert dummy instruction
+        #phi = self.builder.phi(llvm.core.Type.double(), 'iftmp')
+        #phi.add_incoming(then_val, then_block)
+        #phi.add_incoming(else_val, else_block)
 
         #return phi
+    def visitFor(self, node):
+        print "VISITED FOR"
+        print node
 
+    def visitWhile(self, node):
+        print ";VISITED WHILE"
+        print ";----" + sys._getframe().f_code.co_name + "----"
+        # get function
+        function = self.builder.basic_block.function
+        
+        # create blocks
+        start_while = function.append_basic_block('start_while')
+        do_while = function.append_basic_block('do_while')
+        end_while = function.append_basic_block('end_while')
+
+        self.builder.branch(start_while)
+        self.builder.position_at_end(start_while)
+
+        cond = self.visit(node.test)
+        # TODO: cast return value from cond to truth value
+        condition_bool = self.builder.fcmp(llvm.core.FCMP_ONE, cond, llvm.core.Constant.real(llvm.core.Type.float(), 0), 'whilecond')
+
+        self.builder.cbranch(condition_bool, do_while, end_while) 
+        
+        self.builder.position_at_end(do_while)
+        while_body = self.visit(node.body)
+        self.builder.branch(start_while)
+        self.builder.position_at_end(end_while)
+        #TODO: handle while-else?
+    
+    # emit vector comparisons (TODO?)
     def emitVCompare(self, op, lInst, rInst):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
@@ -671,14 +696,14 @@ class CodeGenLLVM:
         f3 = self.builder.call(func, [e3], ftmp3.name)
 
     def visitCallFunc(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        print ";----" + sys._getframe().f_code.co_name + ": " + node.node.name + "----"
 
         assert isinstance(node.node, compiler.ast.Name)
 
         #print "; callfunc", node.args
 
         args = [self.visit(a) for a in node.args]
-
+        
         #print "; callfuncafter", args
 
         ty = typer.isNameOfFirstClassType(node.node.name)
@@ -695,6 +720,8 @@ class CodeGenLLVM:
         #
         # vector math function?
         #
+        # UNCOMMENT:
+        #orginal=comment start
         ret = self.isVectorMathFunction(node.node.name)
         if ret is not False:
             return self.emitVMath(ret[1], args)
@@ -710,7 +737,7 @@ class CodeGenLLVM:
             c    = self.builder.call(func, args, tmp.name)
 
             return c
-
+        #original=commented end
         #
         # Defined in the source?
         #
@@ -722,6 +749,9 @@ class CodeGenLLVM:
 
         # emit call
         tmp  = symbolTable.genUniqueSymbol(vec)
+        print "args, name"
+        print args
+        print tmp.name
         return self.builder.call(funcSig.llstorage, args, tmp.name)
 
 
@@ -734,8 +764,7 @@ class CodeGenLLVM:
     # Leaf
     #
     def visitName(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
-        #TODO add functionality for True and False
+        print ";----" + sys._getframe().f_code.co_name + " : " + node.name + "----"
    
         sym = symbolTable.lookup(node.name)
 
@@ -753,7 +782,6 @@ class CodeGenLLVM:
         print ";----" + sys._getframe().f_code.co_name + "----"
 
         self.visit(node.expr)
-
         #
         # return None
         #
@@ -803,7 +831,7 @@ class CodeGenLLVM:
     def emitCommonHeader(self):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
-        s = """
+        s = """ 
 define <4 x float> @vsel(<4 x float> %a, <4 x float> %b, <4 x i32> %mask) {
 entry:
     %a.i     = bitcast <4 x float> %a to <4 x i32>
@@ -819,8 +847,12 @@ entry:
 
     ret <4 x float> %r
 }
-
-"""
+@.str = private unnamed_addr constant [3 x i8] c"%i\00", align 1
+declare i32 @printf(i8*, ...) #0
+;%0 = load i32* %x, align 4        ; set %0 to x
+;%call = call i32 (i8*, ...)* @printf(i8* getelementptr inbounds ([3 x i8]* @.str, i32 0, i32 0), i32 %0)
+        
+        """
         return s
 
     #
@@ -843,6 +875,7 @@ entry:
             f   = llvm.core.Function.new(self.module, fty, k)
 
             self.externals[k] = f
+        print "; SYMBOL TABLE " + str(symbolTable)
 
     def getExternalSymbolInstruction(self, name):
         print ";----" + sys._getframe().f_code.co_name + "----"
