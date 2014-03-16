@@ -127,7 +127,6 @@ class SymbolTable:
         """
         Generate unique symbol.
         """
-
         nMax = 1000
 
         baseName = "tmp" 

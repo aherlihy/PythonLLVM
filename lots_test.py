@@ -46,11 +46,12 @@ def main():
     ri = 5
     rf = 5.00
     rv = vec([1.00,2.00,3.00,4.00])
+    v1 = vec(1.00)
     # test visitFunctionCall
     print iret(ri)
     print fret(rf)
     print vret(rv)
-
+    print vret(v1)
     # test visitIf, visitWhile, and visitCompare
     ift = test_if()
     whilet = test_while()

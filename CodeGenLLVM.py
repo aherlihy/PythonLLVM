@@ -21,26 +21,41 @@ llFloatType    = llvm.core.Type.float()
 llFVec4Type    = llvm.core.Type.vector(llFloatType, 4)
 llFVec4PtrType = llvm.core.Type.pointer(llFVec4Type)
 llIVec4Type    = llvm.core.Type.vector(llIntType, 4)
-
+llEmptyList   = llvm.core.Type.vector(llIntType,1)
 # converts from python to LLVM type
 def toLLVMTy(ty):
 
     if ty is None:
         return llVoidType
-
+    if ty is list:
+        raise Exception("need to find list length yourself")
     d = {
           float : llFloatType
         , int   : llIntType
         , vec   : llFVec4Type
         , void  : llVoidType
+        , list  : llEmptyList
         # str   : TODO
         }
 
     if d.has_key(ty):
         return d[ty]
-
     raise Exception("Unknown type:", ty)
 
+def toEmptyVal(ty):
+    #TODO: deal with empty vec types
+    if ty is None or ty is void or ty is vec:
+        return llVoidType
+    d = {
+          float : 0.0
+        , int   : 0
+        , list  : [] 
+        # str   : TODO
+        }
+    if d.has_key(ty):
+        x = d[ty]
+        return llvm.core.Constant(ty, x)
+    raise Exception("Unknown type:", ty)
 
 
 class CodeGenLLVM:
@@ -138,6 +153,7 @@ class CodeGenLLVM:
             self.builder.call(self._printInt, [lln])
         elif(ty==float):
             self.builder.call(self._printFloat, [lln])
+        # for now prints vec(1) as 4
         elif(ty==vec):
             i0 = llvm.core.Constant.int(llIntType, 0);
             i1 = llvm.core.Constant.int(llIntType, 1);
@@ -155,8 +171,6 @@ class CodeGenLLVM:
             self.builder.call(self._printFloat, [le1])
             self.builder.call(self._printFloat, [le2])
             self.builder.call(self._printFloat, [le3])
-            
-
 
     def visitPrintnl(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
@@ -362,20 +376,16 @@ class CodeGenLLVM:
     def visitAssign(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
-        if len(
-            node.nodes) != 1:
+        if len(node.nodes) != 1:
             raise Exception("TODO:", node)
 
         #print "; [Asgn]"
         rTy     = typer.inferType(node.expr)
         #print "; [Asgn]. rTy = ", rTy
         
-        print ";RHS [Asgn]. node.expr = ", node.expr
         rLLInst = self.visit(node.expr)
         #print "; [Asgn]. rhs = ", rLLInst
-        
         lhsNode = node.nodes[0]
-
         lTy = None
         if isinstance(lhsNode, compiler.ast.AssName):
             sym = symbolTable.find(lhsNode.name)
@@ -383,7 +393,10 @@ class CodeGenLLVM:
                 # The variable appears here firstly.
 
                 # alloc storage
-                llTy = toLLVMTy(rTy)
+                if(rTy==list):
+                    llTy = llvm.core.Type.vector(toLLVMTy(typer.inferType(node.expr.nodes[0])), len(node.expr.nodes))
+                else:
+                    llTy = toLLVMTy(rTy)
                 llStorage = self.builder.alloca(llTy, lhsNode.name)
 
                 sym = Symbol(lhsNode.name, rTy, "variable", llstorage = llStorage)
@@ -401,13 +414,7 @@ class CodeGenLLVM:
             raise Exception("ERR: TypeMismatch: lTy = %s, rTy = %s: %s" % (lTy, rTy, node))
 
         lSym = symbolTable.find(lhsNode.name)
-
         storeInst = self.builder.store(rLLInst, lSym.llstorage)
-        #print ";", storeInst
-
-        #print "; [Asgn]", node
-        #print "; [Asgn] nodes = ", node.nodes
-        #print "; [Asgn] expr  = ", node.expr
         # No return
 
     def visitIf(self, node):
@@ -898,8 +905,31 @@ class CodeGenLLVM:
 
     def visitList(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
-        assert(False)
-        return [self.visit(a) for a in node.nodes]
+        
+        # get length and type of list
+        lenList = len(node.nodes)
+        if lenList==0:
+            raise Exception("Lists can't be empty (lists are not resizable)")
+        tyList = typer.inferType(node.nodes[0])
+        llNodes = []
+        for n in node.nodes:
+            nty = typer.inferType(n)
+            if tyList!=nty:
+                raise Exception("Lists elements need to be of the same type")
+            llNodes.append(self.visit(n))
+        # emit list llvm
+        if(tyList == int):
+            l = llvm.core.Constant.vector([llvm.core.Constant.int(llIntType, "0")] * lenList)
+        elif(tyList == float):
+            l = llvm.core.Constant.vector([llvm.core.Constant.real(llFloatType, "0.0")] * lenList)
+        else:
+            raise Exception("TODO: haven't implemented lists of not basic types")
+        # populate list
+        for i in range(len(llNodes)):
+            index = llvm.core.Constant.int(llIntType, i);
+            l = self.builder.insert_element(l, llNodes[i], index)
+        return l
+
 
     #
     # Leaf
