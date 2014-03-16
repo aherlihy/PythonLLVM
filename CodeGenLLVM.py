@@ -11,7 +11,6 @@ from MUDA import *
 from TypeInference import *
 from SymbolTable import *
 
-
 symbolTable    = SymbolTable()
 typer          = TypeInference(symbolTable)
 
@@ -71,6 +70,8 @@ class CodeGenLLVM:
 
         # emitExternalSymbols() should be called before self.visit(node.node)
         self.emitExternalSymbols()
+        
+        self.emitPrint()
 
         self.visit(node.node)
         #print self.module   # Output LLVM code to stdout.
@@ -78,14 +79,68 @@ class CodeGenLLVM:
 
     def getString(self):
         return self.module
+   
+    # source = http://code2code.wordpress.com/tag/llvm-py/ 
+    def emitPrint(self):
+     
+        # add a prototype for printf
+        funcType = llvm.core.Type.function(llIntType, [llvm.core.Type.pointer(llvm.core.Type.int(8))], True)
+        printf = self.module.add_function(funcType, 'printf')
 
+        # create global constants for printf string
+        stringConst_i = llvm.core.Constant.stringz('%d\n') # zero terminated --> stringz instead of string
+        string_i = self.module.add_global_variable(stringConst_i.type, '__strInt')
+        string_i.initializer = stringConst_i
+        string_i.global_constant = True
+        string_i.linkage = llvm.core.LINKAGE_INTERNAL # not strictly necessary here
+        stringConst_f = llvm.core.Constant.stringz('%f\n') 
+        string_f = self.module.add_global_variable(stringConst_f.type, '__strFloat')
+        string_f.initializer = stringConst_f
+        string_f.global_constant = True
+        string_f.linkage = llvm.core.LINKAGE_INTERNAL 
+ 
+        # create functions for print 
+        funcType = llvm.core.Type.function(llVoidType, [llIntType])
+        printInt = self.module.add_function(funcType, 'printInt')
+        self._printInt = printInt
+        f_funcType = llvm.core.Type.function(llVoidType, [llFloatType])
+        printFloat = self.module.add_function(f_funcType, 'printFloat')
+        self._printFloat = printFloat
+
+        # create a block and a builder for print functions
+        bb = printInt.append_basic_block('ib')
+        b = llvm.core.Builder.new(bb)
+        
+        # address calculation
+        idx = [llvm.core.Constant.int(llvm.core.Type.int(32), 0), llvm.core.Constant.int(llvm.core.Type.int(32), 0)] # the first index get's us past the global variable (which is a pointer) to the string; the second index is the offset inside the string we want to access
+        realAddr_i = string_i.gep(idx)
+        realAddr_f = string_f.gep(idx)
+ 
+        # call printf for int
+        b.call(printf, [realAddr_i, printInt.args[0]])
+        b.ret_void()
+        # call printf for float
+        bf = printFloat.append_basic_block('fb')
+        b.position_at_end(bf)
+        d = b.fpext(printFloat.args[0], llvm.core.Type.double(), 'ftmp')
+        b.call(printf, [realAddr_f, d])
+        b.ret_void()
+
+ 
     def visitPrint(self, node):
-        return None # Discard
+        return None 
+
+
 
 
     def visitPrintnl(self, node):
-        return None # Discard
-
+        print ";----" + sys._getframe().f_code.co_name + "----"
+        ty = typer.inferType(node.nodes[0])
+        n = self.visit(node.nodes[0])
+        if(ty==int):
+            self.builder.call(self._printInt, [n])
+        elif(ty==float):
+            self.builder.call(self._printFloat, [n])
 
     def visitReturn(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
@@ -664,24 +719,19 @@ class CodeGenLLVM:
         print ";----" + sys._getframe().f_code.co_name + "----"
         
         a = self.visit(node.nodes[0])
-        b = self.visit(node.nodes[1])
         a_sym = symbolTable.genUniqueSymbol(llTruthType)
-        b_sym = symbolTable.genUniqueSymbol(llTruthType)
         a_int = self.builder.fptoui(a, llTruthType, a_sym.name)
-        b_int = self.builder.fptoui(b, llTruthType, b_sym.name)
         
-        and1_sym = symbolTable.genUniqueSymbol(llTruthType)
-        and1 = self.builder.and_(a_int, b_int, and1_sym.name)
-        
-        for i in range(2, len(node.nodes)):
-            c = self.visit(node.nodes[i])
+        for i in range(1, len(node.nodes)):
+            b = self.visit(node.nodes[i])
+            b_sym = symbolTable.genUniqueSymbol(llTruthType)
+            b_int = self.builder.fptoui(b, llTruthType, b_sym.name)
+            
             c_sym = symbolTable.genUniqueSymbol(llTruthType)
-            c_int = self.builder.fptoui(c, llTruthType, c_sym.name)
-            and2_sym = symbolTable.genUniqueSymbol(llTruthType)
-            and2 = self.builder.and_(and1, c_int, and2_sym.name)
-            and1 = and2
+            c_int = self.builder.and_(a_int, b_int, c_sym.name)
+            a_int = c_int
         
-        return self.builder.uitofp(and1, llFloatType, 'flttmp')
+        return self.builder.uitofp(a_int, llFloatType, 'andtmp')
             
 
 
@@ -689,24 +739,19 @@ class CodeGenLLVM:
         print ";----" + sys._getframe().f_code.co_name + "----"
         
         a = self.visit(node.nodes[0])
-        b = self.visit(node.nodes[1])
         a_sym = symbolTable.genUniqueSymbol(llTruthType)
-        b_sym = symbolTable.genUniqueSymbol(llTruthType)
         a_int = self.builder.fptoui(a, llTruthType, a_sym.name)
-        b_int = self.builder.fptoui(b, llTruthType, b_sym.name)
         
-        or1_sym = symbolTable.genUniqueSymbol(llTruthType)
-        or1 = self.builder.or_(a_int, b_int, or1_sym.name)
-        
-        for i in range(2, len(node.nodes)):
-            c = self.visit(node.nodes[i])
+        for i in range(1, len(node.nodes)):
+            b = self.visit(node.nodes[i])
+            b_sym = symbolTable.genUniqueSymbol(llTruthType)
+            b_int = self.builder.fptoui(b, llTruthType, b_sym.name)
+            
             c_sym = symbolTable.genUniqueSymbol(llTruthType)
-            c_int = self.builder.fptoui(c, llTruthType, c_sym.name)
-            or2_sym = symbolTable.genUniqueSymbol(llTruthType)
-            or2 = self.builder.or_(or1, c_int, or2_sym.name)
-            or1 = or2
+            c_int = self.builder.or_(a_int, b_int, c_sym.name)
+            a_int = c_int
         
-        return self.builder.uitofp(or1, llFloatType, 'flttmp')
+        return self.builder.uitofp(a_int, llFloatType, 'ortmp')
 
     def visitNot(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
@@ -919,10 +964,6 @@ entry:
 
     ret <4 x float> %r
 }
-@.str = private unnamed_addr constant [3 x i8] c"%i\00", align 1
-declare i32 @printf(i8*, ...) #0
-;%0 = load i32* %x, align 4        ; set %0 to x
-;%call = call i32 (i8*, ...)* @printf(i8* getelementptr inbounds ([3 x i8]* @.str, i32 0, i32 0), i32 %0)
         
         """
         return s
