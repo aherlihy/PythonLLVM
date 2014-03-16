@@ -14,10 +14,10 @@ def nret():
     nret2 = nret1+5
 def test_if():
     test_if1 = 4
-    if(4==test_if1):
+    if(4==test_if1 and 5==5):
         test_if2 = -1
         test_if1 = 9
-    if(test_if1!=8):
+    if(test_if1!=8 or 5==6):
         test_if2 = -3
         test_if1 = 11
     else:
@@ -47,11 +47,13 @@ def main():
     rf = 5.00
     rv = vec([1.00,2.00,3.00,4.00])
     # test visitFunctionCall
-    i = iret(ri)
-    f = fret(rf)
-    v = vret(rv)
+    print iret(ri)
+    print fret(rf)
+    print vret(rv)
 
     # test visitIf, visitWhile, and visitCompare
     ift = test_if()
     whilet = test_while()
     comparet = test_compare()
+
+    print(ift, whilet, comparet)

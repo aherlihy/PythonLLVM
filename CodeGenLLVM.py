@@ -131,16 +131,22 @@ class CodeGenLLVM:
         return None 
 
 
+    def helpPrint(self, n):
+        ty = typer.inferType(n)
+        lln = self.visit(n)
+        if(ty==int):
+            self.builder.call(self._printInt, [lln])
+        elif(ty==float):
+            self.builder.call(self._printFloat, [lln])
 
 
     def visitPrintnl(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
-        ty = typer.inferType(node.nodes[0])
-        n = self.visit(node.nodes[0])
-        if(ty==int):
-            self.builder.call(self._printInt, [n])
-        elif(ty==float):
-            self.builder.call(self._printFloat, [n])
+        for n in node.nodes:
+            if (isinstance(n, compiler.ast.List) or isinstance(n, compiler.ast.Tuple) ):
+                [self.helpPrint(z) for z in n.nodes]
+                return
+            self.helpPrint(n)
 
     def visitReturn(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
