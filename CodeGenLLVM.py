@@ -138,6 +138,24 @@ class CodeGenLLVM:
             self.builder.call(self._printInt, [lln])
         elif(ty==float):
             self.builder.call(self._printFloat, [lln])
+        elif(ty==vec):
+            i0 = llvm.core.Constant.int(llIntType, 0);
+            i1 = llvm.core.Constant.int(llIntType, 1);
+            i2 = llvm.core.Constant.int(llIntType, 2);
+            i3 = llvm.core.Constant.int(llIntType, 3);
+            tmp0  = symbolTable.genUniqueSymbol(float)
+            tmp1  = symbolTable.genUniqueSymbol(float)
+            tmp2  = symbolTable.genUniqueSymbol(float)
+            tmp3  = symbolTable.genUniqueSymbol(float)
+            le0   = self.builder.extract_element(lln, i0, tmp0.name)
+            le1   = self.builder.extract_element(lln, i1, tmp1.name)
+            le2   = self.builder.extract_element(lln, i2, tmp2.name)
+            le3   = self.builder.extract_element(lln, i3, tmp3.name)
+            self.builder.call(self._printFloat, [le0])
+            self.builder.call(self._printFloat, [le1])
+            self.builder.call(self._printFloat, [le2])
+            self.builder.call(self._printFloat, [le3])
+            
 
 
     def visitPrintnl(self, node):
