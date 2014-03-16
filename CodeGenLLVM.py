@@ -15,6 +15,7 @@ from SymbolTable import *
 symbolTable    = SymbolTable()
 typer          = TypeInference(symbolTable)
 
+llTruthType    = llvm.core.Type.int(1)
 llVoidType     = llvm.core.Type.void()
 llIntType      = llvm.core.Type.int()
 llFloatType    = llvm.core.Type.float()
@@ -24,8 +25,6 @@ llIVec4Type    = llvm.core.Type.vector(llIntType, 4)
 
 # converts from python to LLVM type
 def toLLVMTy(ty):
-
-    floatTy = llvm.core.Type.float()
 
     if ty is None:
         return llVoidType
@@ -172,7 +171,7 @@ class CodeGenLLVM:
 
 
         symbolTable.pushScope(node.name)
-        retLLVMTy    = llvm.core.Type.void() # Dummy
+        retLLVMTy    = llVoidType # Dummy
         func         = self.mkFunctionSignature(retLLVMTy, node)
         entry        = func.append_basic_block("entry")
         builder      = llvm.core.Builder.new(entry)
@@ -284,7 +283,8 @@ class CodeGenLLVM:
     def visitAssign(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
-        if len(node.nodes) != 1:
+        if len(
+            node.nodes) != 1:
             raise Exception("TODO:", node)
 
         #print "; [Asgn]"
@@ -336,7 +336,7 @@ class CodeGenLLVM:
         is_else = (node.else_ is not None)
         cond = self.visit(node.tests[0][0])
         # TODO: cast return value from cond to truth value
-        condition_bool = self.builder.fcmp(llvm.core.FCMP_ONE, cond, llvm.core.Constant.real(llvm.core.Type.float(), 0), 'ifcond')
+        condition_bool = self.builder.fcmp(llvm.core.FCMP_ONE, cond, llvm.core.Constant.real(llFloatType, 0), 'ifcond')
         # get function
         function = self.builder.basic_block.function
         
@@ -395,7 +395,7 @@ class CodeGenLLVM:
 
         cond = self.visit(node.test)
         # TODO: cast return value from cond to truth value
-        condition_bool = self.builder.fcmp(llvm.core.FCMP_ONE, cond, llvm.core.Constant.real(llvm.core.Type.float(), 0), 'whilecond')
+        condition_bool = self.builder.fcmp(llvm.core.FCMP_ONE, cond, llvm.core.Constant.real(llFloatType, 0), 'whilecond')
 
         self.builder.cbranch(condition_bool, do_while, end_while) 
         
@@ -485,16 +485,14 @@ class CodeGenLLVM:
         rTy = typer.inferType(node.ops[0][1])
 
         if rTy != lTy:
-            raise Exception("ERR: TypeMismatch: lTy = %s, rTy = %s for %s, line %d" % (lTy, rTy, node, node.lineno))
+            return llvm.core.Constant.real(llFloatType, 0.00)
+            #raise Exception("ERR: TypeMismatch: lTy = %s, rTy = %s for %s, line %d" % (lTy, rTy, node, node.lineno))
 
         lLLInst = self.visit(node.expr)
         rLLInst = self.visit(node.ops[0][1])
 
         op  = node.ops[0][0]
-
-
-
-
+        
         if rTy == vec:
             return self.emitVCompare(op, lLLInst, rLLInst)
         elif rTy == int:
@@ -506,7 +504,7 @@ class CodeGenLLVM:
                 , "<=" : llvm.core.ICMP_ULE
                 }
             result = self.builder.icmp(d[op], lLLInst, rLLInst, 'cmptmp')
-            return self.builder.uitofp(result, llvm.core.Type.float(), 'booltmp')
+            return self.builder.uitofp(result, llFloatType, 'booltmp')
         elif rTy == float:
             d = { "==" : llvm.core.FCMP_OEQ
                 , "!=" : llvm.core.FCMP_ONE
@@ -516,7 +514,7 @@ class CodeGenLLVM:
                 , "<=" : llvm.core.FCMP_OLE
                 }
             result = self.builder.fcmp(d[op], lLLInst, rLLInst, 'cmptmp')
-            return self.builder.uitofp(result, llvm.core.Type.float(), 'flttmp')
+            return self.builder.uitofp(result, llFloatType, 'flttmp')
         else:  
             raise Exception("unable to compare type " + rTy)
 
@@ -577,18 +575,20 @@ class CodeGenLLVM:
 
         lTy = typer.inferType(node.left)
         rTy = typer.inferType(node.right)
-
         if rTy != lTy:
             raise Exception("ERR: TypeMismatch: lTy = %s, rTy = %s for %s, line %d" % (lTy, rTy, node, node.lineno))
 
         lLLInst = self.visit(node.left)
         rLLInst = self.visit(node.right)
-
+        
         tmpSym = symbolTable.genUniqueSymbol(lTy)
+
+        if( lTy == float ):
+            addInst = self.builder.fadd(lLLInst, rLLInst, tmpSym.name)
+            return addInst
 
         addInst = self.builder.add(lLLInst, rLLInst, tmpSym.name)
         #print "; [AddOp] inst = ", addInst
-
         return addInst
 
     def visitSub(self, node):
@@ -605,6 +605,9 @@ class CodeGenLLVM:
 
         tmpSym = symbolTable.genUniqueSymbol(lTy)
 
+        if( lTy == float ):
+            subInst = self.builder.fsub(lLLInst, rLLInst, tmpSym.name)
+            return subInst
         subInst = self.builder.sub(lLLInst, rLLInst, tmpSym.name)
         #print "; [SubOp] inst = ", subInst
 
@@ -625,6 +628,9 @@ class CodeGenLLVM:
 
         tmpSym = symbolTable.genUniqueSymbol(lTy)
 
+        if( lTy == float ):
+            mulInst = self.builder.fmul(lLLInst, rLLInst, tmpSym.name)
+            return mulInst
         mulInst = self.builder.mul(lLLInst, rLLInst, tmpSym.name)
         #print "; [MulOp] inst = ", mulInst
 
@@ -648,11 +654,72 @@ class CodeGenLLVM:
         if typer.isFloatType(lTy):
             divInst = self.builder.fdiv(lLLInst, rLLInst, tmpSym.name)
         else:
-            raise Exception("TODO: div for type: ", lTy)
+            divInst = self.builder.udiv(lLLInst, rLLInst, tmpSym.name)
 
         #print "; [DIvOp] inst = ", divInst
 
         return divInst
+
+    def visitAnd(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
+        
+        a = self.visit(node.nodes[0])
+        b = self.visit(node.nodes[1])
+        a_sym = symbolTable.genUniqueSymbol(llTruthType)
+        b_sym = symbolTable.genUniqueSymbol(llTruthType)
+        a_int = self.builder.fptoui(a, llTruthType, a_sym.name)
+        b_int = self.builder.fptoui(b, llTruthType, b_sym.name)
+        
+        and1_sym = symbolTable.genUniqueSymbol(llTruthType)
+        and1 = self.builder.and_(a_int, b_int, and1_sym.name)
+        
+        for i in range(2, len(node.nodes)):
+            c = self.visit(node.nodes[i])
+            c_sym = symbolTable.genUniqueSymbol(llTruthType)
+            c_int = self.builder.fptoui(c, llTruthType, c_sym.name)
+            and2_sym = symbolTable.genUniqueSymbol(llTruthType)
+            and2 = self.builder.and_(and1, c_int, and2_sym.name)
+            and1 = and2
+        
+        return self.builder.uitofp(and1, llFloatType, 'flttmp')
+            
+
+
+    def visitOr(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
+        
+        a = self.visit(node.nodes[0])
+        b = self.visit(node.nodes[1])
+        a_sym = symbolTable.genUniqueSymbol(llTruthType)
+        b_sym = symbolTable.genUniqueSymbol(llTruthType)
+        a_int = self.builder.fptoui(a, llTruthType, a_sym.name)
+        b_int = self.builder.fptoui(b, llTruthType, b_sym.name)
+        
+        or1_sym = symbolTable.genUniqueSymbol(llTruthType)
+        or1 = self.builder.or_(a_int, b_int, or1_sym.name)
+        
+        for i in range(2, len(node.nodes)):
+            c = self.visit(node.nodes[i])
+            c_sym = symbolTable.genUniqueSymbol(llTruthType)
+            c_int = self.builder.fptoui(c, llTruthType, c_sym.name)
+            or2_sym = symbolTable.genUniqueSymbol(llTruthType)
+            or2 = self.builder.or_(or1, c_int, or2_sym.name)
+            or1 = or2
+        
+        return self.builder.uitofp(or1, llFloatType, 'flttmp')
+
+    def visitNot(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
+        e = self.visit(node.expr) 
+        e_sym = symbolTable.genUniqueSymbol(llTruthType)
+        e_int = self.builder.fptoui(e, llTruthType, e_sym.name)
+
+        not_sym = symbolTable.genUniqueSymbol(llTruthType)
+        e_not = self.builder.not_(e_int, not_sym.name)
+
+        ret_sym = symbolTable.genUniqueSymbol(llTruthType)
+        return self.builder.uitofp(e_not, llFloatType, ret_sym.name)
+
 
 
     def handleInitializeTypeCall(self, ty, args):
@@ -702,8 +769,13 @@ class CodeGenLLVM:
 
         #print "; callfunc", node.args
 
-        args = [self.visit(a) for a in node.args]
-        
+        #args = [self.visit(a) for a in node.args]
+        args = []
+        for a in node.args:
+            if( not isinstance(a, compiler.ast.List) ):
+                args.append(self.visit(a))
+            else:
+                args.append([self.visit(x) for x in a.nodes])
         #print "; callfuncafter", args
 
         ty = typer.isNameOfFirstClassType(node.node.name)
@@ -749,15 +821,15 @@ class CodeGenLLVM:
 
         # emit call
         tmp  = symbolTable.genUniqueSymbol(vec)
-        print "args, name"
-        print args
-        print tmp.name
+        #print "args, name"
+        #print args
+        #print tmp.name
         return self.builder.call(funcSig.llstorage, args, tmp.name)
 
 
     def visitList(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
-
+        assert(False)
         return [self.visit(a) for a in node.nodes]
 
     #

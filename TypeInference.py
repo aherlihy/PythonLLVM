@@ -228,6 +228,12 @@ class TypeInference(object):
 
         return left
 
+    def inferAnd(self, node):
+        return float
+    def inferOr(self, node):
+        return float
+    def inferNot(self, node):
+        return float
 
     #
     # -- Leaf
