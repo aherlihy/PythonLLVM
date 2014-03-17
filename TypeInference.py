@@ -294,6 +294,8 @@ class TypeInference(object):
 
         else:
             raise Exception("Unknown type of value:", value)
-
+    def inferSubscript(self, node):
+        print "INFER SUBSCRIPT"
+        print node
     def inferList(self, node):
         return list

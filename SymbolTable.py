@@ -29,7 +29,6 @@ class Symbol(object):
             self.__dict__[k] = v
             self.attrs.append(k)
 
-
     def __str__(self):
 
         s = "%s(%s)" % (self.name, self.type)
@@ -57,6 +56,8 @@ class SymbolTable:
         self.symbols = [('global', {})]      # stack of (function scope name, dict)
 
         self.genNum  = 0
+        
+        self.lists = {}
 
     def __str__(self):
         """
@@ -151,6 +152,12 @@ class SymbolTable:
                 raise Exception("Can't define unique symbol.")
     def returnSymbols(self):
         return self.symbols
+
+    def addList(self, name, listType, listLen):
+        print ";ADDING " + name + " to listsymbols (" + str(listType) + ", " + str(listLen) + ")"
+        self.lists[name] = (listType, listLen)
+    def getList(self, name):
+        return self.lists[name]
 def _test():
     import doctest
     doctest.testmod()
