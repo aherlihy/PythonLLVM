@@ -220,7 +220,7 @@ class CodeGenLLVM:
         funcLLVMTy = llvm.core.Type.function(retTy, argLLTys)
         func = llvm.core.Function.new(self.module, funcLLVMTy, node.name)
 
-        # Assign name for each arg
+        # assign name for each arg
         for i, name in enumerate(node.argnames):
 
             # if llTy == llFVec4Type:
@@ -370,7 +370,6 @@ class CodeGenLLVM:
         #print "; [Asgn]"
         rTy     = typer.inferType(node.expr)
         #print "; [Asgn]. rTy = ", rTy
-        
         rLLInst = self.visit(node.expr)
         #print "; [Asgn]. rhs = ", rLLInst
         lhsNode = node.nodes[0]
@@ -381,7 +380,7 @@ class CodeGenLLVM:
                 # The variable appears here firstly.
 
                 # alloc storage
-                if(rTy==list):
+                if(rTy==list): # TODO add case for instanceOf Name
                     symbolTable.addList(lhsNode.name, toLLVMTy(typer.inferType(node.expr.nodes[0])), len(node.expr.nodes))
                     llTy = llvm.core.Type.vector(toLLVMTy(typer.inferType(node.expr.nodes[0])), len(node.expr.nodes))
                 else:
@@ -403,6 +402,7 @@ class CodeGenLLVM:
             raise Exception("ERR: TypeMismatch: lTy = %s, rTy = %s: %s" % (lTy, rTy, node))
 
         lSym = symbolTable.find(lhsNode.name)
+        print ";storeInst(", rLLInst, ", ", lSym.llstorage, ")"
         storeInst = self.builder.store(rLLInst, lSym.llstorage)
         # No return
 
@@ -919,6 +919,13 @@ class CodeGenLLVM:
             l = self.builder.insert_element(l, llNodes[i], index)
         return l
 
+    #TODO: the llvm vector accessing functions don't give array OOB exceptions
+    # change so throws error instead of giving last element
+    def visitSubscript(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
+        n = self.visit(node.expr)
+        index = self.visit(node.subs[0])
+        return self.builder.extract_element(n, index)
 
     #
     # Leaf

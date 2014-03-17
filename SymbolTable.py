@@ -154,7 +154,6 @@ class SymbolTable:
         return self.symbols
 
     def addList(self, name, listType, listLen):
-        print ";ADDING " + name + " to listsymbols (" + str(listType) + ", " + str(listLen) + ")"
         self.lists[name] = (listType, listLen)
     def getList(self, name):
         return self.lists[name]

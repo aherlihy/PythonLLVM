@@ -10,6 +10,12 @@ class void(object):
     """
     def __init__(self):
         pass
+# needed because weird things happen when you put types in dicts
+def toTy(ty):
+    d = {'float' : float,'int' : int,'void': void,'list' : list}
+    if d.has_key(str(ty)):
+        return d[str(ty)]
+    raise Exception("Unknown type:", ty)
 
 
 class TypeInference(object):
@@ -294,8 +300,13 @@ class TypeInference(object):
 
         else:
             raise Exception("Unknown type of value:", value)
+    
     def inferSubscript(self, node):
-        print "INFER SUBSCRIPT"
-        print node
+        if isinstance(node.expr, compiler.ast.Name):
+            return toTy(self.symbolTable.getList(node.expr.name)[0])
+        if isinstance(node.expr, compiler.ast.List):
+            return self.inferType(node.nodes[0])
+        raise Exception("Can't index into value")
+    
     def inferList(self, node):
         return list
