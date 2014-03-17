@@ -10,12 +10,6 @@ class void(object):
     """
     def __init__(self):
         pass
-# needed because weird things happen when you put types in dicts
-def toTy(ty):
-    d = {'float' : float,'int' : int,'void': void,'list' : list}
-    if d.has_key(str(ty)):
-        return d[str(ty)]
-    raise Exception("Unknown type:", ty)
 
 
 class TypeInference(object):
@@ -36,6 +30,7 @@ class TypeInference(object):
             , 'float'  : float
             , 'void'   : void
             , 'string' : str
+            , 'list'   : list
             }
 
         self.typeDic.update(GetMUDATypeDic())    # register MUDA type
@@ -65,7 +60,8 @@ class TypeInference(object):
         #print ";TI--" + sys._getframe().f_code.co_name + "----"
         if self.typeDic.has_key(name):
             return self.typeDic[name]
-
+        if name[:4]=='list':
+            return list
         return None
 
     def getIntrinsicFunctionFromName(self, name):
@@ -260,14 +256,12 @@ class TypeInference(object):
     
     def inferName(self, node):
         #print ";TI--" + sys._getframe().f_code.co_name + "----"
-
         name = node.name
 
         # Firstly, name of type?
         if self.typeDic.has_key(name):
             print "; => found type for ", name, "=", self.typeDic[name]
             return self.typeDic[name]
-
         # Next, lookup symbol from the symbol table.
         sym = self.symbolTable.find(name)
         if sym is not None:
@@ -303,7 +297,7 @@ class TypeInference(object):
     
     def inferSubscript(self, node):
         if isinstance(node.expr, compiler.ast.Name):
-            return toTy(self.symbolTable.getList(node.expr.name)[0])
+            return self.symbolTable.getList(node.expr.name)[0]
         if isinstance(node.expr, compiler.ast.List):
             return self.inferType(node.nodes[0])
         raise Exception("Can't index into value")

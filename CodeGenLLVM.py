@@ -59,6 +59,7 @@ class CodeGenLLVM:
         self.builder          = None
 
         self.currFuncRetType  = None
+        self.currListFuncRet  = (None, 0)
         self.prevFuncRetNode  = None    # for reporiting err
 
         self.externals        = {}
@@ -145,6 +146,7 @@ class CodeGenLLVM:
                 le0   = self.builder.extract_element(lln, i0, tmp0.name)
                 self.builder.call(self._printFloat, [le0])
         elif(ty==list):
+            # if is List, can find dimensions directly. If var can look it up
             if isinstance(n, compiler.ast.List):
                 lenList = len(n.nodes)
                 tyList = typer.inferType(n.nodes[0])
@@ -154,9 +156,9 @@ class CodeGenLLVM:
                 i0 = llvm.core.Constant.int(llIntType, i);
                 tmp0  = symbolTable.genUniqueSymbol(float)
                 le0   = self.builder.extract_element(lln, i0, tmp0.name)
-                if( str(tyList) == 'int'): #silly
+                if( tyList == int): #silly
                     self.builder.call(self._printInt, [le0])
-                elif( str(tyList) == 'float'):
+                elif( tyList == float):
                     self.builder.call(self._printFloat, [le0])
                 else:
                     raise Exception("haven't implemented lists of lists")
@@ -172,12 +174,13 @@ class CodeGenLLVM:
         print ";----" + sys._getframe().f_code.co_name + "----"
 
         ty   = typer.inferType(node.value)
-        #print "; Return ty = ", ty
+        print "; RETURN ty = ", ty
 
         # Return(Const(None))
         if isinstance(node.value, compiler.ast.Const):
             if node.value.value == None:
                 self.currFuncRetType = void
+                self.currFuncRetList = (None, 0)
                 self.prevFuncRetNode = node
                 return self.builder.ret_void()
 
@@ -185,12 +188,33 @@ class CodeGenLLVM:
 
         if self.currFuncRetType is None:
             self.currFuncRetType = ty
+            if(ty == list):
+                if isinstance(node.value, compiler.ast.Name):
+                    self.currFuncRetList = symbolTable.getList(node.value.name)
+                elif isinstance(node.value, compiler.ast.List):
+                    listTy = typer.inferType(node.value.nodes[0])
+                    listLen = len(node.value.nodes)
+                    self.currFuncRetList = (listTy, listLen)
+                else:
+                    raise Exception("returning type that evaluates to list but not implemented yet")
             self.prevFuncRetNode = node
 
         elif self.currFuncRetType != ty:
             raise Exception("Different type for return expression: expected %s(lineno=%d, %s) but got %s(lineno=%d, %s)" % (self.currFuncRetType, self.prevFuncRetNode.lineno, self.prevFuncRetNode, ty, node.lineno, node))
 
         return self.builder.ret(expr)
+
+    # in passing lists of variable length, there is the issue of setting the argument type
+    # (since declaring vector requires the length and type, **even for a pointer to a vector**)
+    # and even if it was possible to set up a function signature so that it would be able to take
+    # pointers to vectors of different types and lengths, it would still need to be cast back 
+    # into a specific type and length within the function in order to be used. Unless a new function
+    # was generated for each different type of list argument that was passed in, there is not a neat
+    # way to pass lists without providing some additional information in the declaration.
+    #
+    # point being, if you're going to pass lists as arguments to functions you need to specify how long
+    # and what type of elements. This is done by setting the default argument to list<type><length> where
+    # type is either 'i', 'f', 's', 'l' and length is an integer
 
     def mkFunctionSignature(self, retTy, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
@@ -208,8 +232,15 @@ class CodeGenLLVM:
             ty = typer.isNameOfFirstClassType(tyname.name)
             if ty is None:
                 raise Exception("Unknown name of type:", tyname.name)
-
-            llTy = toLLVMTy(ty)
+            if ty==list:
+                d = {'i':int, 'f':float, 's':str, 'l':list}
+                if not d.has_key(tyname.name[4]):
+                    raise Exception("Bad format for list default argument. list<type><len>", tyname.name)
+                listType = d[tyname.name[4]]
+                listLen = int(tyname.name[5:])
+                llTy = llvm.core.Type.vector(toLLVMTy(listType), listLen)
+            else:
+                llTy = toLLVMTy(ty)
 
             # vector argument is passed by pointer.
             # if llTy == llFVec4Type:
@@ -235,7 +266,7 @@ class CodeGenLLVM:
         return func
 
     def visitFunction(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        print ";----" + sys._getframe().f_code.co_name + ":" + node.name + "----"
 
         """
         Do nasty trick to handle return type of function correctly.
@@ -268,26 +299,17 @@ class CodeGenLLVM:
 
             bufSym = symbolTable.genUniqueSymbol(ty)
 
-            llTy = toLLVMTy(ty)
+            if ty==list:
+                d = {'i':int, 'f':float, 's':str, 'l':list}
+                if not d.has_key(tyname.name[4]):
+                    raise Exception("Bad format for list default argument. list<type><len>", tyname.name)
+                listType = d[tyname.name[4]]
+                listLen = int(tyname.name[5:])
+                llTy = llvm.core.Type.vector(toLLVMTy(listType), listLen)
+                symbolTable.addList(name, listType, listLen)
+            else:
+                llTy = toLLVMTy(ty)
 
-            # if llTy == llFVec4Type:
-            #     # %name.buf = alloca ty
-            #     # %tmp = load %arg
-            #     # store %tmp, %name.buf
-            #     allocaInst = self.builder.alloca(llTy, bufSym.name)
-            #     pTy = llFVec4PtrType
-            #     tmpSym     = symbolTable.genUniqueSymbol(ty)
-            #     loadInst   = self.builder.load(func.args[i], tmpSym.name)
-            #     storeInst  = self.builder.store(loadInst, allocaInst)
-            #     symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst))
-            # else:
-            #     # %name.buf = alloca ty
-            #     # store val, %name.buf
-            #     allocaInst = self.builder.alloca(llTy, bufSym.name)
-            #     storeInst  = self.builder.store(func.args[i], allocaInst)
-            #     symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst))
-            # %name.buf = alloca ty
-            # store val, %name.buf
             allocaInst = self.builder.alloca(llTy, bufSym.name)
             storeInst  = self.builder.store(func.args[i], allocaInst)
             symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst))
@@ -301,12 +323,16 @@ class CodeGenLLVM:
 
 
         symbolTable.pushScope(node.name)
-        retLLVMTy    = toLLVMTy(self.currFuncRetType)
-        func         = self.mkFunctionSignature(retLLVMTy, node)
-        entry        = func.append_basic_block("entry")
-        builder      = llvm.core.Builder.new(entry)
-        self.func    = func
-        self.builder = builder
+        #TODO: need to set special cases for list
+        if(self.currFuncRetType==list):
+            retLLVMTy    = llvm.core.Type.vector(toLLVMTy(self.currFuncRetList[0]), self.currFuncRetList[1])
+        else:
+            retLLVMTy    = toLLVMTy(self.currFuncRetType)
+        func             = self.mkFunctionSignature(retLLVMTy, node)
+        entry            = func.append_basic_block("entry")
+        builder          = llvm.core.Builder.new(entry)
+        self.func        = func
+        self.builder     = builder
         self.funcs.append(func)
 
         # Add function argument to symblol table.
@@ -314,29 +340,18 @@ class CodeGenLLVM:
         for i, (name, tyname) in enumerate(zip(node.argnames, node.defaults)):
 
             ty = typer.isNameOfFirstClassType(tyname.name)
-
             bufSym = symbolTable.genUniqueSymbol(ty)
 
-            llTy = toLLVMTy(ty)
-
-            # if llTy == llFVec4Type:
-            #     # %name.buf = alloca ty
-            #     # %tmp = load %arg
-            #     # store %tmp, %name.buf
-            #     allocaInst = self.builder.alloca(llTy, bufSym.name)
-            #     pTy = llFVec4PtrType
-            #     tmpSym     = symbolTable.genUniqueSymbol(ty)
-            #     loadInst   = self.builder.load(func.args[i], tmpSym.name)
-            #     storeInst  = self.builder.store(loadInst, allocaInst)
-            #     symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst))
-            # else:
-            #     # %name.buf = alloca ty
-            #     # store val, %name.buf
-            #     allocaInst = self.builder.alloca(llTy, bufSym.name)
-            #     storeInst  = self.builder.store(func.args[i], allocaInst)
-            #     symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst))
-            # %name.buf = alloca ty
-            # store val, %name.buf
+            if ty==list:
+                d = {'i':int, 'f':float, 's':str, 'l':list}
+                if not d.has_key(tyname.name[4]):
+                    raise Exception("Bad format for list default argument. list<type><len>", tyname.name)
+                listType = d[tyname.name[4]]
+                listLen = int(tyname.name[5:])
+                llTy = llvm.core.Type.vector(toLLVMTy(listType), listLen)
+                symbolTable.addList(name, listType, listLen)
+            else:
+                llTy = toLLVMTy(ty)
             allocaInst = self.builder.alloca(llTy, bufSym.name)
             storeInst  = self.builder.store(func.args[i], allocaInst)
             symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst))
@@ -351,6 +366,8 @@ class CodeGenLLVM:
         symbolTable.popScope()
 
         # Register function to symbol table
+        print ";ADDING", node.name, "TO ST AS", self.currFuncRetType, " llstoroage=func"
+        
         symbolTable.append(Symbol(node.name, self.currFuncRetType, "function", llstorage=func))
 
 
@@ -380,9 +397,16 @@ class CodeGenLLVM:
                 # The variable appears here firstly.
 
                 # alloc storage
-                if(rTy==list): # TODO add case for instanceOf Name
-                    symbolTable.addList(lhsNode.name, toLLVMTy(typer.inferType(node.expr.nodes[0])), len(node.expr.nodes))
-                    llTy = llvm.core.Type.vector(toLLVMTy(typer.inferType(node.expr.nodes[0])), len(node.expr.nodes))
+                if(rTy==list): 
+                    if isinstance(node.expr, compiler.ast.List):
+                        symbolTable.addList(lhsNode.name, typer.inferType(node.expr.nodes[0]), len(node.expr.nodes))
+                        llTy = llvm.core.Type.vector(toLLVMTy(typer.inferType(node.expr.nodes[0])), len(node.expr.nodes))
+                    elif isinstance(node.expr, compiler.ast.Name):
+                        listType, listLen = symbolTable.getList(node.expr.name)
+                        symbolTable.addList(lhsNode.name, listType, listLen)
+                        llTy = llvm.core.Type.vector(toLLVMTy(listType), listLen)
+                    else:
+                        raise Exception("haven't implemented assigning all list types", node.expr)
                 else:
                     llTy = toLLVMTy(rTy)
                 llStorage = self.builder.alloca(llTy, lhsNode.name)
@@ -829,7 +853,6 @@ class CodeGenLLVM:
 
     def visitCallFunc(self, node):
         print ";----" + sys._getframe().f_code.co_name + ": " + node.node.name + "----"
-
         assert isinstance(node.node, compiler.ast.Name)
 
         #print "; callfunc", node.args
@@ -837,12 +860,9 @@ class CodeGenLLVM:
         #args = [self.visit(a) for a in node.args]
         args = []
         for a in node.args:
-            if( not isinstance(a, compiler.ast.List) ):
-                args.append(self.visit(a))
-            else:
-                args.append([self.visit(x) for x in a.nodes])
+            # TODO: got rid of special casing list, well see if this breaks anything
+            args.append(self.visit(a))
         #print "; callfuncafter", args
-
         ty = typer.isNameOfFirstClassType(node.node.name)
         #print "; callfuncafter: ty = ",ty
 
@@ -853,44 +873,45 @@ class CodeGenLLVM:
             # int, float, vec, ...
             return self.handleInitializeTypeCall(ty, args)
 
-
         #
         # vector math function?
         #
         # UNCOMMENT:
         #orginal=comment start
-        ret = self.isVectorMathFunction(node.node.name)
-        if ret is not False:
-            return self.emitVMath(ret[1], args)
+        #ret = self.isVectorMathFunction(node.node.name)
+        #if ret is not False:
+        #    return self.emitVMath(ret[1], args)
 
         #
         # Special function?
         #
-        if (node.node.name == "vsel"):
-            func = self.getExternalSymbolInstruction("vsel")
-            tmp  = symbolTable.genUniqueSymbol(vec)
+        #if (node.node.name == "vsel"):
+        #    func = self.getExternalSymbolInstruction("vsel")
+        #    tmp  = symbolTable.genUniqueSymbol(vec)
 
             #print "; ", args
-            c    = self.builder.call(func, args, tmp.name)
+         #   c    = self.builder.call(func, args, tmp.name)
 
-            return c
+         #   return c
         #original=commented end
         #
         # Defined in the source?
         #
         ty      = typer.inferType(node.node)
+        
         funcSig = symbolTable.lookup(node.node.name)
 
         if funcSig.kind is not "function":
             raise Exception("Symbol isn't registered as function:", node.node.name)
 
         # emit call
-        tmp  = symbolTable.genUniqueSymbol(vec)
-        #print "args, name"
-        #print args
-        #print tmp.name
-        return self.builder.call(funcSig.llstorage, args, tmp.name)
+        if(ty == void):
+            return self.builder.call(funcSig.llstorage, args)
+        else:
+            tmp  = symbolTable.genUniqueSymbol(ty)
+            return self.builder.call(funcSig.llstorage, args, tmp.name)
 
+        # if the type is void, then don't assign function call to anything
 
     def visitList(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
@@ -911,8 +932,11 @@ class CodeGenLLVM:
             l = llvm.core.Constant.vector([llvm.core.Constant.int(llIntType, "0")] * lenList)
         elif(tyList == float):
             l = llvm.core.Constant.vector([llvm.core.Constant.real(llFloatType, "0.0")] * lenList)
+        elif(tyList == list):
+            #TODO
+            raise Exception("TODO: haven't implemented lists of type", tyList)
         else:
-            raise Exception("TODO: haven't implemented lists of not basic types")
+            raise Exception("TODO: haven't implemented lists of type", tyList)
         # populate list
         for i in range(len(llNodes)):
             index = llvm.core.Constant.int(llIntType, i);
@@ -932,13 +956,10 @@ class CodeGenLLVM:
     #
     def visitName(self, node):
         print ";----" + sys._getframe().f_code.co_name + " : " + node.name + "----"
-   
         sym = symbolTable.lookup(node.name)
-
         tmpSym = symbolTable.genUniqueSymbol(sym.type)
 
         # %tmp = load %name
-
         loadInst = self.builder.load(sym.llstorage, tmpSym.name)
 
         #print "; [Leaf] inst = ", loadInst
@@ -952,7 +973,6 @@ class CodeGenLLVM:
         #
         # return None
         #
-
 
     def mkLLConstInst(self, ty, value):
         print ";----" + sys._getframe().f_code.co_name + "----"

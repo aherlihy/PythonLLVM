@@ -156,7 +156,11 @@ class SymbolTable:
     def addList(self, name, listType, listLen):
         self.lists[name] = (listType, listLen)
     def getList(self, name):
-        return self.lists[name]
+        if self.find(name) is not None:
+            return self.lists[name]
+        else:
+            #TODO: will scoping break everything??? redefinitions of list variables will change the lists dict, but won't change back when scope pops
+            raise Exception("undefined variable:", name)
 def _test():
     import doctest
     doctest.testmod()
