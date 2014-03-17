@@ -21,7 +21,6 @@ llFloatType    = llvm.core.Type.float()
 llFVec4Type    = llvm.core.Type.vector(llFloatType, 4)
 llFVec4PtrType = llvm.core.Type.pointer(llFVec4Type)
 llIVec4Type    = llvm.core.Type.vector(llIntType, 4)
-llEmptyList   = llvm.core.Type.vector(llIntType,1)
 # converts from python to LLVM type
 def toLLVMTy(ty):
 
@@ -34,7 +33,6 @@ def toLLVMTy(ty):
         , int   : llIntType
         , vec   : llFVec4Type
         , void  : llVoidType
-        , list  : llEmptyList
         # str   : TODO
         }
 
@@ -323,9 +321,10 @@ class CodeGenLLVM:
 
 
         symbolTable.pushScope(node.name)
-        #TODO: need to set special cases for list
         if(self.currFuncRetType==list):
             retLLVMTy    = llvm.core.Type.vector(toLLVMTy(self.currFuncRetList[0]), self.currFuncRetList[1])
+            # Add functions to List values in symbol tabke
+            symbolTable.addList(node.name, self.currFuncRetList[0], self.currFuncRetList[1])
         else:
             retLLVMTy    = toLLVMTy(self.currFuncRetType)
         func             = self.mkFunctionSignature(retLLVMTy, node)
@@ -367,7 +366,6 @@ class CodeGenLLVM:
 
         # Register function to symbol table
         print ";ADDING", node.name, "TO ST AS", self.currFuncRetType, " llstoroage=func"
-        
         symbolTable.append(Symbol(node.name, self.currFuncRetType, "function", llstorage=func))
 
 
@@ -403,6 +401,10 @@ class CodeGenLLVM:
                         llTy = llvm.core.Type.vector(toLLVMTy(typer.inferType(node.expr.nodes[0])), len(node.expr.nodes))
                     elif isinstance(node.expr, compiler.ast.Name):
                         listType, listLen = symbolTable.getList(node.expr.name)
+                        symbolTable.addList(lhsNode.name, listType, listLen)
+                        llTy = llvm.core.Type.vector(toLLVMTy(listType), listLen)
+                    elif isinstance(node.expr, compiler.ast.CallFunc):
+                        listType, listLen = symbolTable.getList(node.expr.node.name)
                         symbolTable.addList(lhsNode.name, listType, listLen)
                         llTy = llvm.core.Type.vector(toLLVMTy(listType), listLen)
                     else:
