@@ -815,9 +815,8 @@ class CodeGenLLVM:
 
     def handleInitializeTypeCall(self, ty, args):
         print ";----" + sys._getframe().f_code.co_name + "----"
-
         llty = toLLVMTy(ty)
-
+        print ";INIT TYPE", ty, "with arglen=", len(args)
         if llty == llFVec4Type:
 
             i0 = llvm.core.Constant.int(llIntType, 0);
@@ -829,11 +828,12 @@ class CodeGenLLVM:
 
             # args =  [List([float, float, float, float])]
             #      or [List(float)]
-
-            if isinstance(args[0], list):
-                elems = args[0]
+            if len(args)==4:
+                elems = args
             else:
-                elems = [args[0], args[0], args[0], args[0]]
+                elems =[args[0], args[0], args[0], args[0]]
+            #else:
+            #    elems = [args[0], args[0], args[0], args[0]]
 
             s0 = symbolTable.genUniqueSymbol(llFVec4Type)
             s1 = symbolTable.genUniqueSymbol(llFVec4Type)
@@ -860,19 +860,30 @@ class CodeGenLLVM:
         #print "; callfunc", node.args
 
         #args = [self.visit(a) for a in node.args]
-        args = []
-        for a in node.args:
-            # TODO: got rid of special casing list, well see if this breaks anything
-            args.append(self.visit(a))
+        
+        # special case for vec, since existing code expects entry as list but not type list
+        if(node.node.name=='vec'):
+            print ';ARGS IN CALLFUNC=', node.args
+            if isinstance(node.args[0], compiler.ast.List):
+                print ';1st arg is LIST'
+                args = [self.visit(a) for a in node.args[0]]
+            else:
+                print ';1st arg is NOT list'
+                args = [self.visit(a) for a in node.args]
+        else:
+            args = [self.visit(a) for a in node.args]
+            # TODO: got rid of special casing to expand lists, well see if this breaks anything
+        
         #print "; callfuncafter", args
-        ty = typer.isNameOfFirstClassType(node.node.name)
         #print "; callfuncafter: ty = ",ty
 
         #
         # value initialier?
         #
+        ty = typer.isNameOfFirstClassType(node.node.name)
         if ty:
             # int, float, vec, ...
+            print ";in CALLFUNC len args = ", len(args)
             return self.handleInitializeTypeCall(ty, args)
 
         #
@@ -977,7 +988,7 @@ class CodeGenLLVM:
         #
 
     def mkLLConstInst(self, ty, value):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        print ";----" + sys._getframe().f_code.co_name + " = " + str(value) + "----"
 
         # ty = typer.inferType(node)
         # print "; [Typer] %s => %s" % (str(node), str(ty))

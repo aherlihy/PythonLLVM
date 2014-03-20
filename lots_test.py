@@ -10,18 +10,18 @@ def vret(v=vec):
     return v
 def ifvret(i=int, v=vec, f=float):
     return i+i
-def lretv5(lv5=listf5):
-    return lv5
-def lreti8(li8=listi8):
-    print li8
-    return li8
-def lsubi(isub=int, lsi=listf5):
-    return lsi[isub]
-def lsubf(isubf=int, lsf=listi8):
-    return lsf[isubf]+isubf
-def sret(sl=list):
-    sret1 = sl[0]
-    return sret1
+#def lretv5(lv5=listf5):
+#    return lv5
+#def lreti8(li8=listi8):
+#    print li8
+#    return li8
+#def lsubi(isub=int, lsi=listf5):
+#    return lsi[isub]
+#def lsubf(isubf=int, lsf=listi8):
+#    return lsf[isubf]+isubf
+#def sret(sl=list):
+#    sret1 = sl[0]
+#    return sret1
 def nret():
     nret1= 5+5
     nret2 = nret1+5
@@ -72,20 +72,20 @@ def main():
    
     print(ift, whilet, comparet)
     # test visitList
-    f5 = [1.0,2.0,3.0,4.0,5.0]
-    xf5 = f5
-    zf5 = lretv5(xf5)
-    print f5
-    print xf5
-    print zf5
-    i8 = [1,2,3,4,5,6,7,8]
-    xi8 = i8
-    zi8 = lreti8(i8)
-    print i8
-    print xf5
-    print zf5
-    zlsi = lsubi(4, f5)
-    zlsf = lsubf(2, xi8)
-    print zlsi
-    print zlsf
+ #   f5 = [1.0,2.0,3.0,4.0,5.0]
+ #   xf5 = f5
+ #   zf5 = lretv5(xf5)
+ #   print f5
+ #   print xf5
+ #   print zf5
+ #   i8 = [1,2,3,4,5,6,7,8]
+ #   xi8 = i8
+ #   zi8 = lreti8(i8)
+ #   print i8
+ #   print xf5
+ #   print zf5
+ #   zlsi = lsubi(4, f5)
+ #   zlsf = lsubf(2, xi8)
+ #   print zlsi
+ #   print zlsf
 
