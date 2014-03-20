@@ -61,7 +61,9 @@ class CodeGenLLVM:
         self.prevFuncRetNode  = None    # for reporiting err
 
         self.externals        = {}
-
+        self.newline          = None
+        self.printf           = None
+        self.vec              = None
 
     def visitModule(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
@@ -77,25 +79,26 @@ class CodeGenLLVM:
 
     def getString(self):
         return self.module
-   
+    
+    def mkGlobalStr(self, name, gstr):
+        stringConst = llvm.core.Constant.stringz(gstr) # zero terminated --> stringz instead of string
+        string = self.module.add_global_variable(stringConst.type, name)
+        string.initializer = stringConst
+        string.global_constant = True
+        string.linkage = llvm.core.LINKAGE_INTERNAL # not strictly necessary here
+        return string
     # source = http://code2code.wordpress.com/tag/llvm-py/ 
     def emitPrint(self):
      
         # add a prototype for printf
         funcType = llvm.core.Type.function(llIntType, [llvm.core.Type.pointer(llvm.core.Type.int(8))], True)
-        printf = self.module.add_function(funcType, 'printf')
+        self.printf = self.module.add_function(funcType, 'printf')
 
         # create global constants for printf string
-        stringConst_i = llvm.core.Constant.stringz('%d\n') # zero terminated --> stringz instead of string
-        string_i = self.module.add_global_variable(stringConst_i.type, '__strInt')
-        string_i.initializer = stringConst_i
-        string_i.global_constant = True
-        string_i.linkage = llvm.core.LINKAGE_INTERNAL # not strictly necessary here
-        stringConst_f = llvm.core.Constant.stringz('%f\n') 
-        string_f = self.module.add_global_variable(stringConst_f.type, '__strFloat')
-        string_f.initializer = stringConst_f
-        string_f.global_constant = True
-        string_f.linkage = llvm.core.LINKAGE_INTERNAL 
+        string_i = self.mkGlobalStr('__strInt', '%d ')
+        string_f = self.mkGlobalStr('__strFloat', "%f ")
+        self.newline = self.mkGlobalStr('__strNl', '\n')
+        self.vec = self.mkGlobalStr('__strVec', 'vec: ')
  
         # create functions for print 
         funcType = llvm.core.Type.function(llVoidType, [llIntType])
@@ -115,13 +118,13 @@ class CodeGenLLVM:
         realAddr_f = string_f.gep(idx)
  
         # call printf for int
-        b.call(printf, [realAddr_i, printInt.args[0]])
+        b.call(self.printf, [realAddr_i, printInt.args[0]])
         b.ret_void()
         # call printf for float
         bf = printFloat.append_basic_block('fb')
         b.position_at_end(bf)
         d = b.fpext(printFloat.args[0], llvm.core.Type.double(), 'ftmp')
-        b.call(printf, [realAddr_f, d])
+        b.call(self.printf, [realAddr_f, d])
         b.ret_void()
 
  
@@ -138,6 +141,11 @@ class CodeGenLLVM:
             return self.builder.call(self._printFloat, [lln])
         # for now prints vec(1) as 4
         elif(ty==vec):
+            # print 'vec'
+            idx = [llvm.core.Constant.int(llvm.core.Type.int(32), 0), llvm.core.Constant.int(llvm.core.Type.int(32), 0)]
+            realAddr_v = self.vec.gep(idx)
+            self.builder.call(self.printf, [realAddr_v])
+            # print content
             for i in range(4):
                 i0 = llvm.core.Constant.int(llIntType, i);
                 tmp0  = symbolTable.genUniqueSymbol(float)
@@ -165,8 +173,15 @@ class CodeGenLLVM:
         for n in node.nodes:
             if (isinstance(n, compiler.ast.Tuple) ):
                 [self.helpPrint(z) for z in n.nodes]
-                return
+                break
             self.helpPrint(n)
+
+
+        # print newline
+        idx = [llvm.core.Constant.int(llvm.core.Type.int(32), 0), llvm.core.Constant.int(llvm.core.Type.int(32), 0)]
+        realAddr_nl = self.newline.gep(idx)
+        self.builder.call(self.printf, [realAddr_nl])
+
 
     def visitReturn(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
@@ -232,11 +247,12 @@ class CodeGenLLVM:
                 raise Exception("Unknown name of type:", tyname.name)
             if ty==list:
                 d = {'i':int, 'f':float, 's':str, 'l':list}
-                if not d.has_key(tyname.name[4]):
+                if len(tyname.name) > 5 and d.has_key(tyname.name[4]):
+                    listType = d[tyname.name[4]]
+                    listLen = int(tyname.name[5:])
+                    llTy = llvm.core.Type.vector(toLLVMTy(listType), listLen)
+                else:
                     raise Exception("Bad format for list default argument. list<type><len>", tyname.name)
-                listType = d[tyname.name[4]]
-                listLen = int(tyname.name[5:])
-                llTy = llvm.core.Type.vector(toLLVMTy(listType), listLen)
             else:
                 llTy = toLLVMTy(ty)
 
@@ -816,7 +832,6 @@ class CodeGenLLVM:
     def handleInitializeTypeCall(self, ty, args):
         print ";----" + sys._getframe().f_code.co_name + "----"
         llty = toLLVMTy(ty)
-        print ";INIT TYPE", ty, "with arglen=", len(args)
         if llty == llFVec4Type:
 
             i0 = llvm.core.Constant.int(llIntType, 0);
@@ -863,12 +878,9 @@ class CodeGenLLVM:
         
         # special case for vec, since existing code expects entry as list but not type list
         if(node.node.name=='vec'):
-            print ';ARGS IN CALLFUNC=', node.args
             if isinstance(node.args[0], compiler.ast.List):
-                print ';1st arg is LIST'
                 args = [self.visit(a) for a in node.args[0]]
             else:
-                print ';1st arg is NOT list'
                 args = [self.visit(a) for a in node.args]
         else:
             args = [self.visit(a) for a in node.args]
