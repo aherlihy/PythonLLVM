@@ -33,7 +33,6 @@ def toLLVMTy(ty):
         , int   : llIntType
         , vec   : llFVec4Type
         , void  : llVoidType
-        # str   : TODO
         }
 
     if d.has_key(ty):
@@ -153,16 +152,21 @@ class CodeGenLLVM:
                 self.builder.call(self._printFloat, [le0])
         elif(ty==list):
             # if is List, can find dimensions directly. If var can look it up
+            #TODO-1: change to array instead of vec
             if isinstance(n, compiler.ast.List):
                 lenList = len(n.nodes)
                 tyList = typer.inferType(n.nodes[0])
             if isinstance(n, compiler.ast.Name):
-                tyList, lenList = symbolTable.getList(n.name)
+                tyList, lenList = symbolTable.find(n.name).getDim()
+            #TODO: add case for function call
+
+
             for i in range(lenList):
                 i0 = llvm.core.Constant.int(llIntType, i);
                 tmp0  = symbolTable.genUniqueSymbol(float)
+                #TODO-1: change to array
                 le0   = self.builder.extract_element(lln, i0, tmp0.name)
-                if( tyList == int): #silly
+                if( tyList == int):
                     self.builder.call(self._printInt, [le0])
                 elif( tyList == float):
                     self.builder.call(self._printFloat, [le0])
@@ -171,7 +175,7 @@ class CodeGenLLVM:
     def visitPrintnl(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
         for n in node.nodes:
-            if (isinstance(n, compiler.ast.Tuple) ):
+            if ( isinstance(n, compiler.ast.Tuple) ):
                 [self.helpPrint(z) for z in n.nodes]
                 break
             self.helpPrint(n)
@@ -203,12 +207,12 @@ class CodeGenLLVM:
             self.currFuncRetType = ty
             if(ty == list):
                 if isinstance(node.value, compiler.ast.Name):
-                    self.currFuncRetList = symbolTable.getList(node.value.name)
+                    self.currFuncRetList = symbolTable.find(node.value.name).getDim()
                 elif isinstance(node.value, compiler.ast.List):
                     listTy = typer.inferType(node.value.nodes[0])
                     listLen = len(node.value.nodes)
                     self.currFuncRetList = (listTy, listLen)
-                else:
+                else:#TODO
                     raise Exception("returning type that evaluates to list but not implemented yet")
             self.prevFuncRetNode = node
 
@@ -250,6 +254,7 @@ class CodeGenLLVM:
                 if len(tyname.name) > 5 and d.has_key(tyname.name[4]):
                     listType = d[tyname.name[4]]
                     listLen = int(tyname.name[5:])
+                    #TODO-1: change to array type
                     llTy = llvm.core.Type.vector(toLLVMTy(listType), listLen)
                 else:
                     raise Exception("Bad format for list default argument. list<type><len>", tyname.name)
@@ -319,14 +324,17 @@ class CodeGenLLVM:
                     raise Exception("Bad format for list default argument. list<type><len>", tyname.name)
                 listType = d[tyname.name[4]]
                 listLen = int(tyname.name[5:])
+                #TODO-1: change to array type. Maybe change symbol class to have dimensions if array
                 llTy = llvm.core.Type.vector(toLLVMTy(listType), listLen)
-                symbolTable.addList(name, listType, listLen)
+                allocaInst = self.builder.alloca(llTy, bufSym.name)
+                storeInst  = self.builder.store(func.args[i], allocaInst)
+                symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst, dim=(listType, listLen)))
             else:
                 llTy = toLLVMTy(ty)
 
-            allocaInst = self.builder.alloca(llTy, bufSym.name)
-            storeInst  = self.builder.store(func.args[i], allocaInst)
-            symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst))
+                allocaInst = self.builder.alloca(llTy, bufSym.name)
+                storeInst  = self.builder.store(func.args[i], allocaInst)
+                symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst))
 
         self.visit(node.code)
         symbolTable.popScope()
@@ -338,9 +346,9 @@ class CodeGenLLVM:
 
         symbolTable.pushScope(node.name)
         if(self.currFuncRetType==list):
+            #TODO-1: change to array type
             retLLVMTy    = llvm.core.Type.vector(toLLVMTy(self.currFuncRetList[0]), self.currFuncRetList[1])
             # Add functions to List values in symbol tabke
-            symbolTable.addList(node.name, self.currFuncRetList[0], self.currFuncRetList[1])
         else:
             retLLVMTy    = toLLVMTy(self.currFuncRetType)
         func             = self.mkFunctionSignature(retLLVMTy, node)
@@ -363,13 +371,16 @@ class CodeGenLLVM:
                     raise Exception("Bad format for list default argument. list<type><len>", tyname.name)
                 listType = d[tyname.name[4]]
                 listLen = int(tyname.name[5:])
+                # TODO-1: change to array type
                 llTy = llvm.core.Type.vector(toLLVMTy(listType), listLen)
-                symbolTable.addList(name, listType, listLen)
+                allocaInst = self.builder.alloca(llTy, bufSym.name)
+                storeInst  = self.builder.store(func.args[i], allocaInst)
+                symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst, dim=(listType, listLen)))
             else:
                 llTy = toLLVMTy(ty)
-            allocaInst = self.builder.alloca(llTy, bufSym.name)
-            storeInst  = self.builder.store(func.args[i], allocaInst)
-            symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst))
+                allocaInst = self.builder.alloca(llTy, bufSym.name)
+                storeInst  = self.builder.store(func.args[i], allocaInst)
+                symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst))
 
         self.visit(node.code)
 
@@ -382,7 +393,10 @@ class CodeGenLLVM:
 
         # Register function to symbol table
         print ";ADDING", node.name, "TO ST AS", self.currFuncRetType, " llstoroage=func"
-        symbolTable.append(Symbol(node.name, self.currFuncRetType, "function", llstorage=func))
+        if(self.currFuncRetType==list):
+            symbolTable.append(Symbol(node.name, self.currFuncRetType, "function", llstorage=func, dim=self.currFuncRetList))
+        else:
+            symbolTable.append(Symbol(node.name, self.currFuncRetType, "function", llstorage=func))
 
 
 
@@ -411,26 +425,30 @@ class CodeGenLLVM:
                 # The variable appears here firstly.
 
                 # alloc storage
-                if(rTy==list): 
+                if(rTy==list):
+                    listType = None
+                    listLen = 0
+                    # TODO-1: change types to array
                     if isinstance(node.expr, compiler.ast.List):
-                        symbolTable.addList(lhsNode.name, typer.inferType(node.expr.nodes[0]), len(node.expr.nodes))
+                        listType=typer.inferType(node.expr.nodes[0])
+                        listLen=len(node.expr.nodes)
                         llTy = llvm.core.Type.vector(toLLVMTy(typer.inferType(node.expr.nodes[0])), len(node.expr.nodes))
                     elif isinstance(node.expr, compiler.ast.Name):
-                        listType, listLen = symbolTable.getList(node.expr.name)
-                        symbolTable.addList(lhsNode.name, listType, listLen)
+                        listType, listLen = symbolTable.find(node.expr.name).getDim()
                         llTy = llvm.core.Type.vector(toLLVMTy(listType), listLen)
                     elif isinstance(node.expr, compiler.ast.CallFunc):
-                        listType, listLen = symbolTable.getList(node.expr.node.name)
-                        symbolTable.addList(lhsNode.name, listType, listLen)
+                        listType, listLen = symbolTable.find(node.expr.node.name).getDim()
                         llTy = llvm.core.Type.vector(toLLVMTy(listType), listLen)
                     else:
                         raise Exception("haven't implemented assigning all list types", node.expr)
+                    llStorage = self.builder.alloca(llTy, lhsNode.name)
+                    sym = Symbol(lhsNode.name, rTy, "variable", llstorage = llStorage, dim=(listType, listLen))
+                    symbolTable.append(sym)
                 else:
                     llTy = toLLVMTy(rTy)
-                llStorage = self.builder.alloca(llTy, lhsNode.name)
-
-                sym = Symbol(lhsNode.name, rTy, "variable", llstorage = llStorage)
-                symbolTable.append(sym)
+                    llStorage = self.builder.alloca(llTy, lhsNode.name)
+                    sym = Symbol(lhsNode.name, rTy, "variable", llstorage = llStorage)
+                    symbolTable.append(sym)
                 #print "; [Sym] New symbol added: ", sym
 
                 lTy = rTy
@@ -444,7 +462,6 @@ class CodeGenLLVM:
             raise Exception("ERR: TypeMismatch: lTy = %s, rTy = %s: %s" % (lTy, rTy, node))
 
         lSym = symbolTable.find(lhsNode.name)
-        print ";storeInst(", rLLInst, ", ", lSym.llstorage, ")"
         storeInst = self.builder.store(rLLInst, lSym.llstorage)
         # No return
 
@@ -658,7 +675,7 @@ class CodeGenLLVM:
         subInst = self.builder.sub(zeroInst, e, tmpSym.name)
 
         return subInst
-
+    #TODO: is this ever used?
     def visitGetattr(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
@@ -877,11 +894,8 @@ class CodeGenLLVM:
         #args = [self.visit(a) for a in node.args]
         
         # special case for vec, since existing code expects entry as list but not type list
-        if(node.node.name=='vec'):
-            if isinstance(node.args[0], compiler.ast.List):
-                args = [self.visit(a) for a in node.args[0]]
-            else:
-                args = [self.visit(a) for a in node.args]
+        if(node.node.name=='vec') and isinstance(node.args[0], compiler.ast.List):
+            args = [self.visit(a) for a in node.args[0]]
         else:
             args = [self.visit(a) for a in node.args]
             # TODO: got rid of special casing to expand lists, well see if this breaks anything
@@ -892,6 +906,7 @@ class CodeGenLLVM:
         #
         # value initialier?
         #
+        #TODO: test this with anything other than Vec
         ty = typer.isNameOfFirstClassType(node.node.name)
         if ty:
             # int, float, vec, ...
@@ -953,24 +968,28 @@ class CodeGenLLVM:
                 raise Exception("Lists elements need to be of the same type")
             llNodes.append(self.visit(n))
         # emit list llvm
+        # TODO-1: here change to construction of array
         if(tyList == int):
             l = llvm.core.Constant.vector([llvm.core.Constant.int(llIntType, "0")] * lenList)
         elif(tyList == float):
             l = llvm.core.Constant.vector([llvm.core.Constant.real(llFloatType, "0.0")] * lenList)
         elif(tyList == list):
             #TODO
+            l = llvm.core.Constant.vector([llvm.core.Type.pointer(llIntType)] * lenList)
             raise Exception("TODO: haven't implemented lists of type", tyList)
         else:
             raise Exception("TODO: haven't implemented lists of type", tyList)
         # populate list
         for i in range(len(llNodes)):
             index = llvm.core.Constant.int(llIntType, i);
+            #TODO-1: here change to array insert instead of insert_element
             l = self.builder.insert_element(l, llNodes[i], index)
         return l
 
     #TODO: the llvm vector accessing functions don't give array OOB exceptions
     # change so throws error instead of giving last element
     def visitSubscript(self, node):
+        #TODO-1: change to array access
         print ";----" + sys._getframe().f_code.co_name + "----"
         n = self.visit(node.expr)
         index = self.visit(node.subs[0])

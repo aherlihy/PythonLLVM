@@ -14,7 +14,7 @@ class Symbol(object):
     c(<class 'VecTypes.vec'>)
     """
 
-    def __init__(self, name, type, kind, **kwargs):
+    def __init__(self, name, type, kind, dim=None, **kwargs):
 
         assert type is not None
 
@@ -23,12 +23,14 @@ class Symbol(object):
         self.type  = type
         self.kind  = kind
 
+        self.dim   = dim
         self.attrs = []
 
         for (k, v) in kwargs.items():
             self.__dict__[k] = v
             self.attrs.append(k)
-
+    def getDim(self):
+        return self.dim
     def __str__(self):
 
         s = "%s(%s)" % (self.name, self.type)
@@ -88,6 +90,8 @@ class SymbolTable:
         assert isinstance(sym, Symbol)
 
         d = self.symbols[-1][1]
+
+        #TODO-1: add the dim if it is an array
 
         # if d.has_key(sym.name):
         #    raise Exception("Symbol %s is already defined" % sym.name)
@@ -153,14 +157,6 @@ class SymbolTable:
     def returnSymbols(self):
         return self.symbols
 
-    def addList(self, name, listType, listLen):
-        self.lists[name] = (listType, listLen)
-    def getList(self, name):
-        if self.find(name) is not None:
-            return self.lists[name]
-        else:
-            #TODO: will scoping break everything??? redefinitions of list variables will change the lists dict, but won't change back when scope pops
-            raise Exception("undefined variable:", name)
 def _test():
     import doctest
     doctest.testmod()
