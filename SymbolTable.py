@@ -25,7 +25,6 @@ class Symbol(object):
 
         self.dim   = dim
         self.attrs = []
-
         for (k, v) in kwargs.items():
             self.__dict__[k] = v
             self.attrs.append(k)
@@ -59,7 +58,6 @@ class SymbolTable:
 
         self.genNum  = 0
         
-        self.lists = {}
 
     def __str__(self):
         """

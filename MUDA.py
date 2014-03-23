@@ -326,6 +326,7 @@ intrinsics = {
     , 'vlog'  : ( vec    , [ vec ] )
     , 'vsqrt' : ( vec    , [ vec ] )
     , 'vsel'  : ( vec    , [ vec, vec, vec ] )
+    , 'len'   : ( int    , [ list ] )
     }
 
 def GetIntrinsicFunctions():
