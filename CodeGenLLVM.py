@@ -467,11 +467,30 @@ class CodeGenLLVM:
         lSym = symbolTable.find(lhsNode.name)
         storeInst = self.builder.store(rLLInst, lSym.llstorage)
         # No return
+    def testRet(self, node):
+       
+       if isinstance(node, compiler.ast.Return):
+           print ";FOUND RET"
+           return (True, typer.inferType(node.value))
+       elif isinstance(node, compiler.ast.Stmt):
+            for i in node.nodes:
+                d = self.testRet(i)
+                if d[0]:
+                    print ";FOUND RET IN STMT", i
+                    return (True, typer.inferType(i))
+            return (False, None)
+       else:
+           return (False, None)
 
     def visitIf(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
         is_else = (node.else_ is not None)
         cond = self.visit(node.tests[0][0])
+        then_ret, then_type = self.testRet(node.tests[0][1])
+        if(is_else):
+            else_ret, else_type = self.testRet(node.else_)
+
+
         # TODO: cast return value from cond to truth value
         condition_bool = self.builder.fcmp(llvm.core.FCMP_ONE, cond, llvm.core.Constant.real(llFloatType, 0), 'ifcond')
         # get function
@@ -506,12 +525,19 @@ class CodeGenLLVM:
 
         # emit merge
         self.builder.position_at_end(merge_block)
-        #TODO: insert dummy instruction
-        #phi = self.builder.phi(llvm.core.Type.double(), 'iftmp')
-        #phi.add_incoming(then_val, then_block)
-        #phi.add_incoming(else_val, else_block)
-
-        #return phi
+        if(is_else):
+            if else_ret and then_ret:
+                if(else_type != then_type):
+                    raise Exception("unable to have if statement blocks that have different return types")
+                # get null value and return
+                return self.builder.unreachable()#self.builder.ret(llvm.core.Constant.null(else_type))
+            elif not (not else_ret and not then_ret):
+                raise Exception("unable to have if statement blocks that return if the else doesn't also return")
+ 
+    
+    
+    
+    
     def visitFor(self, node):
         print "VISITED FOR"
         print node
