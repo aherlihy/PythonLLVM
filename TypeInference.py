@@ -302,7 +302,7 @@ class TypeInference(object):
         if isinstance(node.expr, compiler.ast.Name):
             return self.symbolTable.find(node.expr.name).getDim()[0]
         if isinstance(node.expr, compiler.ast.List):
-            return self.inferType(node.nodes[0])
+            return self.inferType(node.expr.nodes[0])
         raise Exception("Can't index into value")
     
     def inferList(self, node):

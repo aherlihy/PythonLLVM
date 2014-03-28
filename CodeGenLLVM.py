@@ -1041,14 +1041,17 @@ class CodeGenLLVM:
 
         return l_ptr
 
-    #TODO: the llvm vector accessing functions don't give array OOB exceptions
-    # change so throws error instead of giving last element
+
     def visitSubscript(self, node):
-        #TODO-1: change to array access
+        #TODO-d: change to array access
         print ";----" + sys._getframe().f_code.co_name + "----"
         n = self.visit(node.expr)
         index = self.visit(node.subs[0])
-        return self.builder.extract_element(n, index)
+        zero = llvm.core.Constant.int(llIntType, 0)
+        tmp0  = symbolTable.genUniqueSymbol(float)
+        l = self.builder.gep(n, [zero, index])
+        return self.builder.load(l, tmp0.name)
+        #return self.builder.extract_element(n, index)
 
     #
     # Leaf
