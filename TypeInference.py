@@ -105,6 +105,9 @@ class TypeInference(object):
 
         return self.inferType(node.node)
     
+    def inferReturn(self, node):
+        return self.inferType(node.value)
+
 
     def inferStmt(self, node):
         print ";TI--" + sys._getframe().f_code.co_name + "----"
