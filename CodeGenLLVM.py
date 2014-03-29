@@ -203,12 +203,15 @@ class CodeGenLLVM:
             self.currFuncRetList = symbolTable.find(node.node.name).getDim()
         else:#TODO
             raise Exception("pyllvm err: returning type that evaluates to list but not implemented yet")
-
         expr = self.visit(node)
-
+        print ";CURR-FUNC-RET-LIST:", self.currFuncRetList
         # malloc an array
         arrTy = llvm.core.Type.array(toLLVMTy(self.currFuncRetList[0]), self.currFuncRetList[1])
-        m_ptr = self.builder.malloc_array(arrTy, llvm.core.Constant.int(llIntType, self.currFuncRetList[1]))# TODO-1: change to all types, not just int
+        if self.currFuncRetList[0]==int or self.currFuncRetList[0]==float:
+            m_ptr = self.builder.malloc_array(arrTy, llvm.core.Constant.int(llIntType, self.currFuncRetList[1]))
+        else:
+            raise Exception("TODO: Haven't implemented returning lists that are not of int/float")
+
         # copy all the values from the stack one into the heap
         zero = llvm.core.Constant.int(llIntType, 0)
         for i in range(self.currFuncRetList[1]):
@@ -234,7 +237,6 @@ class CodeGenLLVM:
         print ";----" + sys._getframe().f_code.co_name + "----"
         # get type of return node
         ty   = typer.inferType(node.value)
-
         if(ty==list):
             if self.currFuncRetType is None:
                 self.currFuncRetType = ty

@@ -53,13 +53,28 @@ def test_while():
         test_while1 = test_while1-1
     return test_while1#ret0
 # test visitStmt
-def test_ret1():
+def test_ret1i():
     x = [9,7,4]   
     return x
-def test_ret2():
+def test_ret2i():
     return [6,7,8]
-def test_ret3():
-    return test_ret1()
+def test_ret3i():
+    return test_ret1i()
+def test_ret4i(x=listi3):
+    print x
+def test_ret5i(x=listi3):
+    return x
+def test_ret1f():
+    x = [9.1,7.1,4.1]   
+    return x
+def test_ret2f():
+    return [6.1,7.1,8.1]
+def test_ret3f():
+    return test_ret1f()
+def test_ret4f(x=listf3):
+    print x
+def test_ret5f(x=listf3):
+    return x
 
 
 def main():
@@ -100,6 +115,31 @@ def main():
     zlsf = lsubf(2, xi8)
     print zlsi                      #5.0
     print zlsf                      #5
-    print test_ret1()
-    print test_ret2()
-    print test_ret3()
+    # INT
+    # test returning types of lists
+    print test_ret1i()
+    print test_ret2i()
+    print test_ret3i()
+    # test passing lists as args
+    ilst = [10,20,30]
+    test_ret4i([90,100,110])
+    test_ret4i(ilst)
+    test_ret4i(test_ret3i())
+    # test returning lists passed as args
+    print test_ret5i([90,100,110])
+    print test_ret5i(ilst)
+    print test_ret5i(test_ret3i())
+    # FLOAT
+    # test returning types of lists
+    print test_ret1f()
+    print test_ret2f()
+    print test_ret3f()
+    # test passing lists as args
+    flst = [10.1,20.1,30.1]
+    test_ret4f([90.1,100.1,110.1])
+    test_ret4f(flst)
+    test_ret4f(test_ret3f())
+    # test returning lists passed as args
+    print test_ret5f([90.1,100.1,110.1])
+    print test_ret5f(flst)
+    print test_ret5f(test_ret3f())
