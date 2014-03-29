@@ -1,0 +1,22 @@
+THINGS TO DO:
+    coding:
+        lists:
+            test lists for construction with other values
+            test assignment into lists
+        for loops
+        add math functions
+        vector math
+    maybe do if there's time:
+        2D arrays
+        free malloc'd arrays
+    writing
+        intro
+        steps
+            - memory management
+            - scoping
+                - modifying vars within if statements
+                - returning in one branch of if statements
+        existing work
+HAVE LEFT
+    benchmarking
+    write analysis + conclusion
