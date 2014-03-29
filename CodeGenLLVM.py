@@ -535,11 +535,9 @@ class CodeGenLLVM:
         print ";----" + sys._getframe().f_code.co_name + "----"
         is_else = (node.else_ is not None)
         cond = self.getTruthy(node.tests[0][0])
-        #cond = self.visit(node.tests[0][0])
         then_ret, then_type = self.testRet(node.tests[0][1])
         if(is_else):
             else_ret, else_type = self.testRet(node.else_)
-        # TODO: cast return value from cond to truth value
         condition_bool = self.builder.fcmp(llvm.core.FCMP_ONE, cond, llvm.core.Constant.real(llFloatType, 0), 'ifcond')
         # get function
         function = self.builder.basic_block.function
@@ -599,8 +597,7 @@ class CodeGenLLVM:
         self.builder.branch(start_while)
         self.builder.position_at_end(start_while)
 
-        cond = self.visit(node.test)
-        # TODO: cast return value from cond to truth value
+        cond = self.getTruthy(node.test)
         condition_bool = self.builder.fcmp(llvm.core.FCMP_ONE, cond, llvm.core.Constant.real(llFloatType, 0), 'whilecond')
 
         self.builder.cbranch(condition_bool, do_while, end_while) 
