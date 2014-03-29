@@ -525,20 +525,6 @@ class CodeGenLLVM:
        else:
            return (False, None)
 
-    def testRet(self, node):
-       
-       if isinstance(node, compiler.ast.Return):
-           print ";FOUND RET"
-           return (True, typer.inferType(node.value))
-       elif isinstance(node, compiler.ast.Stmt):
-            for i in node.nodes:
-                d = self.testRet(i)
-                if d[0]:
-                    print ";FOUND RET IN STMT", i
-                    return (True, typer.inferType(i))
-            return (False, None)
-       else:
-           return (False, None)
     def visitIf(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
         is_else = (node.else_ is not None)
