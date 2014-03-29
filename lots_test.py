@@ -164,11 +164,16 @@ def main():
     zlsf = lsubf(2, xi8)
     # { 6, 6.0, vec:[1.0,2.0,3.0,4.0], vec:[1.0,1.0,1.0,1.0], 'hello' }
     print( iret(ri), fret(rf), vret(rv), vret(v1), sret(rs) )
-    # { [1.0,2.0,3.0,4.0,5.0], [1.0,2.0,3.0,4.0,5.0], [1,2,3,4,5,6,7,8], 5.0, 3 }
+    # { [1.0,2.0,3.0,4.0,5.0], [1.0,2.0,3.0,4.0,5.0], [1,2,3,4,5,6,7,8], 5.0, 5 }
     print( xf5, zf5, zi8, zlsi, zlsf )
     # { 2.0, 2, vec:[4.0,2.0,2.4,1.0], [1.0,2.0,4.0,5.0], 'hello' }
     print( ffret(), firet(), fvret(), flret(), fsret() )
+
+
+    # PRINTING
+    # { 5 // 5.0 // vec:[1.0,2.0,3.0,4.0] // [1.4,5.4] // 'hello' }
     ifvret( ri, rv, rf, lf1, rs )
+    # { 2, [4.0,2.0,4.2,2.0], 2.0, [1.0,2.0], 'hello' }
     ifvret( firet(), fvret(), ffret(), f2lret(), fsret() )
 # IF/WHILE/CMP
     ift = test_if()
@@ -180,7 +185,7 @@ def main():
     ift2x = test_if2(1)
     ift3x = test_if3(1)
     ift4x = test_if4(1)
-    # { 11, 0, 10, 5, 13, -1, 12, 7, 5 }
+    # { 11, -1, 10, 5, 13, 0, 12, 7, 5 }
     print( ift, ift1, ift2, ift3, ift4, ift1x, ift2x, ift3x, ift4x )
     whilet = test_while()
     whilet2 = test_while2()
@@ -191,24 +196,31 @@ def main():
 # ARRAYS
     # INT
     # test returning types of lists
-    # { [6,7,8], [6,7,8], [9,7,4] }
+    # { [9,7,4], [6,7,8], [9,7,4] }
     print( test_ret1i(), test_ret2i(), test_ret3i() )
     # test passing lists as args
     ilst = [10,20,30]
+    #PRINTING
+    #{[90,100,110]}
     test_ret4i([90,100,110])
+    #{ [10,20,30] }
     test_ret4i(ilst)
+    #{ [9,7,4] }
     test_ret4i(test_ret3i())
     # test returning lists passed as args
     # { [90,100,110], [10,20,30], [9,7,4] }
     print( test_ret5i([90,100,110]), test_ret5i(ilst), test_ret5i(test_ret3i()) )
     # FLOAT
     # test returning types of lists
-    # { [9.1,7.1,4.1], [6.1,7.1,9.1], [9.1,7.1,4.1] }
+    # { [9.1,7.1,4.1], [6.1,7.1,8.1], [9.1,7.1,4.1] }
     print( test_ret1f(), test_ret2f(), test_ret3f() )
     # test passing lists as args
     flst = [10.1,20.1,30.1]
+    #{ [90.1, 100.1, 110.1] }
     test_ret4f([90.1,100.1,110.1])
+    #{ [10.1,20.1,30.1] }
     test_ret4f(flst)
+    #{ [9.1, 7.1, 4.1] }
     test_ret4f(test_ret3f())
     # test returning lists passed as args
     # { [90.1,100.1,110.1], [10.1,20.1,30.1], [9.1,7.1,4.1]
