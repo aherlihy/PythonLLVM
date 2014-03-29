@@ -2,11 +2,13 @@ THINGS TO DO:
     coding:
         for loops
              range function
-        i - add math functions: sqrt, abs, exp, ceil/floor, mod, bitshift, div, log
+        add math functions: sqrt, abs, exp, ceil/floor, mod, bitshift, div, log
+            find way to add functions to symbol table (treat like visitAdd, but in func)
+            figure out how to make ^ into llvmpy options
         vector math
+    
     maybe do if there's time:
         2D arrays
-        assign into lists
         free malloc'd arrays
     writing
         intro
@@ -17,5 +19,10 @@ THINGS TO DO:
                 - returning in one branch of if statements
         existing work
 HAVE LEFT
-    benchmarking
-    write analysis + conclusion
+    coding - finish 100% tmrw before airport
+    write examples - finish on flight
+    write intro, needs, and construction section - train
+    run examples on TP - @brown
+    benchmarking, compare w C++/Numpy - @brown
+    write the results, comparison and conclusion - @brown
+
