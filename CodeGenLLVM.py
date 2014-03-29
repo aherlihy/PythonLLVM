@@ -157,9 +157,10 @@ class CodeGenLLVM:
                 tyList = typer.inferType(n.nodes[0])
             elif isinstance(n, compiler.ast.Name):
                 tyList, lenList = symbolTable.find(n.name).getDim()
-            #TODO: add case for function call
-            elif isinstance(n, compiler.ast.FuncCall):
-                tyList, lenList = symbolTable.find(n.name).getDim()
+            elif isinstance(n, compiler.ast.CallFunc):
+                 if not isinstance(n.node, compiler.ast.Name):
+                     raise Exception("haven't implemented anonymous functions")
+                 tyList, lenList = symbolTable.find(n.node.name).getDim()
             else:
                 raise Exception("haven't implemented printing results of lists nonname/list/func")
             zero = llvm.core.Constant.int(llIntType, 0)
