@@ -78,12 +78,12 @@ def test_ret5f(x=listf3):
 
 
 def main():
-    # test visitAssign
+# ASSIGN
     ri = 5
     rf = 5.00
     rv = vec([1.00,2.00,3.00,4.00])
     v1 = vec(1.00)
-    # test visitFunctionCall
+# VEC
     print iret(ri)                  #6
     print fret(rf)                  #6.00000
     print vret(rv)                  #vec[1.00,2.00,3.00,4.00] 
@@ -93,13 +93,13 @@ def main():
     print ifvret(ri, rv, rf)        #5.00
                                     #vec[1.00,2.00,3.00,4.00]
                                     #10
-    # test if/while/compare
+# IF/WHILE/CMP
     ift = test_if()
     whilet = test_while()
     comparet = test_compare()
    
     print(ift, whilet, comparet)    #11, 0, 1.00
-    # test visitList
+# ARRAYS + SUB
     f5 = [1.0,2.0,3.0,4.0,5.0]
     xf5 = f5
     zf5 = lretv5(xf5)               
@@ -115,6 +115,8 @@ def main():
     zlsf = lsubf(2, xi8)
     print zlsi                      #5.0
     print zlsf                      #5
+
+# ARRAYS
     # INT
     # test returning types of lists
     print test_ret1i()
@@ -143,3 +145,12 @@ def main():
     print test_ret5f([90.1,100.1,110.1])
     print test_ret5f(flst)
     print test_ret5f(test_ret3f())
+
+#LEN
+    ilen = [1,2,3]
+    print(len(ilen))
+    flen = [5.3,6.5,3.5,6.3]
+    print(len(flen))
+    slen = 'hello there'
+    print(len(slen))
+

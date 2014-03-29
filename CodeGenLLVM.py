@@ -26,14 +26,14 @@ def toLLVMTy(ty):
 
     if ty is None:
         return llVoidType
-    if ty is list:
+    if ty is list or ty is str:
         raise Exception("need to find list length yourself")
     d = {
           float : llFloatType
         , int   : llIntType
         , vec   : llFVec4Type
         , void  : llVoidType
-        }
+}
 
     if d.has_key(ty):
         return d[ty]
@@ -151,17 +151,7 @@ class CodeGenLLVM:
         elif(ty==list):
             # if is List, can find dimensions directly. If var can look it up
             #TODO-d: change to array instead of vec
-            if isinstance(n, compiler.ast.List):
-                lenList = len(n.nodes)
-                tyList = typer.inferType(n.nodes[0])
-            elif isinstance(n, compiler.ast.Name):
-                tyList, lenList = symbolTable.find(n.name).getDim()
-            elif isinstance(n, compiler.ast.CallFunc):
-                 if not isinstance(n.node, compiler.ast.Name):
-                     raise Exception("haven't implemented anonymous functions")
-                 tyList, lenList = symbolTable.find(n.node.name).getDim()
-            else:
-                raise Exception("haven't implemented printing results of lists nonname/list/func")
+            tyList, lenList = self.getListDim(n)
             zero = llvm.core.Constant.int(llIntType, 0)
             for i in range(lenList):
                 index = llvm.core.Constant.int(llIntType, i)
@@ -192,19 +182,26 @@ class CodeGenLLVM:
         idx = [llvm.core.Constant.int(llvm.core.Type.int(32), 0), llvm.core.Constant.int(llvm.core.Type.int(32), 0)]
         realAddr_nl = self.newline.gep(idx)
         self.builder.call(self.printf, [realAddr_nl])
+    
+    def getListDim(self, expr):
+        if isinstance(expr, compiler.ast.List):
+            listType=typer.inferType(expr.nodes[0])
+            listLen=len(expr.nodes)
+        elif isinstance(expr, compiler.ast.Name):
+            listType, listLen = symbolTable.find(expr.name).getDim()
+        elif isinstance(expr, compiler.ast.CallFunc):
+            listType, listLen = symbolTable.find(expr.node.name).getDim()
+        elif isinstance(expr, compiler.ast.Const):
+            listType = int
+            listLen = len(expr.value)
+        else:
+            raise Exception("haven't implemented assigning all list types", expr)
+        return (listType, listLen)
 
     def emitMakeArray(self, node):
         # super horrible malloc hack for returning arrays
-        if isinstance(node, compiler.ast.List):
-            self.currFuncRetList = (typer.inferType(node.nodes[0]), len(node.nodes))
-        elif isinstance(node, compiler.ast.Name):
-            self.currFuncRetList = symbolTable.find(node.name).getDim()
-        elif isinstance(node, compiler.ast.CallFunc):
-            self.currFuncRetList = symbolTable.find(node.node.name).getDim()
-        else:#TODO
-            raise Exception("pyllvm err: returning type that evaluates to list but not implemented yet")
+        self.currFuncRetList = self.getListDim(node)
         expr = self.visit(node)
-        print ";CURR-FUNC-RET-LIST:", self.currFuncRetList
         # malloc an array
         arrTy = llvm.core.Type.array(toLLVMTy(self.currFuncRetList[0]), self.currFuncRetList[1])
         if self.currFuncRetList[0]==int or self.currFuncRetList[0]==float:
@@ -468,26 +465,13 @@ class CodeGenLLVM:
 
                 # alloc storage
 
-                # if array, already alloca'd in visit() so will set vlaue to pointer
+                # if array, already alloca'd in visit() so will set value to pointer
                 if(rTy==list):
                     listType = None
                     listLen = 0
                     # TODO-d: change types to array
-                    if isinstance(node.expr, compiler.ast.List):
-                        listType=typer.inferType(node.expr.nodes[0])
-                        listLen=len(node.expr.nodes)
-                        llTy = llvm.core.Type.pointer(llvm.core.Type.array(toLLVMTy(listType), listLen))
-                        #llTy = llvm.core.Type.vector(toLLVMTy(typer.inferType(node.expr.nodes[0])), len(node.expr.nodes))
-                    elif isinstance(node.expr, compiler.ast.Name):
-                        listType, listLen = symbolTable.find(node.expr.name).getDim()
-                        llTy = llvm.core.Type.pointer(llvm.core.Type.array(toLLVMTy(listType), listLen))
-                    #    llTy = llvm.core.Type.vector(toLLVMTy(listType), listLen)
-                    elif isinstance(node.expr, compiler.ast.CallFunc):
-                        listType, listLen = symbolTable.find(node.expr.node.name).getDim()
-                        llTy = llvm.core.Type.pointer(llvm.core.Type.array(toLLVMTy(listType), listLen))
-                    #    llTy = llvm.core.Type.vector(toLLVMTy(listType), listLen)
-                    else:
-                        raise Exception("haven't implemented assigning all list types", node.expr)
+                    listType, listLen = self.getListDim(node.expr)
+                    llTy = llvm.core.Type.pointer(llvm.core.Type.array(toLLVMTy(listType), listLen))
                     # create space for LHS node of type llTy, addr in llStorage
                     llStorage = self.builder.alloca(llTy, lhsNode.name)
 
@@ -964,14 +948,7 @@ class CodeGenLLVM:
         if(typer.inferType(node)!=list):
             raise Exception("pyllvm err: calling len on nonlist")
         n = self.visit(node)
-        if isinstance(node, compiler.ast.List):
-            return len(node.nodes)
-        elif isinstance(node, compiler.ast.Name):
-            return symbolTable.find(node.name).getDim()[1]
-        elif isinstance(node, compiler.ast.CallFunc):
-            return symbolTable.find(node.node.name).getDim()[1]
-        else:
-            raise Exception("haven't handled list type for len", node)
+        return self.getListDim(node)[1]
     def visitCallFunc(self, node):
         print ";----" + sys._getframe().f_code.co_name + ": " + node.node.name + "----"
         assert isinstance(node.node, compiler.ast.Name)
@@ -1043,7 +1020,9 @@ class CodeGenLLVM:
             return self.builder.call(funcSig.llstorage, args, tmp.name)
 
         # if the type is void, then don't assign function call to anything
-
+    def visitString(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
+        print "VISITING STRING"        
     def visitList(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
         
@@ -1111,9 +1090,7 @@ class CodeGenLLVM:
 
     def mkLLConstInst(self, ty, value):
         print ";----" + sys._getframe().f_code.co_name + " = " + str(value) + "----"
-
-        # ty = typer.inferType(node)
-        # print "; [Typer] %s => %s" % (str(node), str(ty))
+        # STR: add construction of string type
 
         llTy   = toLLVMTy(ty)
         bufSym = symbolTable.genUniqueSymbol(ty)
@@ -1142,11 +1119,31 @@ class CodeGenLLVM:
         #print ";", loadInst
 
         return loadInst
+    def emitStringInst(self, node):
+        # get length and type of list
+        lenList = len(node.value)
+        if lenList==0:
+            raise Exception("TODO: handle empty string")
+        # get int value for each char and put in list
+        arrTy = llvm.core.Type.array(llIntType, lenList)
+        l_ptr = self.builder.alloca_array(arrTy, llvm.core.Constant.int(llIntType, lenList))
+        # populate str
+        zero = llvm.core.Constant.int(llIntType, 0)
+        for i in range(lenList):
+            index = llvm.core.Constant.int(llIntType, i)
+            v = llvm.core.Constant.int(llIntType, 91)#STR-TODO: should be int(node.value[i])
+            l = self.builder.gep(l_ptr, [zero, index])
+            self.builder.store(v, l)
+
+        return l_ptr
 
     def visitConst(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
         ty = typer.inferType(node)
+
+        if ty==list: #if const type is string
+            return self.emitStringInst(node)
 
         return self.mkLLConstInst(ty, node.value)
 

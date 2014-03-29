@@ -29,7 +29,7 @@ class TypeInference(object):
               'int'    : int
             , 'float'  : float
             , 'void'   : void
-            , 'string' : str
+            , 'list'   : str
             , 'list'   : list
             }
 
@@ -282,7 +282,6 @@ class TypeInference(object):
         print ";TI--" + sys._getframe().f_code.co_name + "----"
 
         value = node.value
-
         if value == None:
             return void
 
@@ -293,7 +292,8 @@ class TypeInference(object):
             return int
 
         elif isinstance(value, type('muda')):
-            return str
+            #STR: changed from str to list
+            return list
 
         else:
             raise Exception("Unknown type of value:", value)
