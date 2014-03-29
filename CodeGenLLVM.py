@@ -447,7 +447,7 @@ class CodeGenLLVM:
         print ";----" + sys._getframe().f_code.co_name + "----"
 
         if len(node.nodes) != 1:
-            raise Exception("TODO: haven't done assignment to multiple nodes", node)
+            raise Exception("py2llvm error: assignment to multiple nodes not supported", node)
 
         rTy     = typer.inferType(node.expr)
         # if this is a list, will be a pointer. Otherwise a value
@@ -512,11 +512,30 @@ class CodeGenLLVM:
             return (False, None)
        else:
            return (False, None)
+    def getTruthy(self, cond):
+        ty = typer.inferType(cond)
+        if ty==int:
+            z = self.visit(cond)
+            result = self.builder.icmp(llvm.core.ICMP_NE, z, llvm.core.Constant.int(llIntType, 0), 'cmptmp')
+            return self.builder.uitofp(result, llFloatType, 'booltmp')
+        if ty==float:
+            return self.visit(cond)
+        if ty==list:
+            z = self.visit(cond)
+            listTy, listLen = self.getListDim(cond)
+            if listLen==0:
+                return llvm.core.Constant.real(llFloatType, 0.00)
+            return llvm.core.Constant.real(llFloatType, 1.00)
+        if ty==void:
+            return llvm.core.Constant.real(llFloatType, 0.00)
+
+        raise Exception("pyllvm error: unable to extract truth value from type:", ty)
 
     def visitIf(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
         is_else = (node.else_ is not None)
-        cond = self.visit(node.tests[0][0])
+        cond = self.getTruthy(node.tests[0][0])
+        #cond = self.visit(node.tests[0][0])
         then_ret, then_type = self.testRet(node.tests[0][1])
         if(is_else):
             else_ret, else_type = self.testRet(node.else_)
@@ -672,7 +691,6 @@ class CodeGenLLVM:
 
         if rTy != lTy:
             return llvm.core.Constant.real(llFloatType, 0.00)
-            #raise Exception("ERR: TypeMismatch: lTy = %s, rTy = %s for %s, line %d" % (lTy, rTy, node, node.lineno))
 
         lLLInst = self.visit(node.expr)
         rLLInst = self.visit(node.ops[0][1])
@@ -704,13 +722,6 @@ class CodeGenLLVM:
         else:  
             raise Exception("pyllvm err: unable to compare type " + rTy)
 
-        #if op == "<":
-            #print "muda"
-        #elif op == ">":
-            #print "muda"
-        #else:
-        
-
         if (op !="<") and (op != ">"):
             raise Exception("pyllvm err: Unknown operator:", op)
 
@@ -723,10 +734,11 @@ class CodeGenLLVM:
         e        = self.visit(node.expr)
         zeroInst = llvm.core.Constant.null(toLLVMTy(ty))
         tmpSym   = symbolTable.genUniqueSymbol(ty)
-
-        subInst = self.builder.sub(zeroInst, e, tmpSym.name)
-
-        return subInst
+        if ty==float:
+            return self.builder.fsub(zeroInst, e, tmpSym.name)
+        elif ty==int:
+            return self.builder.sub(zeroInst, e, tmpSym.name)
+        raise Exception("pyllvm err: can't unary sub on non numerical value")
     def visitGetattr(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
@@ -1111,8 +1123,6 @@ class CodeGenLLVM:
     def emitStringInst(self, node):
         # get length and type of list
         lenList = len(node.value)
-        if lenList==0:
-            raise Exception("TODO: handle empty string")
         # get int value for each char and put in list
         arrTy = llvm.core.Type.array(llIntType, lenList)
         l_ptr = self.builder.alloca_array(arrTy, llvm.core.Constant.int(llIntType, lenList))

@@ -95,6 +95,51 @@ def test_compare():
     h = (4.00!=6.00)
     z = a+b+c+d+e+fcp+g+h
     return z-7.00#ret 1.00
+
+def test_compare2():
+    x = 0
+    if(0.00):
+        x = x+1
+    if(1.00):#y
+        x = x+1
+    if(0):
+        x = x+1
+    if(1):#y
+        x = x+1
+    if([]):
+        x = x+1
+    if([1,2,3]):#y
+        x = x+1
+    if(iret(-1)):
+        x = x+1
+    if(iret(1)):#y
+        x = x+1
+    if(fret(-1.0)):
+        x = x+1
+    if(fret(1.0)):#y
+        x = x+1
+    i1 = 0
+    i2 = 1
+    f1 = 0.0
+    f2 = 1.0
+    l1 = []
+    l2 = [1,2,3]
+    if(i1):
+        x = x+1
+    if(i2):#y
+        x = x+1
+    if(f1):
+        x = x+1
+    if(f2):#y
+        x = x+1
+    if(l1):
+        x = x+1
+    if(l2):#y
+        x = x+1
+    return x
+
+
+
 def test_while():
     test_while1 = 10
     while(test_while1>0):
@@ -192,8 +237,9 @@ def main():
     whilet = test_while()
     whilet2 = test_while2()
     comparet = test_compare()
-    # { 0, 100, 1.0 }
-    print( whilet, whilet2, comparet )
+    comparet2 = test_compare2()
+    # { 0, 100, 1.0, 88888888 }
+    print( whilet, whilet2, comparet, comparet2 )
 
 # ARRAYS
     # INT
@@ -203,6 +249,9 @@ def main():
     eml = []
     eml1 = test_retE([])
     eml2 = test_retE(eml)
+    ems = ''
+    ems1 = test_retE(ems)
+    ems2 = test_retE('')
     
 
     # { [9,7,4], [6,7,8], [9,7,4] }
