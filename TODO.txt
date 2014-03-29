@@ -1,13 +1,12 @@
 THINGS TO DO:
     coding:
-        lists:
-            test lists for construction with other values
-            test assignment into lists
         for loops
-        add math functions
+             range function
+        i - add math functions: sqrt, abs, exp, ceil/floor, mod, bitshift, div, log
         vector math
     maybe do if there's time:
         2D arrays
+        assign into lists
         free malloc'd arrays
     writing
         intro

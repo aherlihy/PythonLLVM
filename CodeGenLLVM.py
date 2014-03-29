@@ -150,13 +150,11 @@ class CodeGenLLVM:
                 self.builder.call(self._printFloat, [le0])
         elif(ty==list):
             # if is List, can find dimensions directly. If var can look it up
-            #TODO-d: change to array instead of vec
             tyList, lenList = self.getListDim(n)
             zero = llvm.core.Constant.int(llIntType, 0)
             for i in range(lenList):
                 index = llvm.core.Constant.int(llIntType, i)
                 tmp0  = symbolTable.genUniqueSymbol(float)
-                #TODO-d: change to array
                 l = self.builder.gep(lln, [zero, index])
                 le0 = self.builder.load(l, tmp0.name)
 
@@ -185,8 +183,12 @@ class CodeGenLLVM:
     
     def getListDim(self, expr):
         if isinstance(expr, compiler.ast.List):
-            listType=typer.inferType(expr.nodes[0])
-            listLen=len(expr.nodes)
+            if len(expr.nodes)==0:
+                listType=int
+                listLen = 0
+            else:
+                listType=typer.inferType(expr.nodes[0])
+                listLen=len(expr.nodes)
         elif isinstance(expr, compiler.ast.Name):
             listType, listLen = symbolTable.find(expr.name).getDim()
         elif isinstance(expr, compiler.ast.CallFunc):
@@ -224,7 +226,6 @@ class CodeGenLLVM:
         # reset expr to the malloc'd array ptr
         return self.builder.ret(m_ptr)
 
-    # returning a list works if the list is passed in. TODO-1
     #NOTE: arrays are passed by pointer, so if you construct an array within a function call and return it
     # you will end up passing a bad pointer. To get around this, as a temporary measure, if you absolutely must
     # return a constructed array in a function then it will be automatically malloc'd. Unfortunately this means
@@ -293,7 +294,6 @@ class CodeGenLLVM:
                 if len(tyname.name) > 5 and d.has_key(tyname.name[4]):
                     listType = d[tyname.name[4]]
                     listLen = int(tyname.name[5:])
-                    #TODO-1: change to array type (did: change llTy from vec to ptr2arr)
                     llTy = llvm.core.Type.pointer(llvm.core.Type.array(toLLVMTy(listType), listLen))
                 else:
                     raise Exception("pyllvm err: Bad format for list default argument. list<type><len>", tyname.name)
@@ -364,7 +364,6 @@ class CodeGenLLVM:
                 # extract dims
                 listType = d[tyname.name[4]]
                 listLen = int(tyname.name[5:])
-                #TODO-1: change to array type (did: change llTy from vec to ptr2arr)
                 llTy = llvm.core.Type.pointer(llvm.core.Type.array(toLLVMTy(listType), listLen))
                 allocaInst = self.builder.alloca(llTy, bufSym.name)
                 storeInst  = self.builder.store(func.args[i], allocaInst)
@@ -386,7 +385,6 @@ class CodeGenLLVM:
 
         symbolTable.pushScope(node.name)
         if(self.currFuncRetType==list):
-            #TODO-1: change to array type (did: change retLLVMTy from vec to ptr2arr)
             # used first pass to get type of return list, now set rettype to that one
             retLLVMTy    = llvm.core.Type.pointer(llvm.core.Type.array(toLLVMTy(self.currFuncRetList[0]), self.currFuncRetList[1]))
         else:
@@ -412,7 +410,6 @@ class CodeGenLLVM:
                 # extract dims
                 listType = d[tyname.name[4]]
                 listLen = int(tyname.name[5:])
-                # TODO-1: change to array type
                 llTy = llvm.core.Type.pointer(llvm.core.Type.array(toLLVMTy(listType), listLen))
                 allocaInst = self.builder.alloca(llTy, bufSym.name)
                 storeInst  = self.builder.store(func.args[i], allocaInst)
@@ -446,12 +443,11 @@ class CodeGenLLVM:
         for node in node.nodes:
 
             self.visit(node)
-
     def visitAssign(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
         if len(node.nodes) != 1:
-            raise Exception("TODO:", node)
+            raise Exception("TODO: haven't done assignment to multiple nodes", node)
 
         rTy     = typer.inferType(node.expr)
         # if this is a list, will be a pointer. Otherwise a value
@@ -469,7 +465,6 @@ class CodeGenLLVM:
                 if(rTy==list):
                     listType = None
                     listLen = 0
-                    # TODO-d: change types to array
                     listType, listLen = self.getListDim(node.expr)
                     llTy = llvm.core.Type.pointer(llvm.core.Type.array(toLLVMTy(listType), listLen))
                     # create space for LHS node of type llTy, addr in llStorage
@@ -570,11 +565,9 @@ class CodeGenLLVM:
     
     
     def visitFor(self, node):
-        print "VISITED FOR"
-        print node
+        print ";VISITED FOR", node
 
     def visitWhile(self, node):
-        print ";VISITED WHILE"
         print ";----" + sys._getframe().f_code.co_name + "----"
         # get function
         function = self.builder.basic_block.function
@@ -597,7 +590,6 @@ class CodeGenLLVM:
         while_body = self.visit(node.body)
         self.builder.branch(start_while)
         self.builder.position_at_end(end_while)
-        #TODO: handle while-else?
     
     # emit vector comparisons (TODO?)
     def emitVCompare(self, op, lInst, rInst):
@@ -735,7 +727,6 @@ class CodeGenLLVM:
         subInst = self.builder.sub(zeroInst, e, tmpSym.name)
 
         return subInst
-    #TODO: is this ever used?
     def visitGetattr(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
@@ -962,7 +953,6 @@ class CodeGenLLVM:
             args = [self.visit(a) for a in node.args[0]]
         else:
             args = [self.visit(a) for a in node.args]
-            # TODO: got rid of special casing to expand lists, well see if this breaks anything
        # special case for len, since it takes a variable argument
         if(node.node.name=='len'):
             l = self.emitLen(node.args[0])
@@ -974,11 +964,9 @@ class CodeGenLLVM:
         #
         # value initialier?
         #
-        #TODO: test this with anything other than Vec
         ty = typer.isNameOfFirstClassType(node.node.name)
         if ty:
             # int, float, vec, ...
-            print ";in CALLFUNC len args = ", len(args)
             return self.handleInitializeTypeCall(ty, args)
 
         #
@@ -1026,7 +1014,11 @@ class CodeGenLLVM:
         # get length and type of list
         lenList = len(node.nodes)
         if lenList==0:
-            raise Exception("pyllvm err: Lists can't be empty (lists are not resizable)")
+            # default for empty lists are lists of type int
+            arrTy = llvm.core.Type.array(llIntType, 0)
+            l_ptr = self.builder.alloca_array(arrTy, llvm.core.Constant.int(llIntType, 0))
+            return l_ptr
+            #raise Exception("pyllvm err: Lists can't be empty (lists are not resizable)")
         tyList = typer.inferType(node.nodes[0])
         llNodes = []
         for n in node.nodes:
@@ -1035,7 +1027,6 @@ class CodeGenLLVM:
                 raise Exception("pyllvm err: Lists elements need to be of the same type")
             llNodes.append(self.visit(n))
         # emit list llvm
-        # TODO-d: here change to construction of array
         arrTy = llvm.core.Type.array(toLLVMTy(tyList), lenList)
         l_ptr = self.builder.alloca_array(arrTy, llvm.core.Constant.int(llIntType, lenList))
         
@@ -1044,7 +1035,6 @@ class CodeGenLLVM:
         zero = llvm.core.Constant.int(llIntType, 0)
         for i in range(len(llNodes)):
             index = llvm.core.Constant.int(llIntType, i)
-            #TODO-d: here change to array insert instead of insert_element (did: change gep + store)
             l = self.builder.gep(l_ptr, [zero, index])
             self.builder.store(llNodes[i], l)
 
@@ -1052,7 +1042,6 @@ class CodeGenLLVM:
 
 
     def visitSubscript(self, node):
-        #TODO-d: change to array access
         print ";----" + sys._getframe().f_code.co_name + "----"
         ty = typer.inferType(node.expr)
         if ty!=list:

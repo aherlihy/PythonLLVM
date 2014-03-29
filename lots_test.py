@@ -132,7 +132,8 @@ def test_ret4f(x=listf3):
     print x
 def test_ret5f(x=listf3):
     return x
-
+def test_retE(x=listi0):
+    return []
 
 def main():
 # ASSIGN
@@ -140,6 +141,8 @@ def main():
     rf = 5.00
     rv = vec([1.00,2.00,3.00,4.00])
     v1 = vec(1.00)
+    # { 4.0,2.0,3.0,1.0 }
+    print( rv.w, rv.y, rv.z, rv.x )
     li1 = [1,2,3]
     lf1 = [1.4,5.4]
     f5 = [1.0,2.0,3.0,4.0,5.0]
@@ -154,7 +157,6 @@ def main():
     ll5 = [fret(3.0), fret(6.0)] #[4.0,7.0]
     print( ll1, ll2, ll3, ll4, ll5)
 
-#TODO: empty lists
 # FUNC ARGS+RET
     xf5 = f5
     zf5 = lretv5(xf5)
@@ -196,6 +198,13 @@ def main():
 # ARRAYS
     # INT
     # test returning types of lists
+
+    # empty lists
+    eml = []
+    eml1 = test_retE([])
+    eml2 = test_retE(eml)
+    
+
     # { [9,7,4], [6,7,8], [9,7,4] }
     print( test_ret1i(), test_ret2i(), test_ret3i() )
     # test passing lists as args
