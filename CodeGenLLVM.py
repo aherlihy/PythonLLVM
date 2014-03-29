@@ -1020,9 +1020,6 @@ class CodeGenLLVM:
             return self.builder.call(funcSig.llstorage, args, tmp.name)
 
         # if the type is void, then don't assign function call to anything
-    def visitString(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
-        print "VISITING STRING"        
     def visitList(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
         
@@ -1057,6 +1054,9 @@ class CodeGenLLVM:
     def visitSubscript(self, node):
         #TODO-d: change to array access
         print ";----" + sys._getframe().f_code.co_name + "----"
+        ty = typer.inferType(node.expr)
+        if ty!=list:
+            raise Exception("pyllvm error: cannot index into nonlist type", node.expr)
         n = self.visit(node.expr)
         index = self.visit(node.subs[0])
         zero = llvm.core.Constant.int(llIntType, 0)

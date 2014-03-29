@@ -176,7 +176,6 @@ class TypeInference(object):
 
     def inferUnarySub(self, node):
         print ";TI--" + sys._getframe().f_code.co_name + "----"
-
         return self.inferType(node.expr)
 
     def inferAdd(self, node):
@@ -299,11 +298,18 @@ class TypeInference(object):
             raise Exception("Unknown type of value:", value)
     
     def inferSubscript(self, node):
+        print ';INFER ON', node
+        ty = None
         if isinstance(node.expr, compiler.ast.Name):
-            return self.symbolTable.find(node.expr.name).getDim()[0]
+            ty = self.symbolTable.find(node.expr.name).getDim()[0]
         if isinstance(node.expr, compiler.ast.List):
-            return self.inferType(node.expr.nodes[0])
-        raise Exception("Can't index into value")
-    
+            ty = self.inferType(node.expr.nodes[0])
+        if isinstance(node.expr, compiler.ast.CallFunc):
+            ty = self.symbolTable.find(node.expr.node.name).getDim()[0]
+        if isinstance(node.expr, compiler.ast.Const):
+            ty = int
+        if ty is None:
+            raise Exception("pyllvm error: cannot index into value", node.expr)
+        return ty
     def inferList(self, node):
         return list
