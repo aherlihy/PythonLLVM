@@ -193,17 +193,53 @@ class CodeGenLLVM:
         realAddr_nl = self.newline.gep(idx)
         self.builder.call(self.printf, [realAddr_nl])
 
+    def emitMakeArray(self, node):
+        # super horrible malloc hack for returning arrays
+        if isinstance(node, compiler.ast.List):
+            self.currFuncRetList = (typer.inferType(node.nodes[0]), len(node.nodes))
+        elif isinstance(node, compiler.ast.Name):
+            self.currFuncRetList = symbolTable.find(node.name).getDim()
+        elif isinstance(node, compiler.ast.CallFunc):
+            self.currFuncRetList = symbolTable.find(node.node.name).getDim()
+        else:#TODO
+            raise Exception("pyllvm err: returning type that evaluates to list but not implemented yet")
+
+        expr = self.visit(node)
+
+        # malloc an array
+        arrTy = llvm.core.Type.array(toLLVMTy(self.currFuncRetList[0]), self.currFuncRetList[1])
+        m_ptr = self.builder.malloc_array(arrTy, llvm.core.Constant.int(llIntType, self.currFuncRetList[1]))# TODO-1: change to all types, not just int
+        # copy all the values from the stack one into the heap
+        zero = llvm.core.Constant.int(llIntType, 0)
+        for i in range(self.currFuncRetList[1]):
+            index = llvm.core.Constant.int(llIntType, i)
+            # get alloc'd array values
+            tmp0  = symbolTable.genUniqueSymbol(float)
+            a = self.builder.gep(expr, [zero, index])
+            a0 = self.builder.load(a, tmp0.name)
+
+            # store values in malloc'd array
+            m = self.builder.gep(m_ptr, [zero, index])
+            self.builder.store(a0, m)
+        # reset expr to the malloc'd array ptr
+        return self.builder.ret(m_ptr)
+
     # returning a list works if the list is passed in. TODO-1
     #NOTE: arrays are passed by pointer, so if you construct an array within a function call and return it
-    # you will end up passing a bad pointer. 
-    
-    # If there is time, is easy to implement something to get around this, as a temporary measure, if you absolutely must
+    # you will end up passing a bad pointer. To get around this, as a temporary measure, if you absolutely must
     # return a constructed array in a function then it will be automatically malloc'd. Unfortunately this means
     # for now at least, that memory is gone and isn't going to be freed because everything else is on the stack.
+    # So please avoid, but if you need to do it the functionality is there.
     def visitReturn(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
         # get type of return node
         ty   = typer.inferType(node.value)
+
+        if(ty==list):
+            if self.currFuncRetType is None:
+                self.currFuncRetType = ty
+                self.prevFuncRetNode = node
+            return self.emitMakeArray(node.value)
 
 
         # Return(Const(None))
@@ -218,42 +254,12 @@ class CodeGenLLVM:
 
         if self.currFuncRetType is None:
             self.currFuncRetType = ty
-            if(ty == list):
-                raise Exception("pyllvm error: cannot return a list since they are passed as pointers and will return a bad pointer. TODO")
-                #if isinstance(node.value, compiler.ast.List):
-                #    self.currFuncRetList = (typer.inferType(node.value.nodes[0]), len(node.value.nodes))
-                #elif isinstance(node.value, compiler.ast.Name):
-                #    self.currFuncRetList = symbolTable.find(node.value.name).getDim()
-                #elif isinstance(node.value, compiler.ast.CallFunc):
-                #    self.currFuncRetList = symbolTable.find(node.expr.node.name).getDim()
-                #else:#TODO
-                #    raise Exception("pyllvm err: returning type that evaluates to list but not implemented yet")
-                # super horrible malloc hack for returning arrays
-                
-                # malloc an array
-                #arrTy = llvm.core.Type.array(toLLVMTy(self.currFuncRetList[0]), self.currFuncRetList[1])
-                #m_ptr = self.builder.malloc_array(arrTy, llvm.core.Constant.int(llIntType, self.currFuncRetList[1]))# TODO-1: change to all types, not just int
-                # copy all the values from the stack one into the heap
-                #zero = llvm.core.Constant.int(llIntType, 0)
-                #for i in range(self.currFuncRetList[1]):
-                #    index = llvm.core.Constant.int(llIntType, i)
-                #    # get alloc'd array values
-                #    tmp0  = symbolTable.genUniqueSymbol(float)
-                #    a = self.builder.gep(expr, [zero, index])
-                #    a0 = self.builder.load(a, tmp0.name)
-
-                    # store values in malloc'd array
-                #    m = self.builder.gep(m_ptr, [zero, index])
-                #    self.builder.store(a0, m)
-                # reset expr to the malloc'd array ptr
-                #expr = m_ptr
-                #print ";RETURNING VALUE:", m_ptr
             self.prevFuncRetNode = node
 
         elif self.currFuncRetType != ty:
             raise Exception("pyllvm err: Different type for return expression: expected %s(lineno=%d, %s) but got %s(lineno=%d, %s)" % (self.currFuncRetType, self.prevFuncRetNode.lineno, self.prevFuncRetNode, ty, node.lineno, node))
 
-       # return self.builder.ret(expr)
+        return self.builder.ret(expr)
 
     # in passing lists of variable length, there is the issue of setting the argument type
     # (since declaring vector requires the length and type, **even for a pointer to a vector**)
@@ -428,6 +434,7 @@ class CodeGenLLVM:
         symbolTable.popScope()
 
         # Register function to symbol table
+        print ";ADDING", node.name, "TO ST AS", self.currFuncRetType, " llstoroage=func"
         if(self.currFuncRetType==list):
             symbolTable.append(Symbol(node.name, self.currFuncRetType, "function", llstorage=func, dim=self.currFuncRetList))
         else:
@@ -549,18 +556,18 @@ class CodeGenLLVM:
             
         # emit then
         self.builder.position_at_end(then_block)
-        #symbolTable.pushScope("if_")
+        symbolTable.pushScope("if_")
         then_val = self.visit(node.tests[0][1])
-        #symbolTable.popScope() 
+        symbolTable.popScope() 
         self.builder.branch(merge_block)
         # update then for phi 
         then_block = self.builder.basic_block
         if(is_else):
             # emit else
             self.builder.position_at_end(else_block)
-            #symbolTable.pushScope("else_")
+            symbolTable.pushScope("else_")
             else_val = self.visit(node.else_)
-            #symbolTable.popScope()
+            symbolTable.popScope()
             self.builder.branch(merge_block)
             else_block = self.builder.basic_block
 

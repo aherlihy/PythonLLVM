@@ -53,6 +53,15 @@ def test_while():
         test_while1 = test_while1-1
     return test_while1#ret0
 # test visitStmt
+def test_ret1():
+    x = [9,7,4]   
+    return x
+def test_ret2():
+    return [6,7,8]
+def test_ret3():
+    return test_ret1()
+
+
 def main():
     # test visitAssign
     ri = 5
@@ -91,4 +100,6 @@ def main():
     zlsf = lsubf(2, xi8)
     print zlsi                      #5.0
     print zlsf                      #5
-
+    print test_ret1()
+    print test_ret2()
+    print test_ret3()
