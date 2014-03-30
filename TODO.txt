@@ -20,9 +20,8 @@ THINGS TO DO:
         existing work
 HAVE LEFT
     coding - finish 100% tmrw before airport
-    write examples - finish on flight
     write intro, needs, and construction section - train
-    run examples on TP - @brown
+    write and run examples on TP - @brown
     benchmarking, compare w C++/Numpy - @brown
     write the results, comparison and conclusion - @brown
 

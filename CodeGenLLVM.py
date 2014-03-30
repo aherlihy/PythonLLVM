@@ -449,7 +449,6 @@ class CodeGenLLVM:
             raise Exception("py2llvm error: assignment to multiple nodes not supported", node)
 
         rTy     = typer.inferType(node.expr)
-        print "GOT TYPE", rTy
         # if this is a list, will be a pointer. Otherwise a value
         rLLInst = self.visit(node.expr)
         lhsNode = node.nodes[0]
@@ -592,7 +591,7 @@ class CodeGenLLVM:
 
         # create index node
         index_addr = self.builder.alloca(llIntType, "indx")
-        index = Symbol('indx', llIntType, "variable", llstorage = index_addr)
+        index = Symbol('indx', int, "variable", llstorage = index_addr)
         symbolTable.append(index)
         # store 0 as initial value of index
         storeIndex = self.builder.store(zero, index.llstorage)
@@ -600,7 +599,7 @@ class CodeGenLLVM:
         # initialize (phi?) node to be updated
         # create space for loop var
         lv_addr = self.builder.alloca(toLLVMTy(llTy), node.assign.name)
-        loop_var = Symbol(node.assign.name, toLLVMTy(llTy), "variable", llstorage = lv_addr)
+        loop_var = Symbol(node.assign.name, int, "variable", llstorage = lv_addr)
         symbolTable.append(loop_var)
 
         # loop_var=list[index]
@@ -625,7 +624,7 @@ class CodeGenLLVM:
 
         # emit testing code
         iv = self.builder.load(index.llstorage)
-        condition_bool = self.builder.icmp(llvm.core.ICMP_UGE, iv, loopLen, 'forcond')
+        condition_bool = self.builder.icmp(llvm.core.ICMP_ULE, iv, loopLen, 'forcond')
 
         self.builder.cbranch(condition_bool, do_for, end_for) 
         

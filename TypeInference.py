@@ -266,7 +266,6 @@ class TypeInference(object):
             return self.typeDic[name]
         # Next, lookup symbol from the symbol table.
         sym = self.symbolTable.find(name)
-        print "IN SB, foundt type", sym#inputting into symbol table wrong
         if sym is not None:
             return sym.type
 
