@@ -630,26 +630,26 @@ class CodeGenLLVM:
         self.builder.cbranch(condition_bool, do_for, end_for) 
         
         # emit body of loop
-        self.builder.position_at_end(do_for)
-        for_body = self.visit(node.body)
+#        self.builder.position_at_end(do_for)
+#        for_body = self.visit(node.body)
 
         # emit update
         # index++
-        tmp1 = symbolTable.genUniqueSymbol(llIntType)
-        add_i = self.builder.add(iv, llvm.core.Constant.int(llIntType, 1), tmp1.name)
-        store_i = self.builder.store(add_i, index.llstorage)
+#        tmp1 = symbolTable.genUniqueSymbol(llIntType)
+#        add_i = self.builder.add(iv, llvm.core.Constant.int(llIntType, 1), tmp1.name)
+#        store_i = self.builder.store(add_i, index.llstorage)
         # loopvar = list[index]
-        tmp2  = symbolTable.genUniqueSymbol(llTy)
-        l = self.builder.gep(loopList, [zero, add_i])
-        lv_v = self.builder.load(l, tmp2.name)
-        storeLV = self.builder.store(lv_v, loop_var.llstorage)
+#        tmp2  = symbolTable.genUniqueSymbol(llTy)
+#        l = self.builder.gep(loopList, [zero, add_i])
+#        lv_v = self.builder.load(l, tmp2.name)
+#        storeLV = self.builder.store(lv_v, loop_var.llstorage)
 
 
-        self.builder.branch(start_for)
-        self.builder.position_at_end(end_for)
+#        self.builder.branch(start_for)
+#        self.builder.position_at_end(end_for)
         # enter_for block:
             # if end_condition-->end_for
-            # <do body code>
+           # # <do body code>
             # update phi node to be the next index
             # jump to enter_for
         # end_for block:
