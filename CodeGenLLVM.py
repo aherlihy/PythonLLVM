@@ -14,7 +14,6 @@ from mmath import *
 
 symbolTable    = SymbolTable()
 typer          = TypeInference(symbolTable)
-mmath          = mMathFuncs()
 
 llTruthType    = llvm.core.Type.int(1)
 llVoidType     = llvm.core.Type.void()
@@ -47,8 +46,6 @@ class CodeGenLLVM:
     LLVM CodeGen class
     """
 
-    def emitabs(self, node):
-        return llvm.core.Constant.int(llIntType, 10)
     def __init__(self):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
@@ -68,6 +65,7 @@ class CodeGenLLVM:
         self.newline          = None
         self.printf           = None
         self.vec              = None
+        self.mmath                 = mMathFuncs(self)
     def visitModule(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
         # emitExternalSymbols() should be called before self.visit(node.node)
@@ -209,6 +207,15 @@ class CodeGenLLVM:
         elif isinstance(expr, compiler.ast.Name):
             listType, listLen, isStr = symbolTable.find(expr.name).getDim()
         elif isinstance(expr, compiler.ast.CallFunc):
+            # special case here for range call, since always different
+            if expr.node.name=='range':
+                if len(expr.args) == 1:
+                    start = 0
+                    end = expr.args[0].value
+                else:
+                    start = expr.args[0].value
+                    end = expr.args[1].value
+                return (int, end-start, False)
             listType, listLen, isStr = symbolTable.find(expr.node.name).getDim()
         elif isinstance(expr, compiler.ast.Const):
             listType = int
@@ -1059,12 +1066,13 @@ class CodeGenLLVM:
 
         if( isIntrinsicMathFunction(node.node.name) ):
             method_name = "emit%s" % node.node.name
-            if not callable(getattr(self, method_name)):
+            if not callable(getattr(self.mmath, method_name)):
                 raise Exception("pyllvm err: undefined intrinsic func:", node.node.name)
     
-            method = getattr(mmath, method_name)
+            method = getattr(self.mmath, method_name)
     
             x = method(node)
+            print ";RETURNING INTRS", x
             return x
 
         #print "; callfuncafter", args
