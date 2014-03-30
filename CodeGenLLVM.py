@@ -445,7 +445,6 @@ class CodeGenLLVM:
             self.visit(node)
     def visitAssign(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
-
         if len(node.nodes) != 1:
             raise Exception("py2llvm error: assignment to multiple nodes not supported", node)
 
@@ -495,7 +494,7 @@ class CodeGenLLVM:
         # get space for LHS node
         lSym = symbolTable.find(lhsNode.name)
         # store value of RHS into address of LHS
-        # if this is list, hopefully storing the value of rLLInst into L
+        # if this is list, storing the value (i.e. address) of rLLInst into L
         storeInst = self.builder.store(rLLInst, lSym.llstorage)
         # No return
     def testRet(self, node):
@@ -582,7 +581,78 @@ class CodeGenLLVM:
     
     
     def visitFor(self, node):
+        # for node: <assName node(just has name)>, <list>, <body>
         print ";VISITED FOR", node
+        
+        loopList = self.visit(node.list)
+
+        llTy, llLen = self.getListDim(node.list)
+        zero = llvm.core.Constant.int(llIntType, 0)
+        loopLen = llvm.core.Constant.int(llIntType, llLen)
+
+        # create index node
+        index_addr = self.builder.alloca(llIntType, "indx")
+        index = Symbol('indx', llIntType, "variable", llstorage = index_addr)
+        symbolTable.append(index)
+        # store 0 as initial value of index
+        storeIndex = self.builder.store(zero, index.llstorage)
+        
+        # initialize (phi?) node to be updated
+        # create space for loop var
+        lv_addr = self.builder.alloca(toLLVMTy(llTy), node.assign.name)
+        loop_var = Symbol(node.assign.name, toLLVMTy(llTy), "variable", llstorage = lv_addr)
+        symbolTable.append(loop_var)
+
+        # loop_var=list[index]
+        tmp0  = symbolTable.genUniqueSymbol(float)
+        i_v = self.builder.load(index.llstorage)
+        l = self.builder.gep(loopList, [zero, i_v])
+        lv_v = self.builder.load(l, tmp0.name)
+        storeLV = self.builder.store(lv_v, loop_var.llstorage)
+        
+        #START FOR LOOP 
+
+        # get function
+        function = self.builder.basic_block.function
+        
+        # create blocks
+        start_for = function.append_basic_block('start_for')
+        do_for = function.append_basic_block('do_for')
+        end_for = function.append_basic_block('end_for')
+
+        self.builder.branch(start_for)
+        self.builder.position_at_end(start_for)
+
+        # emit testing code
+        iv = self.builder.load(index.llstorage)
+        condition_bool = self.builder.icmp(llvm.core.ICMP_UGE, iv, loopLen, 'forcond')
+
+        self.builder.cbranch(condition_bool, do_for, end_for) 
+        
+        # emit body of loop
+        self.builder.position_at_end(do_for)
+        for_body = self.visit(node.body)
+
+        # emit update
+        # index++
+        tmp1 = symbolTable.genUniqueSymbol(llIntType)
+        add_i = self.builder.add(iv, llvm.core.Constant.int(llIntType, 1), tmp1.name)
+        store_i = self.builder.store(add_i, index.llstorage)
+        # loopvar = list[index]
+        tmp2  = symbolTable.genUniqueSymbol(llTy)
+        l = self.builder.gep(loopList, [zero, add_i])
+        lv_v = self.builder.load(l, tmp2.name)
+        storeLV = self.builder.store(lv_v, loop_var.llstorage)
+
+
+        self.builder.branch(start_for)
+        self.builder.position_at_end(end_for)
+        # enter_for block:
+            # if end_condition-->end_for
+            # <do body code>
+            # update phi node to be the next index
+            # jump to enter_for
+        # end_for block:
 
     def visitWhile(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
@@ -1069,11 +1139,11 @@ class CodeGenLLVM:
     def visitName(self, node):
         print ";----" + sys._getframe().f_code.co_name + " : " + node.name + "----"
         sym = symbolTable.lookup(node.name)
+        print "LOOKING UP NAME ", node.name, sym
         tmpSym = symbolTable.genUniqueSymbol(sym.type)
 
         # %tmp = load %name
         loadInst = self.builder.load(sym.llstorage, tmpSym.name)
-
         #print "; [Leaf] inst = ", loadInst
         return loadInst
 
@@ -1127,7 +1197,7 @@ class CodeGenLLVM:
         zero = llvm.core.Constant.int(llIntType, 0)
         for i in range(lenList):
             index = llvm.core.Constant.int(llIntType, i)
-            v = llvm.core.Constant.int(llIntType, 91)#STR-TODO: should be int(node.value[i])
+            v = llvm.core.Constant.int(llIntType, ord(node.value[i]))#STR-TODO: ord:char->int, chr:int->char
             l = self.builder.gep(l_ptr, [zero, index])
             self.builder.store(v, l)
 
