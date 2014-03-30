@@ -94,16 +94,20 @@ class CodeGenLLVM:
         # create global constants for printf string
         string_i = self.mkGlobalStr('__strInt', '%d ')
         string_f = self.mkGlobalStr('__strFloat', "%f ")
+        string_c = self.mkGlobalStr('__strChar', '%c')
         self.newline = self.mkGlobalStr('__strNl', '\n')
         self.vec = self.mkGlobalStr('__strVec', 'vec: ')
  
         # create functions for print 
-        funcType = llvm.core.Type.function(llVoidType, [llIntType])
-        printInt = self.module.add_function(funcType, 'printInt')
+        i_funcType = llvm.core.Type.function(llVoidType, [llIntType])
+        printInt = self.module.add_function(i_funcType, 'printInt')
         self._printInt = printInt
         f_funcType = llvm.core.Type.function(llVoidType, [llFloatType])
         printFloat = self.module.add_function(f_funcType, 'printFloat')
         self._printFloat = printFloat
+        c_funcType = llvm.core.Type.function(llVoidType, [llIntType])
+        printChar = self.module.add_function(c_funcType, 'printChar')
+        self._printChar = printChar
 
         # create a block and a builder for print functions
         bb = printInt.append_basic_block('ib')
@@ -113,6 +117,7 @@ class CodeGenLLVM:
         idx = [llvm.core.Constant.int(llvm.core.Type.int(32), 0), llvm.core.Constant.int(llvm.core.Type.int(32), 0)] # the first index get's us past the global variable (which is a pointer) to the string; the second index is the offset inside the string we want to access
         realAddr_i = string_i.gep(idx)
         realAddr_f = string_f.gep(idx)
+        realAddr_c = string_c.gep(idx)
  
         # call printf for int
         b.call(self.printf, [realAddr_i, printInt.args[0]])
@@ -122,6 +127,11 @@ class CodeGenLLVM:
         b.position_at_end(bf)
         d = b.fpext(printFloat.args[0], llvm.core.Type.double(), 'ftmp')
         b.call(self.printf, [realAddr_f, d])
+        b.ret_void()
+        #call printf for char
+        bf = printChar.append_basic_block('cb')
+        b.position_at_end(bf)
+        b.call(self.printf, [realAddr_c, printChar.args[0]])
         b.ret_void()
 
  
@@ -150,7 +160,7 @@ class CodeGenLLVM:
                 self.builder.call(self._printFloat, [le0])
         elif(ty==list):
             # if is List, can find dimensions directly. If var can look it up
-            tyList, lenList = self.getListDim(n)
+            tyList, lenList, isStr = self.getListDim(n)
             zero = llvm.core.Constant.int(llIntType, 0)
             for i in range(lenList):
                 index = llvm.core.Constant.int(llIntType, i)
@@ -158,8 +168,9 @@ class CodeGenLLVM:
                 l = self.builder.gep(lln, [zero, index])
                 le0 = self.builder.load(l, tmp0.name)
 
-
-                if( tyList == int):
+                if( isStr ):
+                    self.builder.call(self._printChar, [le0])
+                elif( tyList == int):
                     self.builder.call(self._printInt, [le0])
                 elif( tyList == float):
                     self.builder.call(self._printFloat, [le0])
@@ -183,6 +194,7 @@ class CodeGenLLVM:
     
     def getListDim(self, expr):
         if isinstance(expr, compiler.ast.List):
+            isStr = False
             if len(expr.nodes)==0:
                 listType=int
                 listLen = 0
@@ -190,15 +202,16 @@ class CodeGenLLVM:
                 listType=typer.inferType(expr.nodes[0])
                 listLen=len(expr.nodes)
         elif isinstance(expr, compiler.ast.Name):
-            listType, listLen = symbolTable.find(expr.name).getDim()
+            listType, listLen, isStr = symbolTable.find(expr.name).getDim()
         elif isinstance(expr, compiler.ast.CallFunc):
-            listType, listLen = symbolTable.find(expr.node.name).getDim()
+            listType, listLen, isStr = symbolTable.find(expr.node.name).getDim()
         elif isinstance(expr, compiler.ast.Const):
             listType = int
             listLen = len(expr.value)
+            isStr = True
         else:
             raise Exception("haven't implemented assigning all list types", expr)
-        return (listType, listLen)
+        return (listType, listLen, isStr)
 
     def emitMakeArray(self, node):
         # super horrible malloc hack for returning arrays
@@ -246,7 +259,7 @@ class CodeGenLLVM:
         if isinstance(node.value, compiler.ast.Const):
             if node.value.value == None:
                 self.currFuncRetType = void
-                self.currFuncRetList = (None, 0)
+                self.currFuncRetList = (None, 0, False)
                 self.prevFuncRetNode = node
                 return self.builder.ret_void()
 
@@ -289,12 +302,13 @@ class CodeGenLLVM:
             ty = typer.isNameOfFirstClassType(tyname.name)
             if ty is None:
                 raise Exception("pyllvm err: Unknown name of type:", tyname.name)
-            if ty==list:
+            if ty==list or ty==str:
                 d = {'i':int, 'f':float, 's':str, 'l':list}
-                if len(tyname.name) > 5 and d.has_key(tyname.name[4]):
+                if (len(tyname.name) > 5 and d.has_key(tyname.name[4])) or (len(tyname.name) > 4 and d.has_key(tyname.name[3])):
                     listType = d[tyname.name[4]]
                     listLen = int(tyname.name[5:])
                     llTy = llvm.core.Type.pointer(llvm.core.Type.array(toLLVMTy(listType), listLen))
+
                 else:
                     raise Exception("pyllvm err: Bad format for list default argument. list<type><len>", tyname.name)
             else:
@@ -357,17 +371,18 @@ class CodeGenLLVM:
 
             bufSym = symbolTable.genUniqueSymbol(ty)
             # 'if type of arguments are:'
-            if ty==list:
+            if ty==list or ty==str:
                 d = {'i':int, 'f':float, 's':str, 'l':list}
                 if not d.has_key(tyname.name[4]):
                     raise Exception("pyllvm err: Bad format for list default argument. list<type><len>", tyname.name)
                 # extract dims
                 listType = d[tyname.name[4]]
                 listLen = int(tyname.name[5:])
+                isStr = (ty==str)
                 llTy = llvm.core.Type.pointer(llvm.core.Type.array(toLLVMTy(listType), listLen))
                 allocaInst = self.builder.alloca(llTy, bufSym.name)
                 storeInst  = self.builder.store(func.args[i], allocaInst)
-                symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst, dim=(listType, listLen)))
+                symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst, dim=(listType, listLen, isStr)))
             else:
                 llTy = toLLVMTy(ty)
 
@@ -403,17 +418,18 @@ class CodeGenLLVM:
             ty = typer.isNameOfFirstClassType(tyname.name)
             bufSym = symbolTable.genUniqueSymbol(ty)
 
-            if ty==list:
+            if ty==list or ty==str:
                 d = {'i':int, 'f':float, 's':str, 'l':list}
                 if not d.has_key(tyname.name[4]):
                     raise Exception("pyllvm err: Bad format for list default argument. list<type><len>", tyname.name)
                 # extract dims
                 listType = d[tyname.name[4]]
                 listLen = int(tyname.name[5:])
+                isStr = (ty==str)
                 llTy = llvm.core.Type.pointer(llvm.core.Type.array(toLLVMTy(listType), listLen))
                 allocaInst = self.builder.alloca(llTy, bufSym.name)
                 storeInst  = self.builder.store(func.args[i], allocaInst)
-                symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst, dim=(listType, listLen)))
+                symbolTable.append(Symbol(name, ty, "variable", llstorage=allocaInst, dim=(listType, listLen, isStr)))
             else:
                 llTy = toLLVMTy(ty)
                 allocaInst = self.builder.alloca(llTy, bufSym.name)
@@ -463,12 +479,12 @@ class CodeGenLLVM:
                 if(rTy==list):
                     listType = None
                     listLen = 0
-                    listType, listLen = self.getListDim(node.expr)
+                    listType, listLen, isStr = self.getListDim(node.expr)
                     llTy = llvm.core.Type.pointer(llvm.core.Type.array(toLLVMTy(listType), listLen))
                     # create space for LHS node of type llTy, addr in llStorage
                     llStorage = self.builder.alloca(llTy, lhsNode.name)
 
-                    sym = Symbol(lhsNode.name, rTy, "variable", llstorage = llStorage, dim=(listType, listLen))
+                    sym = Symbol(lhsNode.name, rTy, "variable", llstorage = llStorage, dim=(listType, listLen, isStr))
                     symbolTable.append(sym)
                 else:
                     # get type of new value
@@ -520,7 +536,7 @@ class CodeGenLLVM:
             return self.visit(cond)
         if ty==list:
             z = self.visit(cond)
-            listTy, listLen = self.getListDim(cond)
+            listTy, listLen, isStr = self.getListDim(cond)
             if listLen==0:
                 return llvm.core.Constant.real(llFloatType, 0.00)
             return llvm.core.Constant.real(llFloatType, 1.00)
@@ -585,7 +601,7 @@ class CodeGenLLVM:
         
         loopList = self.visit(node.list)
 
-        llTy, llLen = self.getListDim(node.list)
+        llTy, llLen, isStr = self.getListDim(node.list)
         zero = llvm.core.Constant.int(llIntType, 0)
         loopLen = llvm.core.Constant.int(llIntType, llLen)
 

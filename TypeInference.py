@@ -62,6 +62,8 @@ class TypeInference(object):
             return self.typeDic[name]
         if name[:4]=='list':
             return list
+        if name[:3]=='str':
+            return str
         return None
 
     def getIntrinsicFunctionFromName(self, name):
