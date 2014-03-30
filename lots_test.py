@@ -290,4 +290,9 @@ def main():
     slen = 'hello there'
     # { 3, 4, 11 }
     print( len(ilen), len(flen), len(slen) )
-#TODO: getAttr on Vec
+
+    x = vec([1.0,1.0,1.0,1.0])
+    y = vec([2.0,2.0,3.0,4.0])
+    #{ vec[3.0,3.0,4.0,5.0], vec[-1.0, -1.0, -2.0, -3.0], vec[2.0,2.0,3.0,4.0], vec[0.5,0.5,0.3,0.25] }
+    print (x+y, x-y, x*y, x/y)
+

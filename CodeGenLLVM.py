@@ -234,7 +234,7 @@ class CodeGenLLVM:
         if self.currFuncRetList[0]==int or self.currFuncRetList[0]==float:
             m_ptr = self.builder.malloc_array(arrTy, llvm.core.Constant.int(llIntType, self.currFuncRetList[1]))
         else:
-            raise Exception("TODO: Haven't implemented returning lists that are not of int/float")
+            raise Exception("haven't implemented returning lists that are not of int/float")
 
         # copy all the values from the stack one into the heap
         zero = llvm.core.Constant.int(llIntType, 0)
@@ -702,7 +702,7 @@ class CodeGenLLVM:
         self.builder.branch(start_while)
         self.builder.position_at_end(end_while)
     
-    # emit vector comparisons (TODO?)
+    #TODO
     def emitVCompare(self, op, lInst, rInst):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
@@ -858,6 +858,19 @@ class CodeGenLLVM:
         return inst
 
 
+    def emitVAdd(self, lLLInst, rLLInst):
+        # create vector to return
+        ret_v = llvm.core.Constant.vector([llvm.core.Constant.real(llFloatType, "0.0")] * 4)
+        for i in range(4):
+            i0 = llvm.core.Constant.int(llIntType, i);
+            tmp0  = symbolTable.genUniqueSymbol(float)
+            tmp1  = symbolTable.genUniqueSymbol(float)
+            a1   = self.builder.extract_element(lLLInst, i0, tmp0.name)
+            a2   = self.builder.extract_element(rLLInst, i0, tmp1.name)
+            a = self.builder.fadd(a1, a2)
+            ret_v = self.builder.insert_element(ret_v, a, i0)
+        return ret_v
+
 
     def visitAdd(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
@@ -866,20 +879,33 @@ class CodeGenLLVM:
         rTy = typer.inferType(node.right)
         if rTy != lTy:
             raise Exception("pyllvm err: TypeMismatch: lTy = %s, rTy = %s for %s, line %d" % (lTy, rTy, node, node.lineno))
-
+        
         lLLInst = self.visit(node.left)
         rLLInst = self.visit(node.right)
         
         tmpSym = symbolTable.genUniqueSymbol(lTy)
 
-        if( lTy == float ):
-            addInst = self.builder.fadd(lLLInst, rLLInst, tmpSym.name)
-            return addInst
+        if( lTy == vec ):
+            return self.emitVAdd(lLLInst, rLLInst)
+        elif( lTy == float ):
+            return self.builder.fadd(lLLInst, rLLInst, tmpSym.name)
+        elif( lTy == int ):
+            return self.builder.add(lLLInst, rLLInst, tmpSym.name)
+        else:
+            raise Exception("pyllvm error: arithmatic not supporte for type", lTy)
 
-        addInst = self.builder.add(lLLInst, rLLInst, tmpSym.name)
-        #print "; [AddOp] inst = ", addInst
-        return addInst
-
+    def emitVSub(self, lLLInst, rLLInst):
+        # create vector to return
+        ret_v = llvm.core.Constant.vector([llvm.core.Constant.real(llFloatType, "0.0")] * 4)
+        for i in range(4):
+            i0 = llvm.core.Constant.int(llIntType, i);
+            tmp0  = symbolTable.genUniqueSymbol(float)
+            tmp1  = symbolTable.genUniqueSymbol(float)
+            a1   = self.builder.extract_element(lLLInst, i0, tmp0.name)
+            a2   = self.builder.extract_element(rLLInst, i0, tmp1.name)
+            a = self.builder.fsub(a1, a2)
+            ret_v = self.builder.insert_element(ret_v, a, i0)
+        return ret_v
     def visitSub(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
@@ -894,15 +920,28 @@ class CodeGenLLVM:
 
         tmpSym = symbolTable.genUniqueSymbol(lTy)
 
-        if( lTy == float ):
-            subInst = self.builder.fsub(lLLInst, rLLInst, tmpSym.name)
-            return subInst
-        subInst = self.builder.sub(lLLInst, rLLInst, tmpSym.name)
-        #print "; [SubOp] inst = ", subInst
+        if( lTy == vec ):
+            return self.emitVSub(lLLInst, rLLInst)
+        elif( lTy == float ):
+            return self.builder.fsub(lLLInst, rLLInst, tmpSym.name)
+        elif (lTy == int ):
+            return self.builder.sub(lLLInst, rLLInst, tmpSym.name)
+        else:
+            raise Exception("pyllvm error: arithmatic not supporte for type", lTy)
 
-        return subInst
 
-
+    def emitVMul(self, lLLInst, rLLInst):
+        # create vector to return
+        ret_v = llvm.core.Constant.vector([llvm.core.Constant.real(llFloatType, "0.0")] * 4)
+        for i in range(4):
+            i0 = llvm.core.Constant.int(llIntType, i);
+            tmp0  = symbolTable.genUniqueSymbol(float)
+            tmp1  = symbolTable.genUniqueSymbol(float)
+            a1   = self.builder.extract_element(lLLInst, i0, tmp0.name)
+            a2   = self.builder.extract_element(rLLInst, i0, tmp1.name)
+            a = self.builder.fmul(a1, a2)
+            ret_v = self.builder.insert_element(ret_v, a, i0)
+        return ret_v
     def visitMul(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
@@ -917,15 +956,28 @@ class CodeGenLLVM:
 
         tmpSym = symbolTable.genUniqueSymbol(lTy)
 
+        if( lTy == vec ):
+            return self.emitVMul(lLLInst, rLLInst)
         if( lTy == float ):
-            mulInst = self.builder.fmul(lLLInst, rLLInst, tmpSym.name)
-            return mulInst
-        mulInst = self.builder.mul(lLLInst, rLLInst, tmpSym.name)
-        #print "; [MulOp] inst = ", mulInst
+            return self.builder.fmul(lLLInst, rLLInst, tmpSym.name)
+        elif( lTy == int ):
+            return self.builder.mul(lLLInst, rLLInst, tmpSym.name)
+        else:
+            raise Exception("pyllvm error: arithmatic not supporte for type", lTy)
 
-        return mulInst
 
-
+    def emitVDiv(self, lLLInst, rLLInst):
+        # create vector to return
+        ret_v = llvm.core.Constant.vector([llvm.core.Constant.real(llFloatType, "0.0")] * 4)
+        for i in range(4):
+            i0 = llvm.core.Constant.int(llIntType, i);
+            tmp0  = symbolTable.genUniqueSymbol(float)
+            tmp1  = symbolTable.genUniqueSymbol(float)
+            a1   = self.builder.extract_element(lLLInst, i0, tmp0.name)
+            a2   = self.builder.extract_element(rLLInst, i0, tmp1.name)
+            a = self.builder.fdiv(a1, a2)
+            ret_v = self.builder.insert_element(ret_v, a, i0)
+        return ret_v
     def visitDiv(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
@@ -940,12 +992,12 @@ class CodeGenLLVM:
 
         tmpSym = symbolTable.genUniqueSymbol(lTy)
 
+        if( lTy == vec ):
+            return self.emitVDiv(lLLInst, rLLInst)
         if typer.isFloatType(lTy):
             divInst = self.builder.fdiv(lLLInst, rLLInst, tmpSym.name)
         else:
             divInst = self.builder.udiv(lLLInst, rLLInst, tmpSym.name)
-
-        #print "; [DIvOp] inst = ", divInst
 
         return divInst
 
@@ -1033,7 +1085,7 @@ class CodeGenLLVM:
             r3 = self.builder.insert_element(r2, elems[3] , i3, s3.name)
 
             return r3
-
+    #TODO
     def emitVSel(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
@@ -1048,10 +1100,6 @@ class CodeGenLLVM:
         print ";----" + sys._getframe().f_code.co_name + ": " + node.node.name + "----"
         assert isinstance(node.node, compiler.ast.Name)
 
-        #print "; callfunc", node.args
-
-        #args = [self.visit(a) for a in node.args]
-        
         # special case for vec, since existing code expects entry as list but not type list
         if(node.node.name=='vec') and isinstance(node.args[0], compiler.ast.List):
             args = [self.visit(a) for a in node.args[0]]
@@ -1075,8 +1123,6 @@ class CodeGenLLVM:
             print ";RETURNING INTRS", x
             return x
 
-        #print "; callfuncafter", args
-        #print "; callfuncafter: ty = ",ty
 
         #
         # value initialier?
@@ -1087,7 +1133,7 @@ class CodeGenLLVM:
             return self.handleInitializeTypeCall(ty, args)
 
         #
-        # vector math function?
+        # TODO vector math function?
         #
         # UNCOMMENT:
         #orginal=comment start
@@ -1234,7 +1280,7 @@ class CodeGenLLVM:
         zero = llvm.core.Constant.int(llIntType, 0)
         for i in range(lenList):
             index = llvm.core.Constant.int(llIntType, i)
-            v = llvm.core.Constant.int(llIntType, ord(node.value[i]))#STR-TODO: ord:char->int, chr:int->char
+            v = llvm.core.Constant.int(llIntType, ord(node.value[i]))
             l = self.builder.gep(l_ptr, [zero, index])
             self.builder.store(v, l)
 
@@ -1274,7 +1320,7 @@ entry:
         return s
 
     #
-    #
+    # TODO
     # THIS IS WHERE HEADER DEFS LIVE
     def emitExternalSymbols(self):
         print ";----" + sys._getframe().f_code.co_name + "----"

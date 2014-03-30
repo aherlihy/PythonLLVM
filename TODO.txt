@@ -1,11 +1,7 @@
 THINGS TO DO:
     coding:
-        add math functions: sqrt, abs, exp, ceil/floor, mod, bitshift, div, log
-            - find way to add functions to symbol table (treat like visitAdd, but in func)
-            - figure out how to make ^ into llvmpy options
-            - range function
-        vector math
-        add field in dims for if string    
+            - vabs/vexp/etc
+        add math functions: sqrt, abs, exp, mod, bitshift, div, log
     maybe do if there's time:
         2D arrays
         free malloc'd arrays

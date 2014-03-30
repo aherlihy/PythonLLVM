@@ -49,7 +49,6 @@ class TypeInference(object):
             sym = Symbol(k, retTy, "function", argtypes = argTys)
             self.symbolTable.append(sym)
 
-        # Register intrinsic functions from MATH module TODO-MATH
 
 
     def isFloatType(self, ty):
