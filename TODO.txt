@@ -6,7 +6,7 @@ THINGS TO DO:
             find way to add functions to symbol table (treat like visitAdd, but in func)
             figure out how to make ^ into llvmpy options
         vector math
-    
+        add field in dims for if string    
     maybe do if there's time:
         2D arrays
         free malloc'd arrays
