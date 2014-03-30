@@ -3,6 +3,7 @@ import compiler
 import sys
 from SymbolTable import *
 from MUDA import *
+from mmath import *
 
 class void(object):
     """
@@ -39,12 +40,16 @@ class TypeInference(object):
 
         # Register intrinsic functions from MUDA module
         self.intrinsics = GetIntrinsicFunctions()
+#        for (k,v) in GetIntrinsicMathFunctions().items():
+#            self.intrinsics[k]=v
 
         for (k, v) in self.intrinsics.items():
             retTy  = v[0]
             argTys = v[1]
             sym = Symbol(k, retTy, "function", argtypes = argTys)
             self.symbolTable.append(sym)
+
+        # Register intrinsic functions from MATH module TODO-MATH
 
 
     def isFloatType(self, ty):
@@ -171,7 +176,12 @@ class TypeInference(object):
         if f is not None:
             print "; => Intrinsic:", f
             return f[0]
-
+        if isIntrinsicMathFunction(node.node.name):
+            x = GetIntrinsicMathFunctions()
+            if x.has_key(node.node.name):
+                return x[node.node.name][1][0]
+            else:
+                return void
         
         return self.inferType(node.node)
 

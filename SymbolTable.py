@@ -57,7 +57,7 @@ class SymbolTable:
         self.symbols = [('global', {})]      # stack of (function scope name, dict)
 
         self.genNum  = 0
-        
+        print ";INITING SYMBOL TABLE***" 
 
     def __str__(self):
         """

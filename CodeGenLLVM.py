@@ -10,9 +10,11 @@ from VecTypes import *
 from MUDA import *
 from TypeInference import *
 from SymbolTable import *
+from mmath import *
 
 symbolTable    = SymbolTable()
 typer          = TypeInference(symbolTable)
+mmath          = mMathFuncs()
 
 llTruthType    = llvm.core.Type.int(1)
 llVoidType     = llvm.core.Type.void()
@@ -22,6 +24,7 @@ llFVec4Type    = llvm.core.Type.vector(llFloatType, 4)
 llFVec4PtrType = llvm.core.Type.pointer(llFVec4Type)
 llIVec4Type    = llvm.core.Type.vector(llIntType, 4)
 # converts from python to LLVM type
+
 def toLLVMTy(ty):
 
     if ty is None:
@@ -44,6 +47,8 @@ class CodeGenLLVM:
     LLVM CodeGen class
     """
 
+    def emitabs(self, node):
+        return llvm.core.Constant.int(llIntType, 10)
     def __init__(self):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
@@ -175,7 +180,7 @@ class CodeGenLLVM:
                 elif( tyList == float):
                     self.builder.call(self._printFloat, [le0])
                 else:
-                    raise Exception("haven't implemented lists of lists")
+                    raise Exception("haven't implemented lists of type: ", tyList)
         else:
             raise Exception("haven't implemented printing of type: ", ty)
     def visitPrintnl(self, node):
@@ -515,13 +520,11 @@ class CodeGenLLVM:
     def testRet(self, node):
        
        if isinstance(node, compiler.ast.Return):
-           print ";FOUND RET"
            return (True, typer.inferType(node.value))
        elif isinstance(node, compiler.ast.Stmt):
             for i in node.nodes:
                 d = self.testRet(i)
                 if d[0]:
-                    print ";FOUND RET IN STMT", i
                     return (True, typer.inferType(i))
             return (False, None)
        else:
@@ -1052,6 +1055,18 @@ class CodeGenLLVM:
             l = self.emitLen(node.args[0])
             r = llvm.core.Constant.int(llIntType, l)
             return r
+
+
+        if( isIntrinsicMathFunction(node.node.name) ):
+            method_name = "emit%s" % node.node.name
+            if not callable(getattr(self, method_name)):
+                raise Exception("pyllvm err: undefined intrinsic func:", node.node.name)
+    
+            method = getattr(mmath, method_name)
+    
+            x = method(node)
+            return x
+
         #print "; callfuncafter", args
         #print "; callfuncafter: ty = ",ty
 
@@ -1095,13 +1110,13 @@ class CodeGenLLVM:
             raise Exception("pyllvm err: Symbol isn't registered as function:", node.node.name)
 
         # emit call
+        # if the type is void, then don't assign function call to anything
         if(ty == void):
             return self.builder.call(funcSig.llstorage, args)
         else:
             tmp  = symbolTable.genUniqueSymbol(ty)
             return self.builder.call(funcSig.llstorage, args, tmp.name)
 
-        # if the type is void, then don't assign function call to anything
     def visitList(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
         
