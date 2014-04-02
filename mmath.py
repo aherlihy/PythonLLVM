@@ -29,10 +29,11 @@ class mMathFuncs(object):
     def __init__(self, codegen):
         self.codeGen = codegen
     def emitabs(self, node):
-    
         v = self.codeGen.visit(node.args[0])
-
         return self.codeGen.builder.call(self.codeGen._mabs, [v])
+    def emitfabs(self, node):
+        v = self.codeGen.visit(node.args[0])
+        return self.codeGen.builder.call(self.codeGen._fmabs, [v])
     
     def emitmod(self, node):
         return llvm.core.Constant.int(llIntType, 10)

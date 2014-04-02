@@ -92,32 +92,41 @@ class CodeGenLLVM:
     
     def emitMmath(self):
 
+        # integer abs
         abs_funcType = llvm.core.Type.function(llIntType, [llIntType])
         mabs = self.module.add_function(abs_funcType, 'iabs')
         self._mabs = mabs
-
-        # create a block and a builder for print functions
         bb = mabs.append_basic_block('absb')
         b = llvm.core.Builder.new(bb)
         
         result = b.icmp(llvm.core.ICMP_SLE, mabs.args[0], llvm.core.Constant.int(llIntType, 0), 'cmptmp')
-
-        # get function
         function = b.basic_block.function
-        
-        # create blocks
         then_block = function.append_basic_block('abs_then')
         else_block = function.append_basic_block('abs_else')
         b.cbranch(result, then_block, else_block) 
-            
-        # emit then
         b.position_at_end(then_block)
-        
         pos = b.sub(llvm.core.Constant.int(llIntType, 0), mabs.args[0])
         b.ret(pos)
-        
         b.position_at_end(else_block)
         b.ret(mabs.args[0])
+        #fabs
+        fabs_funcType = llvm.core.Type.function(llFloatType, [llFloatType])
+        fmabs = self.module.add_function(fabs_funcType, 'fabs')
+        self._fmabs = fmabs
+        bf = fmabs.append_basic_block('fabsb')
+        b.position_at_end(bf)
+        
+        fresult = b.fcmp(llvm.core.FCMP_OLE, fmabs.args[0], llvm.core.Constant.real(llFloatType, 0.0), 'cmp2tmp')
+        ffunction = b.basic_block.function
+        fthen_block = ffunction.append_basic_block('fabs_then')
+        felse_block = ffunction.append_basic_block('fabs_else')
+        b.cbranch(fresult, fthen_block, felse_block) 
+        b.position_at_end(fthen_block)
+        posf = b.fsub(llvm.core.Constant.real(llFloatType, 0.0), fmabs.args[0])
+        b.ret(posf)
+        b.position_at_end(felse_block)
+        b.ret(fmabs.args[0])
+
         
     
     # source = http://code2code.wordpress.com/tag/llvm-py/ 

@@ -299,4 +299,4 @@ def main():
     print (x+y, x-y, x*y, x/y)
     # test abs
 
-    print (abs(-9), abs(0), abs(1), abs(-1), abs(ret_neg()))
+    print (abs(-9), abs(0), abs(1), abs(-1), abs(ret_neg()), abs(-9.0), abs(8.0), abs(100.0))
