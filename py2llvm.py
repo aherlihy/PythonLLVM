@@ -8,6 +8,9 @@ def usage():
     print "Usage: py2llvm.py <input.py>"
     sys.exit(1)
 
+def compiler(filename):
+    return py2llvm(filename)
+
 def main():
 
     if len(sys.argv) < 2:

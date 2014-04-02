@@ -181,6 +181,8 @@ class TypeInference(object):
                 return int
             if(node.node.name=='float'):
                 return float
+            if(node.node.name=='range'):
+                return list
             if x.has_key(node.node.name):
                 #return x[node.node.name][0]
                 return self.inferType(node.args[0])

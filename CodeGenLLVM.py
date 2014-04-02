@@ -341,7 +341,7 @@ class CodeGenLLVM:
             m = self.builder.gep(m_ptr, [zero, index])
             self.builder.store(a0, m)
         # reset expr to the malloc'd array ptr
-        return self.builder.ret(m_ptr)
+        return m_ptr
 
     #NOTE: arrays are passed by pointer, so if you construct an array within a function call and return it
     # you will end up passing a bad pointer. To get around this, as a temporary measure, if you absolutely must
@@ -356,7 +356,7 @@ class CodeGenLLVM:
             if self.currFuncRetType is None:
                 self.currFuncRetType = ty
                 self.prevFuncRetNode = node
-            return self.emitMakeArray(node.value)
+            return self.builder.ret(self.emitMakeArray(node.value))
 
 
         # Return(Const(None))
@@ -577,7 +577,7 @@ class CodeGenLLVM:
             sym = symbolTable.find(lhsNode.name)
             if sym is None:
                 # The variable appears here firstly.
-
+              
                 # alloc storage
                 # if array, already alloca'd in visit() so will set value to pointer
                 if(rTy==list):
@@ -587,7 +587,6 @@ class CodeGenLLVM:
                     llTy = llvm.core.Type.pointer(llvm.core.Type.array(toLLVMTy(listType), listLen))
                     # create space for LHS node of type llTy, addr in llStorage
                     llStorage = self.builder.alloca(llTy, lhsNode.name)
-
                     sym = Symbol(lhsNode.name, rTy, "variable", llstorage = llStorage, dim=(listType, listLen, isStr))
                     symbolTable.append(sym)
                 else:
@@ -1215,15 +1214,12 @@ class CodeGenLLVM:
 
 
         if( isIntrinsicMathFunction(node.node.name) ):
-            print ";IS INTRINSIC"
             method_name = "emit%s" % node.node.name
             if not callable(getattr(self.mmath, method_name)):
                 raise Exception("pyllvm err: undefined intrinsic func:", node.node.name)
     
             method = getattr(self.mmath, method_name)
-            print ";CALLING METHOD ", method
             x = method(node)
-            print ";RETURNING INTRS", x
             return x
 
 
@@ -1295,8 +1291,6 @@ class CodeGenLLVM:
         # emit list llvm
         arrTy = llvm.core.Type.array(toLLVMTy(tyList), lenList)
         l_ptr = self.builder.alloca_array(arrTy, llvm.core.Constant.int(llIntType, lenList))
-        
-        
         # populate list
         zero = llvm.core.Constant.int(llIntType, 0)
         for i in range(len(llNodes)):
@@ -1533,7 +1527,7 @@ def _test():
 
 def py2llvm(filename):
     ast = compiler.parseFile(filename)
-    print ";" +  str(ast)
+    #print ";" +  str(ast)
     codegen = compiler.walk(ast, CodeGenLLVM())
 
     main = codegen.getString()

@@ -136,8 +136,8 @@ class mMathFuncs(object):
         if(end<start):
             raise Exception("pyllvm err: bad range args")
         # malloc array
-        arrTy = llvm.core.Type.array(llIntType, end-start+1)
-        m_ptr = self.codeGen.builder.malloc_array(arrTy, llvm.core.Constant.int(llIntType, end-start+1))
+        arrTy = llvm.core.Type.array(llIntType, end-start)
+        m_ptr = self.codeGen.builder.alloca_array(arrTy, llvm.core.Constant.int(llIntType, end-start))
 
         # copy all the values from the stack one into the heap
         zero = llvm.core.Constant.int(llIntType, 0)
@@ -151,12 +151,8 @@ class mMathFuncs(object):
             self.codeGen.builder.store(val, m)
             count = count+1
         # reset expr to the malloc'd array ptr
+        print ";RETURNING EMITRANGE", m_ptr
         return m_ptr
-
-        # assign values to array
-
-
-        return start
 
 def isIntrinsicMathFunction(func):
     return intrinsics.has_key(func)
