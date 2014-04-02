@@ -127,8 +127,27 @@ class CodeGenLLVM:
         b.position_at_end(felse_block)
         b.ret(fmabs.args[0])
 
-        
+        # sqrt 
     
+        funcType = llvm.core.Type.function(llvm.core.Type.double(), [llvm.core.Type.double()], False)
+        self.sqrt = self.module.add_function(funcType, 'sqrt')
+   
+        #fsqrt
+        fsqrt_funcType = llvm.core.Type.function(llFloatType, [llFloatType])
+        fsqrt = self.module.add_function(fsqrt_funcType, '_fsqrt')
+        self._fsqrt = fsqrt
+        
+        bfs = fsqrt.append_basic_block('fsqrt')
+        b.position_at_end(bfs)
+        
+        d2f = b.fpext(fsqrt.args[0], llvm.core.Type.double(), 'f2d')
+        r = b.call(self.sqrt, [d2f], 'root')
+        retd = b.fptrunc(r, llFloatType, 'd2f')
+        b.ret(retd)
+
+        #isqrt
+
+
     # source = http://code2code.wordpress.com/tag/llvm-py/ 
     def emitPrint(self):
      
@@ -1339,25 +1358,22 @@ class CodeGenLLVM:
     def emitCommonHeader(self):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
-        s = """ 
-define <4 x float> @vsel(<4 x float> %a, <4 x float> %b, <4 x i32> %mask) {
-entry:
-    %a.i     = bitcast <4 x float> %a to <4 x i32>
-    %b.i     = bitcast <4 x float> %b to <4 x i32>
-    %tmp0    = and <4 x i32> %b.i, %mask
-    %tmp.addr = alloca <4 x i32>
-    store <4 x i32> <i32 -1, i32 -1, i32 -1, i32 -1>, <4 x i32>* %tmp.addr
-    %allone  = load <4 x i32>* %tmp.addr
-    %invmask = xor <4 x i32> %allone, %mask
-    %tmp1    = and <4 x i32> %a.i, %invmask
-    %tmp2    = or <4 x i32> %tmp0, %tmp1
-    %r       = bitcast <4 x i32> %tmp2 to <4 x float>
+#        s = """ 
+#        
+#define float @_Z5fsqrtf(float %i)  {
+#entry:
+#  %i.addr = alloca float, align 4
+#  store float %i, float* %i.addr, align 4
+#  %0 = load float* %i.addr, align 4
+#  %conv = fpext float %0 to double
+#  %call = call double @sqrt(double %conv) 
+#  %conv1 = fptrunc double %call to float
+#  ret float %conv1
+#}
 
-    ret <4 x float> %r
-}
-        
-        """
-        return s
+#declare double @sqrt(double) 
+#        """
+        return ""# s
 
     #
     # TODO

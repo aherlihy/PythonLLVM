@@ -48,7 +48,9 @@ class mMathFuncs(object):
         elif(rty==float):
             return self.codeGen.builder.frem(l,r)
         raise Exception("pyllvm err: unhandled type for abs") 
-    
+   
+
+    # TODO: these are super doable to implement, just need to find the right algorithm to make exponents out of bitshifting and sqrt out of algebra.
     def emitexp(self, node):
         return llvm.core.Constant.int(llIntType, 10)
     
@@ -56,11 +58,19 @@ class mMathFuncs(object):
         return llvm.core.Constant.int(llIntType, 10)
     
     def emitsqrt(self, node):
-        return llvm.core.Constant.int(llIntType, 10)
+        if(len(node.args)!=1):
+            raise Exception("pyllvm err: one argument to sqrt")
+        ty = self.codeGen.typer.inferType(node.args[0])
+        v = self.codeGen.visit(node.args[0])
+        if(ty==int):
+            return llvm.core.Constant.int(llIntType, 10)
+        elif(ty==float):
+            return self.codeGen.builder.call(self.codeGen._fsqrt, [v])
+        raise Exception("pyllvm err: unhandled type for abs") 
+        
+        
     
-   #TODO: frem, srem
     # ashr, lshr, shl
-    # TODO: urem, udiv, etc
     
     
     # NOTE: need to pass constants because creating array from dims
