@@ -47,7 +47,7 @@ class mMathFuncs(object):
             return self.codeGen.builder.srem(l, r)
         elif(rty==float):
             return self.codeGen.builder.frem(l,r)
-        raise Exception("pyllvm err: unhandled type for abs") 
+        raise Exception("pyllvm err: unhandled type for mod") 
    
 
     def emitpow(self, node):
@@ -71,7 +71,7 @@ class mMathFuncs(object):
     
     def emitlog(self, node):
         if(len(node.args)!=1):
-            raise Exception("pyllvm err: one argument to abs")
+            raise Exception("pyllvm err: one argument to log")
         ty = self.codeGen.typer.inferType(node.args[0])
         v = self.codeGen.visit(node.args[0])
         if(ty==int):
@@ -79,7 +79,7 @@ class mMathFuncs(object):
             return self.codeGen.builder.fptosi(self.codeGen.builder.call(self.codeGen._flog, [l]),  llIntType)
         elif(ty==float):
             return self.codeGen.builder.call(self.codeGen._flog, [v])
-        raise Exception("pyllvm err: unhandled type for abs") 
+        raise Exception("pyllvm err: unhandled type for log") 
     
     def emitsqrt(self, node):
         if(len(node.args)!=1):
@@ -93,7 +93,7 @@ class mMathFuncs(object):
             return self.codeGen.builder.fptosi(ret, llIntType)
         elif(ty==float):
             return self.codeGen.builder.call(self.codeGen._fsqrt, [v])
-        raise Exception("pyllvm err: unhandled type for abs") 
+        raise Exception("pyllvm err: unhandled type for sqrt") 
         
         
     

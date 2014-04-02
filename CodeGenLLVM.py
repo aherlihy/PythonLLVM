@@ -1142,8 +1142,19 @@ class CodeGenLLVM:
         ret_sym = symbolTable.genUniqueSymbol(llTruthType)
         return self.builder.uitofp(e_not, llFloatType, ret_sym.name)
 
-
-
+    def visitMod(self, node):
+        print ";----" + sys._getframe().f_code.co_name + "----"
+        lty = typer.inferType(node.left)
+        rty = typer.inferType(node.right)
+        if lty!=rty:
+            raise Exception("pyllvm err: both arguments must match type for mod")
+        l = self.visit(node.left)
+        r = self.visit(node.right)
+        if(rty==int):
+            return self.builder.srem(l, r)
+        elif(rty==float):
+            return self.builder.frem(l,r)
+        raise Exception("pyllvm err: unhandled type for mod") 
     def handleInitializeTypeCall(self, ty, args):
         print ";----" + sys._getframe().f_code.co_name + "----"
         llty = toLLVMTy(ty)

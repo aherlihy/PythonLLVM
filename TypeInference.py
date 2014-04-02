@@ -250,6 +250,19 @@ class TypeInference(object):
     def inferNot(self, node):
         return float
 
+    def inferMod(self, node):
+        print ";TI--" + sys._getframe().f_code.co_name + "----"
+    
+        left  = self.inferType(node.left)
+        right = self.inferType(node.right) 
+
+        if left != right:
+            print "; [type inference] Type mismatch found at line %d: left = %s, right = %s" % (node.lineno, left, right)
+            print ";                 node = %s" % (node)
+            return None
+
+        return left
+
     #
     # -- Leaf
     #
