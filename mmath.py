@@ -67,11 +67,19 @@ class mMathFuncs(object):
             return self.codeGen.builder.fptosi(self.codeGen.builder.call(self.codeGen._fpow, [l,r]),  llIntType)
         elif(lty==float):
             return self.codeGen.builder.call(self.codeGen._fpow, [l,r])
-            #return llvm.core.Constant.real(llFloatType, 10.0)
         raise Exception("pyllvm err: base for exponent must be numerical") 
     
     def emitlog(self, node):
-        return llvm.core.Constant.int(llIntType, 10)
+        if(len(node.args)!=1):
+            raise Exception("pyllvm err: one argument to abs")
+        ty = self.codeGen.typer.inferType(node.args[0])
+        v = self.codeGen.visit(node.args[0])
+        if(ty==int):
+            l = self.codeGen.builder.sitofp(v, llFloatType)
+            return self.codeGen.builder.fptosi(self.codeGen.builder.call(self.codeGen._flog, [l]),  llIntType)
+        elif(ty==float):
+            return self.codeGen.builder.call(self.codeGen._flog, [v])
+        raise Exception("pyllvm err: unhandled type for abs") 
     
     def emitsqrt(self, node):
         if(len(node.args)!=1):

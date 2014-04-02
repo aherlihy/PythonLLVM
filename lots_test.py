@@ -303,3 +303,4 @@ def main():
     print(mod(7,2), mod(2,7), mod(10,100), mod(1.0,1.0), mod(8.0,3.0), mod(3.0,8.0))
     print(sqrt(100), sqrt(100.0), sqrt(1), sqrt(0), sqrt(-ret_neg()))
     print(pow(10,1), pow(5.0,2), pow(8, 2.0), pow(3.0,3.0))
+    print(log(100), log(100.0), log(1), log(0), log(-ret_neg()))

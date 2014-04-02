@@ -93,6 +93,7 @@ class CodeGenLLVM:
     def emitMmath(self):
 
         # NOTE: could use built-in llvm abs function also.
+        # NOTE: These math functions don't throw errors if you pass in bad numbers (i.e. sqrt of negative)
         # integer abs
         abs_funcType = llvm.core.Type.function(llIntType, [llIntType])
         mabs = self.module.add_function(abs_funcType, 'iabs')
@@ -161,6 +162,21 @@ class CodeGenLLVM:
         retd = b.fptrunc(r, llFloatType, 'd2f_pow')
         b.ret(retd)
 
+        # log
+        funcType = llvm.core.Type.function(llvm.core.Type.double(), [llvm.core.Type.double()], False)
+        self.log = self.module.add_function(funcType, 'log')
+        
+        flog_funcType = llvm.core.Type.function(llFloatType, [llFloatType])
+        flog = self.module.add_function(flog_funcType, '_flog')
+        self._flog = flog
+        
+        bfp = flog.append_basic_block('bflog')
+        b.position_at_end(bfp)
+        
+        f2d_log = b.fpext(flog.args[0], llvm.core.Type.double(), 'f2d_log')
+        r = b.call(self.log, [f2d_log], 'log_res')
+        retd = b.fptrunc(r, llFloatType, 'd2f_log')
+        b.ret(retd)
 
 
     # source = http://code2code.wordpress.com/tag/llvm-py/ 
