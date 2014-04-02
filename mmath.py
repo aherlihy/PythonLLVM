@@ -29,34 +29,11 @@ class mMathFuncs(object):
     def __init__(self, codegen):
         self.codeGen = codegen
     def emitabs(self, node):
-        # extract value
-        if len(node.args) != 1 or self.codeGen.typer.inferType(node.args[0])!=int:
-            raise Exception("pyllvm err: bad arguments to", node.node.name)
-        val = self.codeGen.visit(node.args[0])
-        result = self.codeGen.builder.icmp(llvm.core.ICMP_ULE, val, llvm.core.Constant.int(llIntType, 0), 'cmptmp')
+    
+        v = self.codeGen.visit(node.args[0])
 
-        # get function
-        function = self.codeGen.builder.basic_block.function
-        
-        # create blocks
-        then_block = function.append_basic_block('abs_then')
-        else_block = function.append_basic_block('abs_else')
-        self.codeGen.builder.cbranch(result, then_block, else_block) 
-            
-        # emit then
-        self.codeGen.builder.position_at_end(then_block)
-        
-        pos = self.codeGen.builder.neg(val)
-        self.codeGen.builder.ret(pos)
-        
-        self.codeGen.builder.position_at_end(else_block)
-        self.codeGen.builder.ret(val)
-        
-# TODO
-        print ";ABS", node
-
-        # if greater than 0, negate
-        return llvm.core.Constant.int(llIntType, 10)
+        return self.codeGen.builder.call(self.codeGen._mabs, [v])
+    
     def emitmod(self, node):
         return llvm.core.Constant.int(llIntType, 10)
     

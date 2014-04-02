@@ -73,6 +73,7 @@ class CodeGenLLVM:
         self.emitExternalSymbols()
         
         self.emitPrint()
+        self.emitMmath()
 
         self.visit(node.node)
         #print self.module   # Output LLVM code to stdout.
@@ -88,6 +89,37 @@ class CodeGenLLVM:
         string.global_constant = True
         string.linkage = llvm.core.LINKAGE_INTERNAL # not strictly necessary here
         return string
+    
+    def emitMmath(self):
+
+        abs_funcType = llvm.core.Type.function(llIntType, [llIntType])
+        mabs = self.module.add_function(abs_funcType, 'iabs')
+        self._mabs = mabs
+
+        # create a block and a builder for print functions
+        bb = mabs.append_basic_block('absb')
+        b = llvm.core.Builder.new(bb)
+        
+        result = b.icmp(llvm.core.ICMP_SLE, mabs.args[0], llvm.core.Constant.int(llIntType, 0), 'cmptmp')
+
+        # get function
+        function = b.basic_block.function
+        
+        # create blocks
+        then_block = function.append_basic_block('abs_then')
+        else_block = function.append_basic_block('abs_else')
+        b.cbranch(result, then_block, else_block) 
+            
+        # emit then
+        b.position_at_end(then_block)
+        
+        pos = b.sub(llvm.core.Constant.int(llIntType, 0), mabs.args[0])
+        b.ret(pos)
+        
+        b.position_at_end(else_block)
+        b.ret(mabs.args[0])
+        
+    
     # source = http://code2code.wordpress.com/tag/llvm-py/ 
     def emitPrint(self):
      
@@ -651,7 +683,7 @@ class CodeGenLLVM:
 
         # emit testing code
         iv = self.builder.load(index.llstorage)
-        condition_bool = self.builder.icmp(llvm.core.ICMP_ULE, iv, loopLen, 'forcond')
+        condition_bool = self.builder.icmp(llvm.core.ICMP_SLE, iv, loopLen, 'forcond')
 
         self.builder.cbranch(condition_bool, do_for, end_for) 
         
@@ -793,10 +825,10 @@ class CodeGenLLVM:
         if rTy == int:
             d = { "==" : llvm.core.ICMP_EQ
                 , "!=" : llvm.core.ICMP_NE
-                , ">"  : llvm.core.ICMP_UGT
-                , ">=" : llvm.core.ICMP_UGE
-                , "<"  : llvm.core.ICMP_ULT
-                , "<=" : llvm.core.ICMP_ULE
+                , ">"  : llvm.core.ICMP_SGT
+                , ">=" : llvm.core.ICMP_SGE
+                , "<"  : llvm.core.ICMP_SLT
+                , "<=" : llvm.core.ICMP_SLE
                 }
             result = self.builder.icmp(d[op], lLLInst, rLLInst, 'cmptmp')
             return self.builder.uitofp(result, llFloatType, 'booltmp')
@@ -1112,12 +1144,13 @@ class CodeGenLLVM:
 
 
         if( isIntrinsicMathFunction(node.node.name) ):
+            print ";IS INTRINSIC"
             method_name = "emit%s" % node.node.name
             if not callable(getattr(self.mmath, method_name)):
                 raise Exception("pyllvm err: undefined intrinsic func:", node.node.name)
     
             method = getattr(self.mmath, method_name)
-    
+            print ";CALLING METHOD ", method
             x = method(node)
             print ";RETURNING INTRS", x
             return x

@@ -180,6 +180,8 @@ def test_ret5f(x=listf3):
 def test_retE(x=listi0):
     return []
 
+def ret_neg():
+    return -100
 def main():
 # ASSIGN
     ri = 5
@@ -295,4 +297,6 @@ def main():
     y = vec([2.0,2.0,3.0,4.0])
     #{ vec[3.0,3.0,4.0,5.0], vec[-1.0, -1.0, -2.0, -3.0], vec[2.0,2.0,3.0,4.0], vec[0.5,0.5,0.3,0.25] }
     print (x+y, x-y, x*y, x/y)
+    # test abs
 
+    print (abs(-9), abs(0), abs(1), abs(-1), abs(ret_neg()))
