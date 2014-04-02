@@ -14,7 +14,7 @@ llIVec4Type    = llvm.core.Type.vector(llIntType, 4)
 intrinsics = {
     # Name    : ( ret type , arg types
       'abs'   : ( int    , [ int        ] )
-    , 'exp'   : ( int    , [ int        ] )
+    , 'pow'   : ( int    , [ int        ] )
     , 'log'   : ( int    , [ int, int   ] )
     , 'sqrt'  : ( int    , [ int        ] )
     , 'mod'   : ( int    , [ int, int   ] )
@@ -50,9 +50,25 @@ class mMathFuncs(object):
         raise Exception("pyllvm err: unhandled type for abs") 
    
 
-    # TODO: these are super doable to implement, just need to find the right algorithm to make exponents out of bitshifting and sqrt out of algebra.
-    def emitexp(self, node):
-        return llvm.core.Constant.int(llIntType, 10)
+    def emitpow(self, node):
+        if(len(node.args)!=2):
+            raise Exception("pyllvm err: 2 arguments needed for pow")
+        lty = self.codeGen.typer.inferType(node.args[0])
+        rty = self.codeGen.typer.inferType(node.args[1])
+        
+        l = self.codeGen.visit(node.args[0])
+        r = self.codeGen.visit(node.args[1])
+        if rty == int:
+            r = self.codeGen.builder.sitofp(r, llFloatType)
+        elif rty != float:
+            raise Exception("pyllvm err: exponent must be numerical")
+        if(lty==int):
+            l = self.codeGen.builder.sitofp(l, llFloatType)
+            return self.codeGen.builder.fptosi(self.codeGen.builder.call(self.codeGen._fpow, [l,r]),  llIntType)
+        elif(lty==float):
+            return self.codeGen.builder.call(self.codeGen._fpow, [l,r])
+            #return llvm.core.Constant.real(llFloatType, 10.0)
+        raise Exception("pyllvm err: base for exponent must be numerical") 
     
     def emitlog(self, node):
         return llvm.core.Constant.int(llIntType, 10)

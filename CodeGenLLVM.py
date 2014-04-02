@@ -92,6 +92,7 @@ class CodeGenLLVM:
     
     def emitMmath(self):
 
+        # NOTE: could use built-in llvm abs function also.
         # integer abs
         abs_funcType = llvm.core.Type.function(llIntType, [llIntType])
         mabs = self.module.add_function(abs_funcType, 'iabs')
@@ -128,11 +129,9 @@ class CodeGenLLVM:
         b.ret(fmabs.args[0])
 
         # sqrt 
-    
         funcType = llvm.core.Type.function(llvm.core.Type.double(), [llvm.core.Type.double()], False)
         self.sqrt = self.module.add_function(funcType, 'sqrt')
-   
-        #fsqrt
+        
         fsqrt_funcType = llvm.core.Type.function(llFloatType, [llFloatType])
         fsqrt = self.module.add_function(fsqrt_funcType, '_fsqrt')
         self._fsqrt = fsqrt
@@ -145,6 +144,22 @@ class CodeGenLLVM:
         retd = b.fptrunc(r, llFloatType, 'd2f')
         b.ret(retd)
 
+        # pow
+        funcType = llvm.core.Type.function(llvm.core.Type.double(), [llvm.core.Type.double(), llvm.core.Type.double()], False)
+        self.pow = self.module.add_function(funcType, 'pow')
+        
+        fpow_funcType = llvm.core.Type.function(llFloatType, [llFloatType, llFloatType])
+        fpow = self.module.add_function(fpow_funcType, '_fpow')
+        self._fpow = fpow
+        
+        bfp = fpow.append_basic_block('bfpow')
+        b.position_at_end(bfp)
+        
+        f2d_base = b.fpext(fpow.args[0], llvm.core.Type.double(), 'f2d_base')
+        f2d_exp = b.fpext(fpow.args[1], llvm.core.Type.double(), 'f2d_exp')
+        r = b.call(self.pow, [f2d_base, f2d_exp], 'pow_res')
+        retd = b.fptrunc(r, llFloatType, 'd2f_pow')
+        b.ret(retd)
 
 
 
