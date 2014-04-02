@@ -176,6 +176,11 @@ class TypeInference(object):
             return f[0]
         if isIntrinsicMathFunction(node.node.name):
             x = GetIntrinsicMathFunctions()
+            # special case for casting functions
+            if(node.node.name=='int'):
+                return int
+            if(node.node.name=='float'):
+                return float
             if x.has_key(node.node.name):
                 #return x[node.node.name][0]
                 return self.inferType(node.args[0])

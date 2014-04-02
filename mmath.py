@@ -18,6 +18,8 @@ intrinsics = {
     , 'log'   : ( int    , [ int, int   ] )
     , 'sqrt'  : ( int    , [ int        ] )
     , 'mod'   : ( int    , [ int, int   ] )
+    , 'int'   : ( float  , [ int        ] )
+    , 'float' : ( int    , [ float      ] )
     , 'range' : ( list   , [ int        ])
 }
 
@@ -95,11 +97,27 @@ class mMathFuncs(object):
             return self.codeGen.builder.call(self.codeGen._fsqrt, [v])
         raise Exception("pyllvm err: unhandled type for sqrt") 
         
-        
-    
-    # ashr, lshr, shl
-    
-    
+    def emitint(self, node):
+        if(len(node.args)!=1):
+            raise Exception("pyllvm err: one argument to int")
+        ty = self.codeGen.typer.inferType(node.args[0])
+        v = self.codeGen.visit(node.args[0])
+        if(ty==int):
+            return v
+        elif(ty==float):
+            return self.codeGen.builder.fptosi(v, llIntType)
+        raise Exception("pyllvm err: unhandled type for int") 
+    def emitfloat(self, node):
+        if(len(node.args)!=1):
+            raise Exception("pyllvm err: one argument to float")
+        ty = self.codeGen.typer.inferType(node.args[0])
+        v = self.codeGen.visit(node.args[0])
+        if(ty==float):
+            return v
+        elif(ty==int):
+            return self.codeGen.builder.sitofp(v, llFloatType)
+        raise Exception("pyllvm err: unhandled type for float") 
+
     # NOTE: need to pass constants because creating array from dims
     def emitrange(self, node):
         print ";IN RANGE", node
