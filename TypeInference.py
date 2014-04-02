@@ -177,7 +177,8 @@ class TypeInference(object):
         if isIntrinsicMathFunction(node.node.name):
             x = GetIntrinsicMathFunctions()
             if x.has_key(node.node.name):
-                return x[node.node.name][0]
+                #return x[node.node.name][0]
+                return self.inferType(node.args[0])
             else:
                 return void
         

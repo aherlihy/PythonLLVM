@@ -18,10 +18,6 @@ intrinsics = {
     , 'log'   : ( int    , [ int, int   ] )
     , 'sqrt'  : ( int    , [ int        ] )
     , 'mod'   : ( int    , [ int, int   ] )
-    , 'fabs'  : ( float  , [ float      ] )
-    , 'fexp'  : ( float  , [ float, float ] )
-    , 'flog'  : ( float  , [ float, float ] )
-    , 'fsqrt' : ( float  , [ float      ] )
     , 'range' : ( list   , [ int        ])
 }
 
@@ -29,14 +25,29 @@ class mMathFuncs(object):
     def __init__(self, codegen):
         self.codeGen = codegen
     def emitabs(self, node):
+        if(len(node.args)!=1):
+            raise Exception("pyllvm err: one argument to abs")
+        ty = self.codeGen.typer.inferType(node.args[0])
         v = self.codeGen.visit(node.args[0])
-        return self.codeGen.builder.call(self.codeGen._mabs, [v])
-    def emitfabs(self, node):
-        v = self.codeGen.visit(node.args[0])
-        return self.codeGen.builder.call(self.codeGen._fmabs, [v])
-    
+        if(ty==int):
+            return self.codeGen.builder.call(self.codeGen._mabs, [v])
+        elif(ty==float):
+            return self.codeGen.builder.call(self.codeGen._fmabs, [v])
+        raise Exception("pyllvm err: unhandled type for abs") 
     def emitmod(self, node):
-        return llvm.core.Constant.int(llIntType, 10)
+        if(len(node.args)!=2):
+            raise Exception("pyllvm err: 2 arguments needed for mod")
+        lty = self.codeGen.typer.inferType(node.args[0])
+        rty = self.codeGen.typer.inferType(node.args[1])
+        if lty!=rty:
+            raise Exception("pyllvm err: both arguments must match type for mod")
+        l = self.codeGen.visit(node.args[0])
+        r = self.codeGen.visit(node.args[1])
+        if(rty==int):
+            return self.codeGen.builder.srem(l, r)
+        elif(rty==float):
+            return self.codeGen.builder.frem(l,r)
+        raise Exception("pyllvm err: unhandled type for abs") 
     
     def emitexp(self, node):
         return llvm.core.Constant.int(llIntType, 10)

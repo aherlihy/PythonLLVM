@@ -300,3 +300,4 @@ def main():
     # test abs
 
     print (abs(-9), abs(0), abs(1), abs(-1), abs(ret_neg()), abs(-9.0), abs(8.0), abs(100.0))
+    print(mod(7,2), mod(2,7), mod(10,100), mod(1.0,1.0), mod(8.0,3.0), mod(3.0,8.0))

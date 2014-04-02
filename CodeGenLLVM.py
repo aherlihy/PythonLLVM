@@ -1028,7 +1028,8 @@ class CodeGenLLVM:
             return self.emitVDiv(lLLInst, rLLInst)
         if typer.isFloatType(lTy):
             divInst = self.builder.fdiv(lLLInst, rLLInst, tmpSym.name)
-            # TODO: sdiv for integers
+        #if lTy == int:
+        #    divInst = self.builder.sdiv(lLLInst, rLLInst, tmpSym.name)
         else:
             divInst = self.builder.udiv(lLLInst, rLLInst, tmpSym.name)
 
