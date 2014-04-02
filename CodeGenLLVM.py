@@ -66,6 +66,7 @@ class CodeGenLLVM:
         self.printf           = None
         self.vec              = None
         self.mmath                 = mMathFuncs(self)
+        self.typer            = typer
     def visitModule(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
         # emitExternalSymbols() should be called before self.visit(node.node)
@@ -702,8 +703,7 @@ class CodeGenLLVM:
         self.builder.branch(start_while)
         self.builder.position_at_end(end_while)
     
-    #TODO
-    def emitVCompare(self, op, lInst, rInst):
+    def emitVAnd(self, op, lInst, rInst):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
         d = { "==" : llvm.core.RPRED_OEQ
@@ -754,6 +754,8 @@ class CodeGenLLVM:
         ctmp1 = symbolTable.genUniqueSymbol(int)
         ctmp2 = symbolTable.genUniqueSymbol(int)
         ctmp3 = symbolTable.genUniqueSymbol(int)
+
+        # here extending the truth values to be floats so they could go into vectors
         c0 = self.builder.sext(f0, llIntType)
         c1 = self.builder.sext(f1, llIntType)
         c2 = self.builder.sext(f2, llIntType)
@@ -775,9 +777,6 @@ class CodeGenLLVM:
     def visitCompare(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
-        #print "; ", node.expr
-        #print "; ", node.ops[0]
-
         lTy = typer.inferType(node.expr)
         rTy = typer.inferType(node.ops[0][1])
 
@@ -789,9 +788,9 @@ class CodeGenLLVM:
 
         op  = node.ops[0][0]
         
-        if rTy == vec:
-            return self.emitVCompare(op, lLLInst, rLLInst)
-        elif rTy == int:
+        #if rTy == vec:
+        #    return self.emitVCompare(op, lLLInst, rLLInst)
+        if rTy == int:
             d = { "==" : llvm.core.ICMP_EQ
                 , "!=" : llvm.core.ICMP_NE
                 , ">"  : llvm.core.ICMP_UGT
@@ -812,12 +811,7 @@ class CodeGenLLVM:
             result = self.builder.fcmp(d[op], lLLInst, rLLInst, 'cmptmp')
             return self.builder.uitofp(result, llFloatType, 'flttmp')
         else:  
-            raise Exception("pyllvm err: unable to compare type " + rTy)
-
-        if (op !="<") and (op != ">"):
-            raise Exception("pyllvm err: Unknown operator:", op)
-
-        raise Exception("pyllvm err: muda")
+            raise Exception("pyllvm err: unable to compare type ",rTy)
 
     def visitUnarySub(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
@@ -842,9 +836,6 @@ class CodeGenLLVM:
 
 
         ty = typer.inferType(node)
-        #print "; getattr: expr", node.expr
-        #print "; getattr: attrname", node.attrname
-        #print "; getattr: ty", ty
 
         rLLInst  = self.visit(node.expr)
         tmpSym   = symbolTable.genUniqueSymbol(ty)
@@ -996,6 +987,7 @@ class CodeGenLLVM:
             return self.emitVDiv(lLLInst, rLLInst)
         if typer.isFloatType(lTy):
             divInst = self.builder.fdiv(lLLInst, rLLInst, tmpSym.name)
+            # TODO: sdiv for integers
         else:
             divInst = self.builder.udiv(lLLInst, rLLInst, tmpSym.name)
 
@@ -1004,6 +996,13 @@ class CodeGenLLVM:
     def visitAnd(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
         
+        if typer.inferType(node.nodes[0]) == vec:
+            if len(node.nodes) != 2:
+                raise Exception("pyllvm err: and only supported for 2 vectors")
+            l = self.visit(node.nodes[0])
+            r = self.visit(node.nodes[1])
+            return self.emitVAnd('==', l,r)
+
         a = self.visit(node.nodes[0])
         a_sym = symbolTable.genUniqueSymbol(llTruthType)
         a_int = self.builder.fptoui(a, llTruthType, a_sym.name)
@@ -1227,7 +1226,6 @@ class CodeGenLLVM:
 
         # %tmp = load %name
         loadInst = self.builder.load(sym.llstorage, tmpSym.name)
-        #print "; [Leaf] inst = ", loadInst
         return loadInst
 
 
@@ -1267,7 +1265,6 @@ class CodeGenLLVM:
         storeInst = self.builder.store(llConst, allocInst)
         loadInst  = self.builder.load(allocInst, tmpSym.name)
 
-        #print ";", loadInst
 
         return loadInst
     def emitStringInst(self, node):
