@@ -145,7 +145,7 @@ class CodeGenLLVM:
         retd = b.fptrunc(r, llFloatType, 'd2f')
         b.ret(retd)
 
-        #isqrt
+
 
 
     # source = http://code2code.wordpress.com/tag/llvm-py/ 

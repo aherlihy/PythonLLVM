@@ -63,7 +63,10 @@ class mMathFuncs(object):
         ty = self.codeGen.typer.inferType(node.args[0])
         v = self.codeGen.visit(node.args[0])
         if(ty==int):
-            return llvm.core.Constant.int(llIntType, 10)
+            # first cast int to float, then do float sqrt
+            i2f = self.codeGen.builder.sitofp(v, llFloatType, 'i2f')
+            ret = self.codeGen.builder.call(self.codeGen._fsqrt, [i2f])
+            return self.codeGen.builder.fptosi(ret, llIntType)
         elif(ty==float):
             return self.codeGen.builder.call(self.codeGen._fsqrt, [v])
         raise Exception("pyllvm err: unhandled type for abs") 
