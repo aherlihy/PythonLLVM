@@ -120,7 +120,6 @@ class mMathFuncs(object):
 
     # NOTE: need to pass constants because creating array from dims
     def emitrange(self, node):
-        print ";IN RANGE", node
         # get start and end points
         for n in node.args:
             if not isinstance(n, compiler.ast.Const):
@@ -151,7 +150,6 @@ class mMathFuncs(object):
             self.codeGen.builder.store(val, m)
             count = count+1
         # reset expr to the malloc'd array ptr
-        print ";RETURNING EMITRANGE", m_ptr
         return m_ptr
 
 def isIntrinsicMathFunction(func):

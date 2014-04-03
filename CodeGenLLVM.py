@@ -563,6 +563,20 @@ class CodeGenLLVM:
         for node in node.nodes:
 
             self.visit(node)
+
+    def emitListAssign(self, node, expr):
+        ty = typer.inferType(node.expr)
+        if ty!=list:
+            raise Exception("pyllvm error: cannot index into nonlist type", node.expr)
+        intoList = self.visit(node.expr)
+        index = self.visit(node.subs[0])
+        zero = llvm.core.Constant.int(llIntType, 0)
+        tmp0  = symbolTable.genUniqueSymbol(float)
+        l = self.builder.gep(intoList, [zero, index])
+        out = self.builder.store(expr, l)
+        return out
+        #return self.builder.load(l, tmp0.name)
+
     def visitAssign(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
         if len(node.nodes) != 1:
@@ -604,7 +618,12 @@ class CodeGenLLVM:
             else:
                 # symbol is already defined.
                 lTy = sym.type
+        elif isinstance(lhsNode, compiler.ast.Subscript):
+            print ";IS SUBSCRIPT"
+            return self.emitListAssign(lhsNode, rLLInst)
 
+        else:
+            raise Exception("pyllvm err: assigning to non-mutable type:", lhsNode)
 
         if rTy != lTy:
             raise Exception("pyllvm err: TypeMismatch: lTy = %s, rTy = %s. Cannot dynamically reassign vars to different types" % (lTy, rTy))
@@ -1527,7 +1546,7 @@ def _test():
 
 def py2llvm(filename):
     ast = compiler.parseFile(filename)
-    #print ";" +  str(ast)
+    print ";AST=" +  str(ast)
     codegen = compiler.walk(ast, CodeGenLLVM())
 
     main = codegen.getString()
