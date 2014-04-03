@@ -1,6 +1,6 @@
 import struct
 import math
-
+from PyllvmError import *
 def f2b(f):
     """
     float to 32bit int
@@ -43,14 +43,14 @@ class vec(object):
                 v.append(args[0])
 
             else:
-                raise Exception("Unsupported input for vec():", args)
+                raise PyllvmError("MUDA: Unsupported input for vec():", args)
 
         elif len(args) == 0:
             # vec()
             v = [0.0, 0.0, 0.0, 0.0]
            
         else: 
-            raise Exception("Unsupported input for vec():", args)
+            raise PyllvmError("MUDA: Unsupported input for vec():", args)
 
         self.value = v
 
@@ -64,7 +64,7 @@ class vec(object):
     def __add__(self, b):
 
         if not isinstance(b, vec):
-            raise Exception("RHS is not a type of vec")
+            raise PyllvmError("MUDA: RHS is not a type of vec")
 
         tmp = vec([x + y for x, y in zip(self.value, b.value)])
 
@@ -74,7 +74,7 @@ class vec(object):
     def __sub__(self, b):
 
         if not isinstance(b, vec):
-            raise Exception("RHS is not a type of vec")
+            raise PyllvmError("MUDA: RHS is not a type of vec")
 
         tmp = vec([x - y for x, y in zip(self.value, b.value)])
 
@@ -83,7 +83,7 @@ class vec(object):
     def __mul__(self, b):
 
         if not isinstance(b, vec):
-            raise Exception("RHS is not a type of vec")
+            raise PyllvmError("MUDA: RHS is not a type of vec")
 
         tmp = vec([x * y for x, y in zip(self.value, b.value)])
 
@@ -92,7 +92,7 @@ class vec(object):
     def __div__(self, b):
 
         if not isinstance(b, vec):
-            raise Exception("RHS is not a type of vec")
+            raise PyllvmError("MUDA: RHS is not a type of vec")
 
         tmp = vec([x / y for x, y in zip(self.value, b.value)])
 
@@ -101,7 +101,7 @@ class vec(object):
     def __gt__(self, b):
 
         if not isinstance(b, vec):
-            raise Exception("RHS is not a type of vec")
+            raise PyllvmError("MUDA: RHS is not a type of vec")
 
         r = [0.0, 0.0, 0.0, 0.0]
 
@@ -116,7 +116,7 @@ class vec(object):
     def __ge__(self, b):
 
         if not isinstance(b, vec):
-            raise Exception("RHS is not a type of vec")
+            raise PyllvmError("MUDA: RHS is not a type of vec")
 
         r = [0.0, 0.0, 0.0, 0.0]
 
@@ -131,7 +131,7 @@ class vec(object):
     def __lt__(self, b):
 
         if not isinstance(b, vec):
-            raise Exception("RHS is not a type of vec")
+            raise PyllvmError("MUDA: RHS is not a type of vec")
 
         r = [0.0, 0.0, 0.0, 0.0]
 
@@ -146,7 +146,7 @@ class vec(object):
     def __le__(self, b):
 
         if not isinstance(b, vec):
-            raise Exception("RHS is not a type of vec")
+            raise PyllvmError("MUDA: RHS is not a type of vec")
 
         r = [0.0, 0.0, 0.0, 0.0]
 
@@ -175,7 +175,7 @@ class vec(object):
 
         for (i, s) in enumerate(name):
             if not d.has_key(s):
-                raise Exception("Invalid letter for swizzle:", name)
+                raise PyllvmError("MUDA: Invalid letter for swizzle:", name)
             
             v.value[i] = self.value[d[s]]
 

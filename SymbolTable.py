@@ -1,3 +1,5 @@
+from PyllvmError import *
+
 class Symbol(object):
     """
     Structure for symbol with type information.
@@ -124,7 +126,7 @@ class SymbolTable:
             if d.has_key(name):
                 return d[name]
 
-        raise Exception("Undefine symbol: ", name)
+        raise PyllvmError("Symbol Table: Undefine symbol: ", name)
 
     def genUniqueSymbol(self, type):
         """
@@ -151,7 +153,7 @@ class SymbolTable:
             i           += 1
             
             if i > nMax:
-                raise Exception("Can't define unique symbol.")
+                raise PyllvmError("Symbol Table: Can't define unique symbol.")
     def returnSymbols(self):
         return self.symbols
 

@@ -1,6 +1,7 @@
 import math
 import llvm.core
 import compiler 
+from PyllvmError import *
 llTruthType    = llvm.core.Type.int(1)
 llVoidType     = llvm.core.Type.void()
 llIntType      = llvm.core.Type.int()
@@ -15,6 +16,7 @@ intrinsics = {
     # Name    : ( ret type , arg types
       'abs'   : ( int    , [ int        ] )
     , 'pow'   : ( int    , [ int        ] )
+    , 'exp'   : ( int    , [ int        ] )
     , 'log'   : ( int    , [ int, int   ] )
     , 'sqrt'  : ( int    , [ int        ] )
     , 'mod'   : ( int    , [ int, int   ] )
@@ -28,33 +30,33 @@ class mMathFuncs(object):
         self.codeGen = codegen
     def emitabs(self, node):
         if(len(node.args)!=1):
-            raise Exception("pyllvm err: one argument to abs")
+            raise PyllvmError("mmath: one argument to abs")
         ty = self.codeGen.typer.inferType(node.args[0])
         v = self.codeGen.visit(node.args[0])
         if(ty==int):
             return self.codeGen.builder.call(self.codeGen._mabs, [v])
         elif(ty==float):
             return self.codeGen.builder.call(self.codeGen._fmabs, [v])
-        raise Exception("pyllvm err: unhandled type for abs") 
+        raise PyllvmError("mmath: unhandled type for abs") 
     def emitmod(self, node):
         if(len(node.args)!=2):
-            raise Exception("pyllvm err: 2 arguments needed for mod")
+            raise PyllvmError("mmath: 2 arguments needed for mod")
         lty = self.codeGen.typer.inferType(node.args[0])
         rty = self.codeGen.typer.inferType(node.args[1])
         if lty!=rty:
-            raise Exception("pyllvm err: both arguments must match type for mod")
+            raise PyllvmError("mmath: both arguments must match type for mod")
         l = self.codeGen.visit(node.args[0])
         r = self.codeGen.visit(node.args[1])
         if(rty==int):
             return self.codeGen.builder.srem(l, r)
         elif(rty==float):
             return self.codeGen.builder.frem(l,r)
-        raise Exception("pyllvm err: unhandled type for mod") 
+        raise PyllvmError("mmath: unhandled type for mod") 
    
 
     def emitpow(self, node):
         if(len(node.args)!=2):
-            raise Exception("pyllvm err: 2 arguments needed for pow")
+            raise PyllvmError("mmath: 2 arguments needed for pow")
         lty = self.codeGen.typer.inferType(node.args[0])
         rty = self.codeGen.typer.inferType(node.args[1])
         
@@ -63,17 +65,17 @@ class mMathFuncs(object):
         if rty == int:
             r = self.codeGen.builder.sitofp(r, llFloatType)
         elif rty != float:
-            raise Exception("pyllvm err: exponent must be numerical")
+            raise PyllvmError("mmath: exponent must be numerical")
         if(lty==int):
             l = self.codeGen.builder.sitofp(l, llFloatType)
             return self.codeGen.builder.fptosi(self.codeGen.builder.call(self.codeGen._fpow, [l,r]),  llIntType)
         elif(lty==float):
             return self.codeGen.builder.call(self.codeGen._fpow, [l,r])
-        raise Exception("pyllvm err: base for exponent must be numerical") 
+        raise PyllvmError("mmath: base for exponent must be numerical") 
     
     def emitlog(self, node):
         if(len(node.args)!=1):
-            raise Exception("pyllvm err: one argument to log")
+            raise PyllvmError("mmath: one argument to log")
         ty = self.codeGen.typer.inferType(node.args[0])
         v = self.codeGen.visit(node.args[0])
         if(ty==int):
@@ -81,11 +83,23 @@ class mMathFuncs(object):
             return self.codeGen.builder.fptosi(self.codeGen.builder.call(self.codeGen._flog, [l]),  llIntType)
         elif(ty==float):
             return self.codeGen.builder.call(self.codeGen._flog, [v])
-        raise Exception("pyllvm err: unhandled type for log") 
+        raise PyllvmError("mmath: unhandled type for log") 
+    
+    def emitexp(self, node):
+        if(len(node.args)!=1):
+            raise PyllvmError("mmath: one argument to log")
+        ty = self.codeGen.typer.inferType(node.args[0])
+        v = self.codeGen.visit(node.args[0])
+        if(ty==int):
+            l = self.codeGen.builder.sitofp(v, llFloatType)
+            return self.codeGen.builder.fptosi(self.codeGen.builder.call(self.codeGen._exp, [l]),  llIntType)
+        elif(ty==float):
+            return self.codeGen.builder.call(self.codeGen._exp, [v])
+        raise PyllvmError("mmath: unhandled type for log") 
     
     def emitsqrt(self, node):
         if(len(node.args)!=1):
-            raise Exception("pyllvm err: one argument to sqrt")
+            raise PyllvmError("mmath: one argument to sqrt")
         ty = self.codeGen.typer.inferType(node.args[0])
         v = self.codeGen.visit(node.args[0])
         if(ty==int):
@@ -95,35 +109,35 @@ class mMathFuncs(object):
             return self.codeGen.builder.fptosi(ret, llIntType)
         elif(ty==float):
             return self.codeGen.builder.call(self.codeGen._fsqrt, [v])
-        raise Exception("pyllvm err: unhandled type for sqrt") 
+        raise PyllvmError("mmath: unhandled type for sqrt") 
         
     def emitint(self, node):
         if(len(node.args)!=1):
-            raise Exception("pyllvm err: one argument to int")
+            raise PyllvmError("mmath: one argument to int")
         ty = self.codeGen.typer.inferType(node.args[0])
         v = self.codeGen.visit(node.args[0])
         if(ty==int):
             return v
         elif(ty==float):
             return self.codeGen.builder.fptosi(v, llIntType)
-        raise Exception("pyllvm err: unhandled type for int") 
+        raise PyllvmError("mmath: unhandled type for int") 
     def emitfloat(self, node):
         if(len(node.args)!=1):
-            raise Exception("pyllvm err: one argument to float")
+            raise PyllvmError("mmath: one argument to float")
         ty = self.codeGen.typer.inferType(node.args[0])
         v = self.codeGen.visit(node.args[0])
         if(ty==float):
             return v
         elif(ty==int):
             return self.codeGen.builder.sitofp(v, llFloatType)
-        raise Exception("pyllvm err: unhandled type for float") 
+        raise PyllvmError("mmath: unhandled type for float") 
 
     # NOTE: need to pass constants because creating array from dims
     def emitrange(self, node):
         # get start and end points
         for n in node.args:
             if not isinstance(n, compiler.ast.Const):
-                raise Exception("pyllvm err: need to pass range constant values")
+                raise PyllvmError("mmath: need to pass range constant values")
         
         if len(node.args) == 1:
             start = 0
@@ -133,7 +147,7 @@ class mMathFuncs(object):
             end = node.args[1].value
 
         if(end<start):
-            raise Exception("pyllvm err: bad range args")
+            raise PyllvmError("mmath: bad range args")
         # malloc array
         arrTy = llvm.core.Type.array(llIntType, end-start)
         m_ptr = self.codeGen.builder.alloca_array(arrTy, llvm.core.Constant.int(llIntType, end-start))

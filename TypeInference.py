@@ -4,7 +4,7 @@ import sys
 from SymbolTable import *
 from MUDA import *
 from mmath import *
-
+from PyllvmError import PyllvmError
 class void(object):
     """
     Represents void type
@@ -89,7 +89,7 @@ class TypeInference(object):
         op = g.match(str(node)) 
 
         if op == None:
-            raise Exception("Invalid node name?", str(node)) 
+            raise PyllvmError("Type Inference: Invalid node name?", str(node)) 
 
         op_name = op.group(1)
 
@@ -100,7 +100,7 @@ class TypeInference(object):
         method_name = "infer%s" % op_name
         
         if not callable(getattr(self, method_name)):
-            raise Exception("Unknown node name:", op_name)
+            raise PyllvmError("Type Inference: Unknown node name:", op_name)
 
         method = getattr(self, method_name)
 
@@ -127,7 +127,7 @@ class TypeInference(object):
 
         for s in name:
             if not s in ('x', 'y', 'z', 'w'):
-                raise Exception("Not a swizzle letter:", name) 
+                raise PyllvmError("Type Inference: Not a swizzle letter:", name) 
 
         return True
 
@@ -152,7 +152,7 @@ class TypeInference(object):
             if ty == vec:
                 return float
             else:
-                raise Exception("Unknown type:", ty)
+                raise PyllvmError("Type Inference: Unknown type:", ty)
 
         else:
             # vector
@@ -326,7 +326,7 @@ class TypeInference(object):
             return list
 
         else:
-            raise Exception("Unknown type of value:", value)
+            raise PyllvmError("Type Inference: Unknown type of value:", value)
     
     def inferSubscript(self, node):
         print ';INFER ON', node
@@ -340,7 +340,7 @@ class TypeInference(object):
         if isinstance(node.expr, compiler.ast.Const):
             ty = int
         if ty is None:
-            raise Exception("pyllvm error: cannot index into value", node.expr)
+            raise PyllvmError("Type Inference: cannot index into value", node.expr)
         return ty
     def inferList(self, node):
         return list

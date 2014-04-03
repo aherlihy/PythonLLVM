@@ -11,6 +11,7 @@ from MUDA import *
 from TypeInference import *
 from SymbolTable import *
 from mmath import *
+from PyllvmError import *
 
 symbolTable    = SymbolTable()
 typer          = TypeInference(symbolTable)
@@ -22,14 +23,15 @@ llFloatType    = llvm.core.Type.float()
 llFVec4Type    = llvm.core.Type.vector(llFloatType, 4)
 llFVec4PtrType = llvm.core.Type.pointer(llFVec4Type)
 llIVec4Type    = llvm.core.Type.vector(llIntType, 4)
-# converts from python to LLVM type
 
+
+# converts from python to LLVM type
 def toLLVMTy(ty):
 
     if ty is None:
         return llVoidType
     if ty is list or ty is str:
-        raise Exception("need to find list length yourself")
+        raise PyllvmError("CodeGen: need to find list length yourself")
     d = {
           float : llFloatType
         , int   : llIntType
@@ -39,7 +41,7 @@ def toLLVMTy(ty):
 
     if d.has_key(ty):
         return d[ty]
-    raise Exception("pyllvm err: Unknown type:", ty)
+    raise PyllvmError("CodeGen:  Unknown type:", ty)
 
 class CodeGenLLVM:
     """
@@ -178,6 +180,21 @@ class CodeGenLLVM:
         retd = b.fptrunc(r, llFloatType, 'd2f_log')
         b.ret(retd)
 
+        # exp
+        funcType = llvm.core.Type.function(llvm.core.Type.double(), [llvm.core.Type.double()], False)
+        self.exp = self.module.add_function(funcType, 'exp')
+        
+        exp_funcType = llvm.core.Type.function(llFloatType, [llFloatType])
+        exp = self.module.add_function(exp_funcType, '_exp')
+        self._exp = exp
+        
+        bfp = exp.append_basic_block('bexp')
+        b.position_at_end(bfp)
+        
+        f2d_exp = b.fpext(exp.args[0], llvm.core.Type.double(), 'f2d_exp')
+        r = b.call(self.exp, [f2d_exp], 'exp_res')
+        retd = b.fptrunc(r, llFloatType, 'd2f_exp')
+        b.ret(retd)
 
     # source = http://code2code.wordpress.com/tag/llvm-py/ 
     def emitPrint(self):
@@ -270,9 +287,9 @@ class CodeGenLLVM:
                 elif( tyList == float):
                     self.builder.call(self._printFloat, [le0])
                 else:
-                    raise Exception("haven't implemented lists of type: ", tyList)
+                    raise PyllvmError("CodeGen: haven't implemented lists of type: ", tyList)
         else:
-            raise Exception("haven't implemented printing of type: ", ty)
+            raise PyllvmError("CodeGen: haven't implemented printing of type: ", ty)
     def visitPrintnl(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
         for n in node.nodes:
@@ -314,7 +331,7 @@ class CodeGenLLVM:
             listLen = len(expr.value)
             isStr = True
         else:
-            raise Exception("haven't implemented assigning all list types", expr)
+            raise PyllvmError("CodeGen: haven't implemented assigning all list types", expr)
         return (listType, listLen, isStr)
 
     def emitMakeArray(self, node):
@@ -326,7 +343,7 @@ class CodeGenLLVM:
         if self.currFuncRetList[0]==int or self.currFuncRetList[0]==float:
             m_ptr = self.builder.malloc_array(arrTy, llvm.core.Constant.int(llIntType, self.currFuncRetList[1]))
         else:
-            raise Exception("haven't implemented returning lists that are not of int/float")
+            raise PyllvmError("CodeGen: haven't implemented returning lists that are not of int/float")
 
         # copy all the values from the stack one into the heap
         zero = llvm.core.Constant.int(llIntType, 0)
@@ -374,7 +391,7 @@ class CodeGenLLVM:
             self.prevFuncRetNode = node
 
         elif self.currFuncRetType != ty:
-            raise Exception("pyllvm err: Different type for return expression: expected %s(lineno=%d, %s) but got %s(lineno=%d, %s)" % (self.currFuncRetType, self.prevFuncRetNode.lineno, self.prevFuncRetNode, ty, node.lineno, node))
+            raise PyllvmError("CodeGen:  Different type for return expression: expected %s(lineno=%d, %s) but got %s(lineno=%d, %s)" % (self.currFuncRetType, self.prevFuncRetNode.lineno, self.prevFuncRetNode, ty, node.lineno, node))
 
         return self.builder.ret(expr)
 
@@ -395,7 +412,7 @@ class CodeGenLLVM:
 
         # Argument should have default value which represents type of argument.
         if len(node.argnames) != len(node.defaults):
-            raise Exception("pyllvm err: Function argument should have default values which represents type of the argument:", node)
+            raise PyllvmError("CodeGen:  Function argument should have default values which represents type of the argument:", node)
 
         argLLTys = []
 
@@ -405,7 +422,7 @@ class CodeGenLLVM:
 
             ty = typer.isNameOfFirstClassType(tyname.name)
             if ty is None:
-                raise Exception("pyllvm err: Unknown name of type:", tyname.name)
+                raise PyllvmError("CodeGen:  Unknown name of type:", tyname.name)
             if ty==list or ty==str:
                 d = {'i':int, 'f':float, 's':str, 'l':list}
                 if (len(tyname.name) > 5 and d.has_key(tyname.name[4])) or (len(tyname.name) > 4 and d.has_key(tyname.name[3])):
@@ -414,7 +431,7 @@ class CodeGenLLVM:
                     llTy = llvm.core.Type.pointer(llvm.core.Type.array(toLLVMTy(listType), listLen))
 
                 else:
-                    raise Exception("pyllvm err: Bad format for list default argument. list<type><len>", tyname.name)
+                    raise PyllvmError("CodeGen:  Bad format for list default argument. list<type><len>", tyname.name)
             else:
                 llTy = toLLVMTy(ty)
 
@@ -478,7 +495,7 @@ class CodeGenLLVM:
             if ty==list or ty==str:
                 d = {'i':int, 'f':float, 's':str, 'l':list}
                 if not d.has_key(tyname.name[4]):
-                    raise Exception("pyllvm err: Bad format for list default argument. list<type><len>", tyname.name)
+                    raise PyllvmError("CodeGen:  Bad format for list default argument. list<type><len>", tyname.name)
                 # extract dims
                 listType = d[tyname.name[4]]
                 listLen = int(tyname.name[5:])
@@ -525,7 +542,7 @@ class CodeGenLLVM:
             if ty==list or ty==str:
                 d = {'i':int, 'f':float, 's':str, 'l':list}
                 if not d.has_key(tyname.name[4]):
-                    raise Exception("pyllvm err: Bad format for list default argument. list<type><len>", tyname.name)
+                    raise PyllvmError("CodeGen:  Bad format for list default argument. list<type><len>", tyname.name)
                 # extract dims
                 listType = d[tyname.name[4]]
                 listLen = int(tyname.name[5:])
@@ -567,7 +584,7 @@ class CodeGenLLVM:
     def emitListAssign(self, node, expr):
         ty = typer.inferType(node.expr)
         if ty!=list:
-            raise Exception("pyllvm error: cannot index into nonlist type", node.expr)
+            raise PyllvmError("CodeGen: cannot index into nonlist type", node.expr)
         intoList = self.visit(node.expr)
         index = self.visit(node.subs[0])
         zero = llvm.core.Constant.int(llIntType, 0)
@@ -580,7 +597,7 @@ class CodeGenLLVM:
     def visitAssign(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
         if len(node.nodes) != 1:
-            raise Exception("py2llvm error: assignment to multiple nodes not supported", node)
+            raise PyllvmError("CodeGen: assignment to multiple nodes not supported", node)
 
         rTy     = typer.inferType(node.expr)
         # if this is a list, will be a pointer. Otherwise a value
@@ -623,10 +640,10 @@ class CodeGenLLVM:
             return self.emitListAssign(lhsNode, rLLInst)
 
         else:
-            raise Exception("pyllvm err: assigning to non-mutable type:", lhsNode)
+            raise PyllvmError("CodeGen:  assigning to non-mutable type:", lhsNode)
 
         if rTy != lTy:
-            raise Exception("pyllvm err: TypeMismatch: lTy = %s, rTy = %s. Cannot dynamically reassign vars to different types" % (lTy, rTy))
+            raise PyllvmError("CodeGen:  TypeMismatch: lTy = %s, rTy = %s. Cannot dynamically reassign vars to different types" % (lTy, rTy))
 
         # get space for LHS node
         lSym = symbolTable.find(lhsNode.name)
@@ -663,7 +680,7 @@ class CodeGenLLVM:
         if ty==void:
             return llvm.core.Constant.real(llFloatType, 0.00)
 
-        raise Exception("pyllvm error: unable to extract truth value from type:", ty)
+        raise PyllvmError("CodeGen: unable to extract truth value from type:", ty)
 
     def visitIf(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
@@ -708,11 +725,11 @@ class CodeGenLLVM:
         if(is_else):
             if else_ret and then_ret:
                 if(else_type != then_type):
-                    raise Exception("unable to have if statement blocks that have different return types")
+                    raise PyllvmError("CodeGen: unable to have if statement blocks that have different return types")
                 # get null value and return
                 return self.builder.unreachable()#self.builder.ret(llvm.core.Constant.null(else_type))
             elif not (not else_ret and not then_ret):
-                raise Exception("unable to have if statement blocks that return if the else doesn't also return")
+                raise PyllvmError("CodeGen: unable to have if statement blocks that return if the else doesn't also return")
     
     
     def visitFor(self, node):
@@ -920,7 +937,7 @@ class CodeGenLLVM:
             result = self.builder.fcmp(d[op], lLLInst, rLLInst, 'cmptmp')
             return self.builder.uitofp(result, llFloatType, 'flttmp')
         else:  
-            raise Exception("pyllvm err: unable to compare type ",rTy)
+            raise PyllvmError("CodeGen:  unable to compare type ",rTy)
 
     def visitUnarySub(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
@@ -933,7 +950,7 @@ class CodeGenLLVM:
             return self.builder.fsub(zeroInst, e, tmpSym.name)
         elif ty==int:
             return self.builder.sub(zeroInst, e, tmpSym.name)
-        raise Exception("pyllvm err: can't unary sub on non numerical value")
+        raise PyllvmError("CodeGen:  can't unary sub on non numerical value")
     def visitGetattr(self, node):
         print ";----" + sys._getframe().f_code.co_name + "----"
 
@@ -978,7 +995,7 @@ class CodeGenLLVM:
         lTy = typer.inferType(node.left)
         rTy = typer.inferType(node.right)
         if rTy != lTy:
-            raise Exception("pyllvm err: TypeMismatch: lTy = %s, rTy = %s for %s, line %d" % (lTy, rTy, node, node.lineno))
+            raise PyllvmError("CodeGen:  TypeMismatch: lTy = %s, rTy = %s for %s, line %d" % (lTy, rTy, node, node.lineno))
         
         lLLInst = self.visit(node.left)
         rLLInst = self.visit(node.right)
@@ -992,7 +1009,7 @@ class CodeGenLLVM:
         elif( lTy == int ):
             return self.builder.add(lLLInst, rLLInst, tmpSym.name)
         else:
-            raise Exception("pyllvm error: arithmatic not supporte for type", lTy)
+            raise PyllvmError("CodeGen: arithmatic not supporte for type", lTy)
 
     def emitVSub(self, lLLInst, rLLInst):
         # create vector to return
@@ -1013,7 +1030,7 @@ class CodeGenLLVM:
         rTy = typer.inferType(node.right)
 
         if rTy != lTy:
-            raise Exception("pyllvm err: TypeMismatch: lTy = %s, rTy = %s for %s, line %d" % (lTy, rTy, node, node.lineno))
+            raise PyllvmError("CodeGen:  TypeMismatch: lTy = %s, rTy = %s for %s, line %d" % (lTy, rTy, node, node.lineno))
 
         lLLInst = self.visit(node.left)
         rLLInst = self.visit(node.right)
@@ -1027,7 +1044,7 @@ class CodeGenLLVM:
         elif (lTy == int ):
             return self.builder.sub(lLLInst, rLLInst, tmpSym.name)
         else:
-            raise Exception("pyllvm error: arithmatic not supporte for type", lTy)
+            raise PyllvmError("CodeGen: arithmatic not supporte for type", lTy)
 
 
     def emitVMul(self, lLLInst, rLLInst):
@@ -1049,7 +1066,7 @@ class CodeGenLLVM:
         rTy = typer.inferType(node.right)
 
         if rTy != lTy:
-            raise Exception("pyllvm err: TypeMismatch: lTy = %s, rTy = %s for %s, line %d" % (lTy, rTy, node, node.lineno))
+            raise PyllvmError("CodeGen:  TypeMismatch: lTy = %s, rTy = %s for %s, line %d" % (lTy, rTy, node, node.lineno))
 
         lLLInst = self.visit(node.left)
         rLLInst = self.visit(node.right)
@@ -1063,7 +1080,7 @@ class CodeGenLLVM:
         elif( lTy == int ):
             return self.builder.mul(lLLInst, rLLInst, tmpSym.name)
         else:
-            raise Exception("pyllvm error: arithmatic not supporte for type", lTy)
+            raise PyllvmError("CodeGen: arithmatic not supporte for type", lTy)
 
 
     def emitVDiv(self, lLLInst, rLLInst):
@@ -1085,7 +1102,7 @@ class CodeGenLLVM:
         rTy = typer.inferType(node.right)
 
         if rTy != lTy:
-            raise Exception("pyllvm err: TypeMismatch: lTy = %s, rTy = %s for %s, line %d" % (lTy, rTy, node, node.lineno))
+            raise PyllvmError("CodeGen:  TypeMismatch: lTy = %s, rTy = %s for %s, line %d" % (lTy, rTy, node, node.lineno))
 
         lLLInst = self.visit(node.left)
         rLLInst = self.visit(node.right)
@@ -1108,7 +1125,7 @@ class CodeGenLLVM:
         
         if typer.inferType(node.nodes[0]) == vec:
             if len(node.nodes) != 2:
-                raise Exception("pyllvm err: and only supported for 2 vectors")
+                raise PyllvmError("CodeGen:  and only supported for 2 vectors")
             l = self.visit(node.nodes[0])
             r = self.visit(node.nodes[1])
             return self.emitVAnd('==', l,r)
@@ -1165,14 +1182,14 @@ class CodeGenLLVM:
         lty = typer.inferType(node.left)
         rty = typer.inferType(node.right)
         if lty!=rty:
-            raise Exception("pyllvm err: both arguments must match type for mod")
+            raise PyllvmError("CodeGen:  both arguments must match type for mod")
         l = self.visit(node.left)
         r = self.visit(node.right)
         if(rty==int):
             return self.builder.srem(l, r)
         elif(rty==float):
             return self.builder.frem(l,r)
-        raise Exception("pyllvm err: unhandled type for mod") 
+        raise PyllvmError("CodeGen:  unhandled type for mod") 
     def handleInitializeTypeCall(self, ty, args):
         print ";----" + sys._getframe().f_code.co_name + "----"
         llty = toLLVMTy(ty)
@@ -1213,7 +1230,7 @@ class CodeGenLLVM:
         f3 = self.builder.call(func, [e3], ftmp3.name)
     def emitLen(self, node):
         if(typer.inferType(node)!=list):
-            raise Exception("pyllvm err: calling len on nonlist")
+            raise PyllvmError("CodeGen:  calling len on nonlist")
         n = self.visit(node)
         return self.getListDim(node)[1]
     def visitCallFunc(self, node):
@@ -1235,7 +1252,7 @@ class CodeGenLLVM:
         if( isIntrinsicMathFunction(node.node.name) ):
             method_name = "emit%s" % node.node.name
             if not callable(getattr(self.mmath, method_name)):
-                raise Exception("pyllvm err: undefined intrinsic func:", node.node.name)
+                raise PyllvmError("CodeGen:  undefined intrinsic func:", node.node.name)
     
             method = getattr(self.mmath, method_name)
             x = method(node)
@@ -1279,7 +1296,7 @@ class CodeGenLLVM:
         funcSig = symbolTable.lookup(node.node.name)
 
         if funcSig.kind is not "function":
-            raise Exception("pyllvm err: Symbol isn't registered as function:", node.node.name)
+            raise PyllvmError("CodeGen:  Symbol isn't registered as function:", node.node.name)
 
         # emit call
         # if the type is void, then don't assign function call to anything
@@ -1299,13 +1316,13 @@ class CodeGenLLVM:
             arrTy = llvm.core.Type.array(llIntType, 0)
             l_ptr = self.builder.alloca_array(arrTy, llvm.core.Constant.int(llIntType, 0))
             return l_ptr
-            #raise Exception("pyllvm err: Lists can't be empty (lists are not resizable)")
+            #raise PyllvmError("CodeGen:  Lists can't be empty (lists are not resizable)")
         tyList = typer.inferType(node.nodes[0])
         llNodes = []
         for n in node.nodes:
             nty = typer.inferType(n)
             if tyList!=nty:
-                raise Exception("pyllvm err: Lists elements need to be of the same type")
+                raise PyllvmError("CodeGen:  Lists elements need to be of the same type")
             llNodes.append(self.visit(n))
         # emit list llvm
         arrTy = llvm.core.Type.array(toLLVMTy(tyList), lenList)
@@ -1324,7 +1341,7 @@ class CodeGenLLVM:
         print ";----" + sys._getframe().f_code.co_name + "----"
         ty = typer.inferType(node.expr)
         if ty!=list:
-            raise Exception("pyllvm error: cannot index into nonlist type", node.expr)
+            raise PyllvmError("CodeGen: cannot index into nonlist type", node.expr)
         n = self.visit(node.expr)
         index = self.visit(node.subs[0])
         zero = llvm.core.Constant.int(llIntType, 0)
@@ -1377,7 +1394,7 @@ class CodeGenLLVM:
 
         elif llTy == llFVec4Type:
             print ";", value
-            raise Exception("pyllvm err: muda")
+            raise PyllvmError("CodeGen:  muda")
 
         storeInst = self.builder.store(llConst, allocInst)
         loadInst  = self.builder.load(allocInst, tmpSym.name)
@@ -1458,7 +1475,7 @@ class CodeGenLLVM:
         if self.externals.has_key(name):
             return self.externals[name]
         else:
-            raise Exception("pyllvm err: Unknown external symbol:", name, self.externals)
+            raise PyllvmError("CodeGen:  Unknown external symbol:", name, self.externals)
 
     def isExternalSymbol(self, name):
         print ";----" + sys._getframe().f_code.co_name + "----"

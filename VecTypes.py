@@ -1,5 +1,5 @@
 import llvm.core
-
+from PyllvmError import *
 class vec(object):
     """
     <4 x float>
@@ -30,14 +30,14 @@ class vec(object):
                 v.append(args[0])
 
             else:
-                raise Exception("Unsupported input for vec():", args)
+                raise PyllvmError("Unsupported input for vec():", args)
 
         elif len(args) == 0:
             # vec()
             v = [0.0, 0.0, 0.0, 0.0]
            
         else: 
-            raise Exception("Unsupported input for vec():", args)
+            raise PyllvmError("Unsupported input for vec():", args)
 
         self.value = v
 
@@ -50,7 +50,7 @@ class vec(object):
     def __add__(self, b):
 
         if not isinstance(b, vec):
-            raise Exception("RHS is not a type of vec")
+            raise PyllvmError("RHS is not a type of vec")
 
         tmp = vec([x + y for x, y in zip(self.value, b.value)])
 
@@ -60,7 +60,7 @@ class vec(object):
     def __sub__(self, b):
 
         if not isinstance(b, vec):
-            raise Exception("RHS is not a type of vec")
+            raise PyllvmError("RHS is not a type of vec")
 
         tmp = vec([x - y for x, y in zip(self.value, b.value)])
 
