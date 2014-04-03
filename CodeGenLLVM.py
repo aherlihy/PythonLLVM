@@ -317,14 +317,16 @@ class CodeGenLLVM:
             listType, listLen, isStr = symbolTable.find(expr.name).getDim()
         elif isinstance(expr, compiler.ast.CallFunc):
             # special case here for range call, since always different
+            # type is dependent on first arg passed in
             if expr.node.name=='range':
                 if len(expr.args) == 1:
                     start = 0
-                    end = expr.args[0].value
+                    end = int(expr.args[0].value)
                 else:
-                    start = expr.args[0].value
-                    end = expr.args[1].value
-                return (int, end-start, False)
+                    start = int(expr.args[0].value)
+                    end = int(expr.args[1].value)
+                ty = typer.inferType(expr.args[0])
+                return (ty, end-start, False)
             listType, listLen, isStr = symbolTable.find(expr.node.name).getDim()
         elif isinstance(expr, compiler.ast.Const):
             listType = int

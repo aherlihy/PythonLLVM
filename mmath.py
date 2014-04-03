@@ -134,31 +134,41 @@ class mMathFuncs(object):
 
     # NOTE: need to pass constants because creating array from dims
     def emitrange(self, node):
+        print ";in emit range"
         # get start and end points
+        ty = self.codeGen.typer.inferType(node.args[0])
+        if(ty!=int and ty!= float):
+            raise PyllvmError("mmath: range needs numerical arguments")
         for n in node.args:
             if not isinstance(n, compiler.ast.Const):
                 raise PyllvmError("mmath: need to pass range constant values")
         
         if len(node.args) == 1:
             start = 0
-            end = node.args[0].value
+            end = int(node.args[0].value)
         else:
-            start = node.args[0].value
-            end = node.args[1].value
+            start = int(node.args[0].value)
+            end = int(node.args[1].value)
 
         if(end<start):
             raise PyllvmError("mmath: bad range args")
         # malloc array
-        arrTy = llvm.core.Type.array(llIntType, end-start)
+        if(ty==int):
+            arrTy = llvm.core.Type.array(llIntType, end-start)
+        else:
+            arrTy = llvm.core.Type.array(llFloatType, end-start)
         m_ptr = self.codeGen.builder.alloca_array(arrTy, llvm.core.Constant.int(llIntType, end-start))
-
+            
         # copy all the values from the stack one into the heap
         zero = llvm.core.Constant.int(llIntType, 0)
         count = 0
         for v in range(start, end+1):
             index = llvm.core.Constant.int(llIntType, count)
             # create value to store
-            val = llvm.core.Constant.int(llIntType, v)
+            if ty==int:
+                val = llvm.core.Constant.int(llIntType, v)
+            else:
+                val = llvm.core.Constant.real(llFloatType, float(v))
             # store values in malloc'd array
             m = self.codeGen.builder.gep(m_ptr, [zero, index])
             self.codeGen.builder.store(val, m)
