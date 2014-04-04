@@ -49,7 +49,7 @@ class CodeGenLLVM:
     """
 
     def __init__(self):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         self.body             = ""
         self.globalscope      = ""
@@ -70,7 +70,7 @@ class CodeGenLLVM:
         self.mmath                 = mMathFuncs(self)
         self.typer            = typer
     def visitModule(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         # emitExternalSymbols() should be called before self.visit(node.node)
         self.emitExternalSymbols()
         
@@ -260,7 +260,6 @@ class CodeGenLLVM:
             return self.builder.call(self._printFloat, [lln])
         # for now prints vec(1) as 4
         elif(ty==vec):
-            # print 'vec'
             idx = [llvm.core.Constant.int(llvm.core.Type.int(32), 0), llvm.core.Constant.int(llvm.core.Type.int(32), 0)]
             realAddr_v = self.vec.gep(idx)
             self.builder.call(self.printf, [realAddr_v])
@@ -291,7 +290,7 @@ class CodeGenLLVM:
         else:
             raise PyllvmError("CodeGen: haven't implemented printing of type: ", ty)
     def visitPrintnl(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         for n in node.nodes:
             if ( isinstance(n, compiler.ast.Tuple) ):
                 [self.helpPrint(z) for z in n.nodes]
@@ -368,7 +367,7 @@ class CodeGenLLVM:
     # for now at least, that memory is gone and isn't going to be freed because everything else is on the stack.
     # So please avoid, but if you need to do it the functionality is there.
     def visitReturn(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         # get type of return node
         ty   = typer.inferType(node.value)
         if(ty==list):
@@ -410,7 +409,7 @@ class CodeGenLLVM:
     # type is either 'i', 'f', 's', 'l' and length is an integer
 
     def mkFunctionSignature(self, retTy, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         # Argument should have default value which represents type of argument.
         if len(node.argnames) != len(node.defaults):
@@ -461,12 +460,12 @@ class CodeGenLLVM:
         return func
 
     def visitFunction(self, node):
-        print ";----" + sys._getframe().f_code.co_name + ":" + node.name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + ":" + node.name + "----"
 
         """
-        Do nasty trick to handle return type of function correctly.
+        Do trick to handle return type of function correctly.
 
-        We visit node AST two times.
+        Visit node AST two times.
         First pass just determines return type of the function
         (All LLVM code body generated are discarded).
         Then second pass we emit LLVM code body with return type found
@@ -569,7 +568,6 @@ class CodeGenLLVM:
         symbolTable.popScope()
 
         # Register function to symbol table
-        print ";ADDING", node.name, "TO ST AS", self.currFuncRetType, " llstoroage=func"
         if(self.currFuncRetType==list):
             symbolTable.append(Symbol(node.name, self.currFuncRetType, "function", llstorage=func, dim=self.currFuncRetList))
         else:
@@ -578,7 +576,7 @@ class CodeGenLLVM:
 
 
     def visitStmt(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         for node in node.nodes:
 
             self.visit(node)
@@ -597,7 +595,7 @@ class CodeGenLLVM:
         #return self.builder.load(l, tmp0.name)
 
     def visitAssign(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         if len(node.nodes) != 1:
             raise PyllvmError("CodeGen: assignment to multiple nodes not supported", node)
 
@@ -638,7 +636,6 @@ class CodeGenLLVM:
                 # symbol is already defined.
                 lTy = sym.type
         elif isinstance(lhsNode, compiler.ast.Subscript):
-            print ";IS SUBSCRIPT"
             return self.emitListAssign(lhsNode, rLLInst)
 
         else:
@@ -685,7 +682,7 @@ class CodeGenLLVM:
         raise PyllvmError("CodeGen: unable to extract truth value from type:", ty)
 
     def visitIf(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         is_else = (node.else_ is not None)
         cond = self.getTruthy(node.tests[0][0])
         then_ret, then_type = self.testRet(node.tests[0][1])
@@ -736,7 +733,6 @@ class CodeGenLLVM:
     
     def visitFor(self, node):
         # for node: <assName node(just has name)>, <list>, <body>
-        print ";VISITED FOR", node
         
         loopList = self.visit(node.list)
 
@@ -809,7 +805,7 @@ class CodeGenLLVM:
         # end_for block:
 
     def visitWhile(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         # get function
         function = self.builder.basic_block.function
         
@@ -832,7 +828,7 @@ class CodeGenLLVM:
         self.builder.position_at_end(end_while)
     
     def emitVAnd(self, op, lInst, rInst):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         d = { "==" : llvm.core.RPRED_OEQ
             , "!=" : llvm.core.RPRED_ONE
@@ -903,7 +899,7 @@ class CodeGenLLVM:
         return r3
 
     def visitCompare(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         lTy = typer.inferType(node.expr)
         rTy = typer.inferType(node.ops[0][1])
@@ -942,7 +938,7 @@ class CodeGenLLVM:
             raise PyllvmError("CodeGen:  unable to compare type ",rTy)
 
     def visitUnarySub(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         ty       = typer.inferType(node.expr)
         e        = self.visit(node.expr)
@@ -954,7 +950,7 @@ class CodeGenLLVM:
             return self.builder.sub(zeroInst, e, tmpSym.name)
         raise PyllvmError("CodeGen:  can't unary sub on non numerical value")
     def visitGetattr(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         d = { 'x' : llvm.core.Constant.int(llIntType, 0)
             , 'y' : llvm.core.Constant.int(llIntType, 1)
@@ -992,7 +988,7 @@ class CodeGenLLVM:
 
 
     def visitAdd(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         lTy = typer.inferType(node.left)
         rTy = typer.inferType(node.right)
@@ -1026,7 +1022,7 @@ class CodeGenLLVM:
             ret_v = self.builder.insert_element(ret_v, a, i0)
         return ret_v
     def visitSub(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         lTy = typer.inferType(node.left)
         rTy = typer.inferType(node.right)
@@ -1062,7 +1058,7 @@ class CodeGenLLVM:
             ret_v = self.builder.insert_element(ret_v, a, i0)
         return ret_v
     def visitMul(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         lTy = typer.inferType(node.left)
         rTy = typer.inferType(node.right)
@@ -1098,7 +1094,7 @@ class CodeGenLLVM:
             ret_v = self.builder.insert_element(ret_v, a, i0)
         return ret_v
     def visitDiv(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         lTy = typer.inferType(node.left)
         rTy = typer.inferType(node.right)
@@ -1123,7 +1119,7 @@ class CodeGenLLVM:
         return divInst
 
     def visitAnd(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         
         if typer.inferType(node.nodes[0]) == vec:
             if len(node.nodes) != 2:
@@ -1150,7 +1146,7 @@ class CodeGenLLVM:
 
 
     def visitOr(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         
         a = self.visit(node.nodes[0])
         a_sym = symbolTable.genUniqueSymbol(llTruthType)
@@ -1168,7 +1164,7 @@ class CodeGenLLVM:
         return self.builder.uitofp(a_int, llFloatType, 'ortmp')
 
     def visitNot(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         e = self.visit(node.expr) 
         e_sym = symbolTable.genUniqueSymbol(llTruthType)
         e_int = self.builder.fptoui(e, llTruthType, e_sym.name)
@@ -1180,7 +1176,7 @@ class CodeGenLLVM:
         return self.builder.uitofp(e_not, llFloatType, ret_sym.name)
 
     def visitMod(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         lty = typer.inferType(node.left)
         rty = typer.inferType(node.right)
         if lty!=rty:
@@ -1193,7 +1189,7 @@ class CodeGenLLVM:
             return self.builder.frem(l,r)
         raise PyllvmError("CodeGen:  unhandled type for mod") 
     def handleInitializeTypeCall(self, ty, args):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         llty = toLLVMTy(ty)
         if llty == llFVec4Type:
 
@@ -1226,7 +1222,7 @@ class CodeGenLLVM:
             return r3
     #TODO
     def emitVSel(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         self.builder.call
         f3 = self.builder.call(func, [e3], ftmp3.name)
@@ -1236,7 +1232,7 @@ class CodeGenLLVM:
         n = self.visit(node)
         return self.getListDim(node)[1]
     def visitCallFunc(self, node):
-        print ";----" + sys._getframe().f_code.co_name + ": " + node.node.name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + ": " + node.node.name + "----"
         assert isinstance(node.node, compiler.ast.Name)
 
         # special case for vec, since existing code expects entry as list but not type list
@@ -1309,7 +1305,7 @@ class CodeGenLLVM:
             return self.builder.call(funcSig.llstorage, args, tmp.name)
 
     def visitList(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         
         # get length and type of list
         lenList = len(node.nodes)
@@ -1340,7 +1336,7 @@ class CodeGenLLVM:
 
 
     def visitSubscript(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         ty = typer.inferType(node.expr)
         if ty!=list:
             raise PyllvmError("CodeGen: cannot index into nonlist type", node.expr)
@@ -1356,7 +1352,7 @@ class CodeGenLLVM:
     # Leaf
     #
     def visitName(self, node):
-        print ";----" + sys._getframe().f_code.co_name + " : " + node.name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + " : " + node.name + "----"
         sym = symbolTable.lookup(node.name)
         tmpSym = symbolTable.genUniqueSymbol(sym.type)
 
@@ -1366,7 +1362,7 @@ class CodeGenLLVM:
 
 
     def visitDiscard(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         self.visit(node.expr)
         #
@@ -1374,7 +1370,7 @@ class CodeGenLLVM:
         #
 
     def mkLLConstInst(self, ty, value):
-        print ";----" + sys._getframe().f_code.co_name + " = " + str(value) + "----"
+        #print ";----" + sys._getframe().f_code.co_name + " = " + str(value) + "----"
         # STR: add construction of string type
 
         llTy   = toLLVMTy(ty)
@@ -1395,7 +1391,6 @@ class CodeGenLLVM:
             llConst = llvm.core.Constant.real(llFloatType, value)
 
         elif llTy == llFVec4Type:
-            print ";", value
             raise PyllvmError("CodeGen:  muda")
 
         storeInst = self.builder.store(llConst, allocInst)
@@ -1420,7 +1415,7 @@ class CodeGenLLVM:
         return l_ptr
 
     def visitConst(self, node):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         ty = typer.inferType(node)
 
@@ -1430,7 +1425,7 @@ class CodeGenLLVM:
         return self.mkLLConstInst(ty, node.value)
 
     def emitCommonHeader(self):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
 #        s = """ 
 #        
@@ -1453,7 +1448,7 @@ class CodeGenLLVM:
     # TODO
     # THIS IS WHERE HEADER DEFS LIVE
     def emitExternalSymbols(self):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         d = {
               'fabsf'  : ( llFloatType, [llFloatType] )
@@ -1469,10 +1464,9 @@ class CodeGenLLVM:
             f   = llvm.core.Function.new(self.module, fty, k)
 
             self.externals[k] = f
-        print "; SYMBOL TABLE " + str(symbolTable)
 
     def getExternalSymbolInstruction(self, name):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         if self.externals.has_key(name):
             return self.externals[name]
@@ -1480,7 +1474,7 @@ class CodeGenLLVM:
             raise PyllvmError("CodeGen:  Unknown external symbol:", name, self.externals)
 
     def isExternalSymbol(self, name):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         if self.externals.has_key(name):
             return True
         else:
@@ -1490,7 +1484,7 @@ class CodeGenLLVM:
     # Vector math
     #
     def isVectorMathFunction(self, name):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         d = {
               'vabs'  : 'fabsf'
             , 'vexp'  : 'expf'
@@ -1504,7 +1498,7 @@ class CodeGenLLVM:
             return False
 
     def emitVMath(self, fname, llargs):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
         """
         TODO: Use MUDA's optimized vector math function for LLVM.
         """
@@ -1554,7 +1548,7 @@ class CodeGenLLVM:
         # return r2
 
     def emitVAbs(self, llargs):
-        print ";----" + sys._getframe().f_code.co_name + "----"
+        #print ";----" + sys._getframe().f_code.co_name + "----"
 
         return self.emitVMath("fabsf", llargs)
 
@@ -1565,7 +1559,7 @@ def _test():
 
 def py2llvm(filename):
     ast = compiler.parseFile(filename)
-    print ";AST=" +  str(ast)
+    #print ";AST=" +  str(ast)
     codegen = compiler.walk(ast, CodeGenLLVM())
 
     main = codegen.getString()

@@ -20,7 +20,7 @@ class Symbol(object):
 
         assert type is not None
 
-        # print "; [SymbolTable] add %s(ty= %s, knd = %s)" % (name, type, kind)
+        #print "; [SymbolTable] add %s(ty= %s, knd = %s)" % (name, type, kind)
         self.name  = name
         self.type  = type
         self.kind  = kind
@@ -59,7 +59,6 @@ class SymbolTable:
         self.symbols = [('global', {})]      # stack of (function scope name, dict)
 
         self.genNum  = 0
-        print ";INITING SYMBOL TABLE***" 
 
     def __str__(self):
         """
