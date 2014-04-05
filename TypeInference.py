@@ -287,7 +287,8 @@ class TypeInference(object):
     def inferName(self, node):
         #print ";TI--" + sys._getframe().f_code.co_name + "----"
         name = node.name
-
+        if(node.name=='True' or node.name=='False'):
+            return float
         # Firstly, name of type?
         if self.typeDic.has_key(name):
             print "; => found type for ", name, "=", self.typeDic[name]

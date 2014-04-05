@@ -75,7 +75,6 @@ class CodeGenLLVM:
         
         self.emitPrint()
         self.emitMmath()
-
         self.visit(node.node)
         #print self.module   # Output LLVM code to stdout.
         #print self.emitCommonHeader()
@@ -90,7 +89,9 @@ class CodeGenLLVM:
         string.global_constant = True
         string.linkage = llvm.core.LINKAGE_INTERNAL # not strictly necessary here
         return string
-    
+
+
+
     def emitMmath(self):
 
         # NOTE: could use built-in llvm abs function also.
@@ -1411,6 +1412,11 @@ class CodeGenLLVM:
     #
     def visitName(self, node):
         #print ";----" + sys._getframe().f_code.co_name + " : " + node.name + "----"
+        if(node.name=='True'):
+            return llvm.core.Constant.real(llFloatType, 1.0)
+        elif(node.name=='False'):
+            return llvm.core.Constant.real(llFloatType, 0.0)
+        
         sym = symbolTable.lookup(node.name)
         tmpSym = symbolTable.genUniqueSymbol(sym.type)
 

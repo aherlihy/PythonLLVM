@@ -182,6 +182,11 @@ def test_retE(x=listi0):
 
 def ret_neg():
     return -100
+
+def print_bool(b=float):
+    print b
+def get_bool(b=float):
+    return b
 def main():
 # ASSIGN
     ri = 5
@@ -312,3 +317,6 @@ def main():
     aa*=-10
     print(aa)
     print( (1==1.0), (2.0==2) )
+    print("bools", True, False, True+True, False+True, get_bool(True), get_bool(False))
+    print_bool(True)
+    print_bool(False)
