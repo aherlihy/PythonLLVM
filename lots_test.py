@@ -183,9 +183,9 @@ def test_retE(x=listi0):
 def ret_neg():
     return -100
 
-def print_bool(b=float):
+def print_bool(b=int):
     print b
-def get_bool(b=float):
+def get_bool(b=int):
     return b
 def main():
 # ASSIGN
