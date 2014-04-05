@@ -305,3 +305,10 @@ def main():
     print(sqrt(100), sqrt(100.0), sqrt(1), sqrt(0), sqrt(-ret_neg()))
     print(pow(10,1), pow(5.0,2), pow(8, 2.0), pow(3.0,3.0))
     print(log(100), log(100.0), log(1), log(-ret_neg()))
+
+    aa=0
+    aa+=1
+    aa-=4
+    aa*=-10
+    print(aa)
+    print( (1==1.0), (2.0==2) )

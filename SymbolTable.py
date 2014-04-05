@@ -90,7 +90,6 @@ class SymbolTable:
 
         d = self.symbols[-1][1]
 
-        #TODO-1: add the dim if it is an array
 
         # if d.has_key(sym.name):
         #    raise Exception("Symbol %s is already defined" % sym.name)

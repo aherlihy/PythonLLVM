@@ -5,7 +5,6 @@ import re
 import compiler
 
 import llvm.core
-# original=commented
 from VecTypes import *
 from MUDA import *
 from TypeInference import *
@@ -594,6 +593,52 @@ class CodeGenLLVM:
         return out
         #return self.builder.load(l, tmp0.name)
 
+    def visitAugAssign(self, node):
+        lhs = node.node
+        rhs = node.expr
+        sym = symbolTable.find(lhs.name)
+        if isinstance(lhs, compiler.ast.Name):
+            if sym is None:
+                raise PyLLVMError("CodeGen: cannot augassign an undefined var", lhs.name)
+            
+            lSym = symbolTable.find(lhs.name)
+            if(typer.inferType(rhs)!=typer.inferType(lhs)):
+                raise PyLLVMError("CodeGen: trying to augassign value of different type (int vs float?)")
+            l = self.visit(lhs)
+            r = self.visit(rhs)
+            ty = typer.inferType(rhs)
+            op = node.op
+            if(ty!=int and ty!=float):
+                raise PyLLVMError("CodeGen: cannot augassign a non-numerical value")
+            if(op=="+="):
+                if( ty == float ):
+                    v = self.builder.fadd(l, r)
+                else:
+                    v = self.builder.add(l, r)
+            elif(op=="-="):
+                if( ty == float ):
+                    v = self.builder.fsub(l, r)
+                else:
+                    v = self.builder.sub(l, r)
+            elif(op=="*="):
+                if( ty == float ):
+                    v = self.builder.fmul(l, r)
+                else:
+                    v = self.builder.mul(l, r)
+            elif(op=="/="):
+                if( ty == float ):
+                    v = self.builder.fdiv(l, r)
+                else:
+                    v = self.builder.div(l, r)
+            elif(op=="%="):
+                if( ty==int ):
+                    v = self.builder.srem(l, r)
+                else:
+                    v = self.builder.frem(l,r)
+            else:
+                raise PyLlvmError("CodeGen: that augassign is not implemented") 
+        storeInst = self.builder.store(v, sym.llstorage)
+    
     def visitAssign(self, node):
         #print ";----" + sys._getframe().f_code.co_name + "----"
         if len(node.nodes) != 1:
@@ -900,39 +945,51 @@ class CodeGenLLVM:
 
     def visitCompare(self, node):
         #print ";----" + sys._getframe().f_code.co_name + "----"
-
+        di = { "==" : llvm.core.ICMP_EQ
+            , "!=" : llvm.core.ICMP_NE
+            , ">"  : llvm.core.ICMP_SGT
+            , ">=" : llvm.core.ICMP_SGE
+            , "<"  : llvm.core.ICMP_SLT
+            , "<=" : llvm.core.ICMP_SLE
+        }
+        df = { "==" : llvm.core.FCMP_OEQ
+            , "!=" : llvm.core.FCMP_ONE
+            , ">"  : llvm.core.FCMP_OGT
+            , ">=" : llvm.core.FCMP_OGE
+            , "<"  : llvm.core.FCMP_OLT
+            , "<=" : llvm.core.FCMP_OLE
+        }
+        
         lTy = typer.inferType(node.expr)
         rTy = typer.inferType(node.ops[0][1])
-
-        if rTy != lTy:
-            return llvm.core.Constant.real(llFloatType, 0.00)
-
+        
         lLLInst = self.visit(node.expr)
         rLLInst = self.visit(node.ops[0][1])
 
         op  = node.ops[0][0]
+
+        if rTy != lTy:
+            if(rTy==int and lTy==float):
+                i2f = self.builder.sitofp(rLLInst, llFloatType)
+                result = self.builder.fcmp(df[op], lLLInst, i2f, 'cmptmp')
+                return self.builder.uitofp(result, llFloatType, 'flttmp')
+
+            elif(rTy==float and lTy==int):
+                i2f = self.builder.sitofp(lLLInst, llFloatType)
+                result = self.builder.fcmp(df[op], i2f, rLLInst, 'cmptmp')
+                return self.builder.uitofp(result, llFloatType, 'flttmp')
+
+            else:
+                return llvm.core.Constant.real(llFloatType, 0.00)
+
         
         #if rTy == vec:
         #    return self.emitVCompare(op, lLLInst, rLLInst)
         if rTy == int:
-            d = { "==" : llvm.core.ICMP_EQ
-                , "!=" : llvm.core.ICMP_NE
-                , ">"  : llvm.core.ICMP_SGT
-                , ">=" : llvm.core.ICMP_SGE
-                , "<"  : llvm.core.ICMP_SLT
-                , "<=" : llvm.core.ICMP_SLE
-                }
-            result = self.builder.icmp(d[op], lLLInst, rLLInst, 'cmptmp')
+            result = self.builder.icmp(di[op], lLLInst, rLLInst, 'cmptmp')
             return self.builder.uitofp(result, llFloatType, 'booltmp')
         elif rTy == float:
-            d = { "==" : llvm.core.FCMP_OEQ
-                , "!=" : llvm.core.FCMP_ONE
-                , ">"  : llvm.core.FCMP_OGT
-                , ">=" : llvm.core.FCMP_OGE
-                , "<"  : llvm.core.FCMP_OLT
-                , "<=" : llvm.core.FCMP_OLE
-                }
-            result = self.builder.fcmp(d[op], lLLInst, rLLInst, 'cmptmp')
+            result = self.builder.fcmp(df[op], lLLInst, rLLInst, 'cmptmp')
             return self.builder.uitofp(result, llFloatType, 'flttmp')
         else:  
             raise PyllvmError("CodeGen:  unable to compare type ",rTy)
@@ -986,7 +1043,8 @@ class CodeGenLLVM:
             ret_v = self.builder.insert_element(ret_v, a, i0)
         return ret_v
 
-
+        
+    
     def visitAdd(self, node):
         #print ";----" + sys._getframe().f_code.co_name + "----"
 
