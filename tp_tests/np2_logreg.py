@@ -1,4 +1,6 @@
-def logreg(data=listf100, g=listf100, w=listf100, dims=int): 
+from math import exp
+listf100=[]
+def run(data=listf100, g=listf100, w=listf100, dims=int): 
     dot = 0.0
     j = 0
     while(j<dims):
@@ -11,9 +13,3 @@ def logreg(data=listf100, g=listf100, w=listf100, dims=int):
         g[j2]+=scale*data[j2]
         j2+=1
 
-def main():
-#    data = range(100.0)
-#    g = range(100.0)
-#    w = range(100.0)
-    dims = 100
-#    logreg(data, g, w, dims)

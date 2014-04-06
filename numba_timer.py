@@ -3,16 +3,19 @@ import sys
 from numba import jit
 
 def run_test():
-    from test import main
-    x = jit(main)
-    x()
+    from np2_kmeans import run
+    i=99
+    CENT=1
+    data=[a for a in range(100)]
+    x=[b for b in range(100)]
+    y=[d for d in range(100)]
+    c=[e for e in range(100)]
+    t=[f for f in range(100)]
+    v = jit(run)
+    v(i, data, x, y, c, t, CENT)
 
 if __name__ == '__main__':
-    print "ARGS=", sys.argv
-    if len(sys.argv) != 2:
-        print "Usage: <udf file>"
-        sys.exit(0)
-    
-    time = timeit.timeit("run_test()", setup="from __main__ import run_test", number=100)
+    print "RUNNING" 
+    time = timeit.timeit("run_test()", setup="from __main__ import run_test", number=5)
     
     print time
