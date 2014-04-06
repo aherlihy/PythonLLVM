@@ -593,52 +593,59 @@ class CodeGenLLVM:
         out = self.builder.store(expr, l)
         return out
         #return self.builder.load(l, tmp0.name)
+    def handleOp(self, op, ty, l, r):
+        if(ty!=int and ty!=float):
+            raise PyLLVMError("CodeGen: cannot augassign a non-numerical value")
+        if(op=="+="):
+            if( ty == float ):
+                v = self.builder.fadd(l, r)
+            else:
+                v = self.builder.add(l, r)
+        elif(op=="-="):
+            if( ty == float ):
+                v = self.builder.fsub(l, r)
+            else:
+                v = self.builder.sub(l, r)
+        elif(op=="*="):
+            if( ty == float ):
+                v = self.builder.fmul(l, r)
+            else:
+                v = self.builder.mul(l, r)
+        elif(op=="/="):
+            if( ty == float ):
+                v = self.builder.fdiv(l, r)
+            else:
+                v = self.builder.div(l, r)
+        elif(op=="%="):
+            if( ty==int ):
+                v = self.builder.srem(l, r)
+            else:
+                v = self.builder.frem(l,r)
+        else:
+            raise PyLlvmError("CodeGen: that augassign is not implemented") 
+        return v
 
     def visitAugAssign(self, node):
         lhs = node.node
         rhs = node.expr
-        sym = symbolTable.find(lhs.name)
+        ty = typer.inferType(rhs)
+        if(ty!=typer.inferType(lhs)):
+            raise PyLLVMError("CodeGen: trying to augassign value of different type (int vs float?)")
+        op = node.op
+        r = self.visit(rhs)
+        l = self.visit(lhs)
+        v = self.handleOp(op, ty, l, r)
+
+        if isinstance(lhs, compiler.ast.Subscript):
+            self.emitListAssign(lhs, v)
         if isinstance(lhs, compiler.ast.Name):
+            l = self.visit(lhs)
+            sym = symbolTable.find(lhs.name)
             if sym is None:
                 raise PyLLVMError("CodeGen: cannot augassign an undefined var", lhs.name)
             
             lSym = symbolTable.find(lhs.name)
-            if(typer.inferType(rhs)!=typer.inferType(lhs)):
-                raise PyLLVMError("CodeGen: trying to augassign value of different type (int vs float?)")
-            l = self.visit(lhs)
-            r = self.visit(rhs)
-            ty = typer.inferType(rhs)
-            op = node.op
-            if(ty!=int and ty!=float):
-                raise PyLLVMError("CodeGen: cannot augassign a non-numerical value")
-            if(op=="+="):
-                if( ty == float ):
-                    v = self.builder.fadd(l, r)
-                else:
-                    v = self.builder.add(l, r)
-            elif(op=="-="):
-                if( ty == float ):
-                    v = self.builder.fsub(l, r)
-                else:
-                    v = self.builder.sub(l, r)
-            elif(op=="*="):
-                if( ty == float ):
-                    v = self.builder.fmul(l, r)
-                else:
-                    v = self.builder.mul(l, r)
-            elif(op=="/="):
-                if( ty == float ):
-                    v = self.builder.fdiv(l, r)
-                else:
-                    v = self.builder.div(l, r)
-            elif(op=="%="):
-                if( ty==int ):
-                    v = self.builder.srem(l, r)
-                else:
-                    v = self.builder.frem(l,r)
-            else:
-                raise PyLlvmError("CodeGen: that augassign is not implemented") 
-        storeInst = self.builder.store(v, sym.llstorage)
+            storeInst = self.builder.store(v, sym.llstorage)
     
     def visitAssign(self, node):
         #print ";----" + sys._getframe().f_code.co_name + "----"

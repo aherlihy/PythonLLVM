@@ -134,7 +134,6 @@ class mMathFuncs(object):
 
     # NOTE: need to pass constants because creating array from dims
     def emitrange(self, node):
-        print ";in emit range"
         # get start and end points
         ty = self.codeGen.typer.inferType(node.args[0])
         if(ty!=int and ty!= float):
