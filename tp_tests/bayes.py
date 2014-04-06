@@ -7,7 +7,7 @@
 #        ++counts[offset + j * vals + data[j]];
 #}
 
-
+listi100=[]
 def naive_bayes(data=listi100, counts=listi100,dims=int, vals=int, labels=int):
     label = data[dims]
     counts[label]  += 1
@@ -19,7 +19,6 @@ def naive_bayes(data=listi100, counts=listi100,dims=int, vals=int, labels=int):
         c=c+1
 
 def main():
-    x = 1
     data = zeros(100, 7)
     counts = zeros(100)
     dims = 100
