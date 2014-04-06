@@ -1,0 +1,3414 @@
+; ModuleID = 'module.main'
+
+@.pymodule.dict.bayes_numba = external global i8
+@.const.naive_bayes = internal constant [12 x i8] c"naive_bayes\00"
+@".const.global name 'naive_bayes' is not defined" = internal constant [41 x i8] c"global name 'naive_bayes' is not defined\00"
+@PyExc_NameError = external global i8
+@Py_None = external global i8*
+
+define i32 @bayes_numba.main.(i8**) {
+entry:
+  %"$0.1" = alloca i8*
+  store i8* null, i8** %"$0.1"
+  %"$0.2" = alloca i8*
+  store i8* null, i8** %"$0.2"
+  %"$0.3" = alloca i8*
+  store i8* null, i8** %"$0.3"
+  %"$0.4" = alloca i8*
+  store i8* null, i8** %"$0.4"
+  %"$0.5" = alloca i8*
+  store i8* null, i8** %"$0.5"
+  %"$0.6" = alloca i8*
+  store i8* null, i8** %"$0.6"
+  %"$0.7" = alloca i8*
+  store i8* null, i8** %"$0.7"
+  %"$0.8" = alloca i8*
+  store i8* null, i8** %"$0.8"
+  %"$0.9" = alloca i8*
+  store i8* null, i8** %"$0.9"
+  %"$0.10" = alloca i8*
+  store i8* null, i8** %"$0.10"
+  %"$0.11" = alloca i8*
+  store i8* null, i8** %"$0.11"
+  %"$0.12" = alloca i8*
+  store i8* null, i8** %"$0.12"
+  %"$0.13" = alloca i8*
+  store i8* null, i8** %"$0.13"
+  %"$0.14" = alloca i8*
+  store i8* null, i8** %"$0.14"
+  %"$0.15" = alloca i8*
+  store i8* null, i8** %"$0.15"
+  %"$0.16" = alloca i8*
+  store i8* null, i8** %"$0.16"
+  %"$0.17" = alloca i8*
+  store i8* null, i8** %"$0.17"
+  %"$0.18" = alloca i8*
+  store i8* null, i8** %"$0.18"
+  %"$0.19" = alloca i8*
+  store i8* null, i8** %"$0.19"
+  %"$0.20" = alloca i8*
+  store i8* null, i8** %"$0.20"
+  %"$0.21" = alloca i8*
+  store i8* null, i8** %"$0.21"
+  %"$0.22" = alloca i8*
+  store i8* null, i8** %"$0.22"
+  %"$0.23" = alloca i8*
+  store i8* null, i8** %"$0.23"
+  %"$0.24" = alloca i8*
+  store i8* null, i8** %"$0.24"
+  %"$0.25" = alloca i8*
+  store i8* null, i8** %"$0.25"
+  %"$0.26" = alloca i8*
+  store i8* null, i8** %"$0.26"
+  %"$0.27" = alloca i8*
+  store i8* null, i8** %"$0.27"
+  %"$0.28" = alloca i8*
+  store i8* null, i8** %"$0.28"
+  %"$0.29" = alloca i8*
+  store i8* null, i8** %"$0.29"
+  %"$0.30" = alloca i8*
+  store i8* null, i8** %"$0.30"
+  %"$0.31" = alloca i8*
+  store i8* null, i8** %"$0.31"
+  %"$0.32" = alloca i8*
+  store i8* null, i8** %"$0.32"
+  %"$0.33" = alloca i8*
+  store i8* null, i8** %"$0.33"
+  %"$0.34" = alloca i8*
+  store i8* null, i8** %"$0.34"
+  %"$0.35" = alloca i8*
+  store i8* null, i8** %"$0.35"
+  %"$0.36" = alloca i8*
+  store i8* null, i8** %"$0.36"
+  %"$0.37" = alloca i8*
+  store i8* null, i8** %"$0.37"
+  %"$0.38" = alloca i8*
+  store i8* null, i8** %"$0.38"
+  %"$0.39" = alloca i8*
+  store i8* null, i8** %"$0.39"
+  %"$0.40" = alloca i8*
+  store i8* null, i8** %"$0.40"
+  %"$0.41" = alloca i8*
+  store i8* null, i8** %"$0.41"
+  %"$0.42" = alloca i8*
+  store i8* null, i8** %"$0.42"
+  %"$0.43" = alloca i8*
+  store i8* null, i8** %"$0.43"
+  %"$0.44" = alloca i8*
+  store i8* null, i8** %"$0.44"
+  %"$0.45" = alloca i8*
+  store i8* null, i8** %"$0.45"
+  %"$0.46" = alloca i8*
+  store i8* null, i8** %"$0.46"
+  %"$0.47" = alloca i8*
+  store i8* null, i8** %"$0.47"
+  %"$0.48" = alloca i8*
+  store i8* null, i8** %"$0.48"
+  %"$0.49" = alloca i8*
+  store i8* null, i8** %"$0.49"
+  %"$0.50" = alloca i8*
+  store i8* null, i8** %"$0.50"
+  %"$0.51" = alloca i8*
+  store i8* null, i8** %"$0.51"
+  %"$0.52" = alloca i8*
+  store i8* null, i8** %"$0.52"
+  %"$0.53" = alloca i8*
+  store i8* null, i8** %"$0.53"
+  %"$0.54" = alloca i8*
+  store i8* null, i8** %"$0.54"
+  %"$0.55" = alloca i8*
+  store i8* null, i8** %"$0.55"
+  %"$0.56" = alloca i8*
+  store i8* null, i8** %"$0.56"
+  %"$0.57" = alloca i8*
+  store i8* null, i8** %"$0.57"
+  %"$0.58" = alloca i8*
+  store i8* null, i8** %"$0.58"
+  %"$0.59" = alloca i8*
+  store i8* null, i8** %"$0.59"
+  %"$0.60" = alloca i8*
+  store i8* null, i8** %"$0.60"
+  %"$0.61" = alloca i8*
+  store i8* null, i8** %"$0.61"
+  %"$0.62" = alloca i8*
+  store i8* null, i8** %"$0.62"
+  %"$0.63" = alloca i8*
+  store i8* null, i8** %"$0.63"
+  %"$0.64" = alloca i8*
+  store i8* null, i8** %"$0.64"
+  %"$0.65" = alloca i8*
+  store i8* null, i8** %"$0.65"
+  %"$0.66" = alloca i8*
+  store i8* null, i8** %"$0.66"
+  %"$0.67" = alloca i8*
+  store i8* null, i8** %"$0.67"
+  %"$0.68" = alloca i8*
+  store i8* null, i8** %"$0.68"
+  %"$0.69" = alloca i8*
+  store i8* null, i8** %"$0.69"
+  %"$0.70" = alloca i8*
+  store i8* null, i8** %"$0.70"
+  %"$0.71" = alloca i8*
+  store i8* null, i8** %"$0.71"
+  %"$0.72" = alloca i8*
+  store i8* null, i8** %"$0.72"
+  %"$0.73" = alloca i8*
+  store i8* null, i8** %"$0.73"
+  %"$0.74" = alloca i8*
+  store i8* null, i8** %"$0.74"
+  %"$0.75" = alloca i8*
+  store i8* null, i8** %"$0.75"
+  %"$0.76" = alloca i8*
+  store i8* null, i8** %"$0.76"
+  %"$0.77" = alloca i8*
+  store i8* null, i8** %"$0.77"
+  %"$0.78" = alloca i8*
+  store i8* null, i8** %"$0.78"
+  %"$0.79" = alloca i8*
+  store i8* null, i8** %"$0.79"
+  %"$0.80" = alloca i8*
+  store i8* null, i8** %"$0.80"
+  %"$0.81" = alloca i8*
+  store i8* null, i8** %"$0.81"
+  %"$0.82" = alloca i8*
+  store i8* null, i8** %"$0.82"
+  %"$0.83" = alloca i8*
+  store i8* null, i8** %"$0.83"
+  %"$0.84" = alloca i8*
+  store i8* null, i8** %"$0.84"
+  %"$0.85" = alloca i8*
+  store i8* null, i8** %"$0.85"
+  %"$0.86" = alloca i8*
+  store i8* null, i8** %"$0.86"
+  %"$0.87" = alloca i8*
+  store i8* null, i8** %"$0.87"
+  %"$0.88" = alloca i8*
+  store i8* null, i8** %"$0.88"
+  %"$0.89" = alloca i8*
+  store i8* null, i8** %"$0.89"
+  %"$0.90" = alloca i8*
+  store i8* null, i8** %"$0.90"
+  %"$0.91" = alloca i8*
+  store i8* null, i8** %"$0.91"
+  %"$0.92" = alloca i8*
+  store i8* null, i8** %"$0.92"
+  %"$0.93" = alloca i8*
+  store i8* null, i8** %"$0.93"
+  %"$0.94" = alloca i8*
+  store i8* null, i8** %"$0.94"
+  %"$0.95" = alloca i8*
+  store i8* null, i8** %"$0.95"
+  %"$0.96" = alloca i8*
+  store i8* null, i8** %"$0.96"
+  %"$0.97" = alloca i8*
+  store i8* null, i8** %"$0.97"
+  %"$0.98" = alloca i8*
+  store i8* null, i8** %"$0.98"
+  %"$0.99" = alloca i8*
+  store i8* null, i8** %"$0.99"
+  %"$0.100" = alloca i8*
+  store i8* null, i8** %"$0.100"
+  %data = alloca i8*
+  store i8* null, i8** %data
+  %"$0.102" = alloca i8*
+  store i8* null, i8** %"$0.102"
+  %"$0.103" = alloca i8*
+  store i8* null, i8** %"$0.103"
+  %"$0.104" = alloca i8*
+  store i8* null, i8** %"$0.104"
+  %"$0.105" = alloca i8*
+  store i8* null, i8** %"$0.105"
+  %"$0.106" = alloca i8*
+  store i8* null, i8** %"$0.106"
+  %"$0.107" = alloca i8*
+  store i8* null, i8** %"$0.107"
+  %"$0.108" = alloca i8*
+  store i8* null, i8** %"$0.108"
+  %"$0.109" = alloca i8*
+  store i8* null, i8** %"$0.109"
+  %"$0.110" = alloca i8*
+  store i8* null, i8** %"$0.110"
+  %"$0.111" = alloca i8*
+  store i8* null, i8** %"$0.111"
+  %"$0.112" = alloca i8*
+  store i8* null, i8** %"$0.112"
+  %"$0.113" = alloca i8*
+  store i8* null, i8** %"$0.113"
+  %"$0.114" = alloca i8*
+  store i8* null, i8** %"$0.114"
+  %"$0.115" = alloca i8*
+  store i8* null, i8** %"$0.115"
+  %"$0.116" = alloca i8*
+  store i8* null, i8** %"$0.116"
+  %"$0.117" = alloca i8*
+  store i8* null, i8** %"$0.117"
+  %"$0.118" = alloca i8*
+  store i8* null, i8** %"$0.118"
+  %"$0.119" = alloca i8*
+  store i8* null, i8** %"$0.119"
+  %"$0.120" = alloca i8*
+  store i8* null, i8** %"$0.120"
+  %"$0.121" = alloca i8*
+  store i8* null, i8** %"$0.121"
+  %"$0.122" = alloca i8*
+  store i8* null, i8** %"$0.122"
+  %"$0.123" = alloca i8*
+  store i8* null, i8** %"$0.123"
+  %"$0.124" = alloca i8*
+  store i8* null, i8** %"$0.124"
+  %"$0.125" = alloca i8*
+  store i8* null, i8** %"$0.125"
+  %"$0.126" = alloca i8*
+  store i8* null, i8** %"$0.126"
+  %"$0.127" = alloca i8*
+  store i8* null, i8** %"$0.127"
+  %"$0.128" = alloca i8*
+  store i8* null, i8** %"$0.128"
+  %"$0.129" = alloca i8*
+  store i8* null, i8** %"$0.129"
+  %"$0.130" = alloca i8*
+  store i8* null, i8** %"$0.130"
+  %"$0.131" = alloca i8*
+  store i8* null, i8** %"$0.131"
+  %"$0.132" = alloca i8*
+  store i8* null, i8** %"$0.132"
+  %"$0.133" = alloca i8*
+  store i8* null, i8** %"$0.133"
+  %"$0.134" = alloca i8*
+  store i8* null, i8** %"$0.134"
+  %"$0.135" = alloca i8*
+  store i8* null, i8** %"$0.135"
+  %"$0.136" = alloca i8*
+  store i8* null, i8** %"$0.136"
+  %"$0.137" = alloca i8*
+  store i8* null, i8** %"$0.137"
+  %"$0.138" = alloca i8*
+  store i8* null, i8** %"$0.138"
+  %"$0.139" = alloca i8*
+  store i8* null, i8** %"$0.139"
+  %"$0.140" = alloca i8*
+  store i8* null, i8** %"$0.140"
+  %"$0.141" = alloca i8*
+  store i8* null, i8** %"$0.141"
+  %"$0.142" = alloca i8*
+  store i8* null, i8** %"$0.142"
+  %"$0.143" = alloca i8*
+  store i8* null, i8** %"$0.143"
+  %"$0.144" = alloca i8*
+  store i8* null, i8** %"$0.144"
+  %"$0.145" = alloca i8*
+  store i8* null, i8** %"$0.145"
+  %"$0.146" = alloca i8*
+  store i8* null, i8** %"$0.146"
+  %"$0.147" = alloca i8*
+  store i8* null, i8** %"$0.147"
+  %"$0.148" = alloca i8*
+  store i8* null, i8** %"$0.148"
+  %"$0.149" = alloca i8*
+  store i8* null, i8** %"$0.149"
+  %"$0.150" = alloca i8*
+  store i8* null, i8** %"$0.150"
+  %"$0.151" = alloca i8*
+  store i8* null, i8** %"$0.151"
+  %"$0.152" = alloca i8*
+  store i8* null, i8** %"$0.152"
+  %"$0.153" = alloca i8*
+  store i8* null, i8** %"$0.153"
+  %"$0.154" = alloca i8*
+  store i8* null, i8** %"$0.154"
+  %"$0.155" = alloca i8*
+  store i8* null, i8** %"$0.155"
+  %"$0.156" = alloca i8*
+  store i8* null, i8** %"$0.156"
+  %"$0.157" = alloca i8*
+  store i8* null, i8** %"$0.157"
+  %"$0.158" = alloca i8*
+  store i8* null, i8** %"$0.158"
+  %"$0.159" = alloca i8*
+  store i8* null, i8** %"$0.159"
+  %"$0.160" = alloca i8*
+  store i8* null, i8** %"$0.160"
+  %"$0.161" = alloca i8*
+  store i8* null, i8** %"$0.161"
+  %"$0.162" = alloca i8*
+  store i8* null, i8** %"$0.162"
+  %"$0.163" = alloca i8*
+  store i8* null, i8** %"$0.163"
+  %"$0.164" = alloca i8*
+  store i8* null, i8** %"$0.164"
+  %"$0.165" = alloca i8*
+  store i8* null, i8** %"$0.165"
+  %"$0.166" = alloca i8*
+  store i8* null, i8** %"$0.166"
+  %"$0.167" = alloca i8*
+  store i8* null, i8** %"$0.167"
+  %"$0.168" = alloca i8*
+  store i8* null, i8** %"$0.168"
+  %"$0.169" = alloca i8*
+  store i8* null, i8** %"$0.169"
+  %"$0.170" = alloca i8*
+  store i8* null, i8** %"$0.170"
+  %"$0.171" = alloca i8*
+  store i8* null, i8** %"$0.171"
+  %"$0.172" = alloca i8*
+  store i8* null, i8** %"$0.172"
+  %"$0.173" = alloca i8*
+  store i8* null, i8** %"$0.173"
+  %"$0.174" = alloca i8*
+  store i8* null, i8** %"$0.174"
+  %"$0.175" = alloca i8*
+  store i8* null, i8** %"$0.175"
+  %"$0.176" = alloca i8*
+  store i8* null, i8** %"$0.176"
+  %"$0.177" = alloca i8*
+  store i8* null, i8** %"$0.177"
+  %"$0.178" = alloca i8*
+  store i8* null, i8** %"$0.178"
+  %"$0.179" = alloca i8*
+  store i8* null, i8** %"$0.179"
+  %"$0.180" = alloca i8*
+  store i8* null, i8** %"$0.180"
+  %"$0.181" = alloca i8*
+  store i8* null, i8** %"$0.181"
+  %"$0.182" = alloca i8*
+  store i8* null, i8** %"$0.182"
+  %"$0.183" = alloca i8*
+  store i8* null, i8** %"$0.183"
+  %"$0.184" = alloca i8*
+  store i8* null, i8** %"$0.184"
+  %"$0.185" = alloca i8*
+  store i8* null, i8** %"$0.185"
+  %"$0.186" = alloca i8*
+  store i8* null, i8** %"$0.186"
+  %"$0.187" = alloca i8*
+  store i8* null, i8** %"$0.187"
+  %"$0.188" = alloca i8*
+  store i8* null, i8** %"$0.188"
+  %"$0.189" = alloca i8*
+  store i8* null, i8** %"$0.189"
+  %"$0.190" = alloca i8*
+  store i8* null, i8** %"$0.190"
+  %"$0.191" = alloca i8*
+  store i8* null, i8** %"$0.191"
+  %"$0.192" = alloca i8*
+  store i8* null, i8** %"$0.192"
+  %"$0.193" = alloca i8*
+  store i8* null, i8** %"$0.193"
+  %"$0.194" = alloca i8*
+  store i8* null, i8** %"$0.194"
+  %"$0.195" = alloca i8*
+  store i8* null, i8** %"$0.195"
+  %"$0.196" = alloca i8*
+  store i8* null, i8** %"$0.196"
+  %"$0.197" = alloca i8*
+  store i8* null, i8** %"$0.197"
+  %"$0.198" = alloca i8*
+  store i8* null, i8** %"$0.198"
+  %"$0.199" = alloca i8*
+  store i8* null, i8** %"$0.199"
+  %"$0.200" = alloca i8*
+  store i8* null, i8** %"$0.200"
+  %"$0.201" = alloca i8*
+  store i8* null, i8** %"$0.201"
+  %counts = alloca i8*
+  store i8* null, i8** %counts
+  %dims = alloca i8*
+  store i8* null, i8** %dims
+  %vals = alloca i8*
+  store i8* null, i8** %vals
+  %labels = alloca i8*
+  store i8* null, i8** %labels
+  %"$0.206" = alloca i8*
+  store i8* null, i8** %"$0.206"
+  %"$0.207" = alloca i8*
+  store i8* null, i8** %"$0.207"
+  %"$0.208" = alloca i8*
+  store i8* null, i8** %"$0.208"
+  br label %B0
+
+error:                                            ; preds = %B0.endif.endif.endif.endif.endif.if, %B0.endif.endif.endif.endif.if, %B0.endif.endif.endif.if, %B0.endif.if
+  %1 = load i8** %labels
+  call void @Py_DecRef(i8* %1)
+  %2 = load i8** %"$0.8"
+  call void @Py_DecRef(i8* %2)
+  %3 = load i8** %"$0.9"
+  call void @Py_DecRef(i8* %3)
+  %4 = load i8** %"$0.2"
+  call void @Py_DecRef(i8* %4)
+  %5 = load i8** %"$0.3"
+  call void @Py_DecRef(i8* %5)
+  %6 = load i8** %"$0.1"
+  call void @Py_DecRef(i8* %6)
+  %7 = load i8** %"$0.6"
+  call void @Py_DecRef(i8* %7)
+  %8 = load i8** %"$0.7"
+  call void @Py_DecRef(i8* %8)
+  %9 = load i8** %"$0.4"
+  call void @Py_DecRef(i8* %9)
+  %10 = load i8** %"$0.5"
+  call void @Py_DecRef(i8* %10)
+  %11 = load i8** %"$0.18"
+  call void @Py_DecRef(i8* %11)
+  %12 = load i8** %"$0.19"
+  call void @Py_DecRef(i8* %12)
+  %13 = load i8** %"$0.10"
+  call void @Py_DecRef(i8* %13)
+  %14 = load i8** %"$0.11"
+  call void @Py_DecRef(i8* %14)
+  %15 = load i8** %"$0.12"
+  call void @Py_DecRef(i8* %15)
+  %16 = load i8** %"$0.13"
+  call void @Py_DecRef(i8* %16)
+  %17 = load i8** %"$0.14"
+  call void @Py_DecRef(i8* %17)
+  %18 = load i8** %"$0.15"
+  call void @Py_DecRef(i8* %18)
+  %19 = load i8** %"$0.16"
+  call void @Py_DecRef(i8* %19)
+  %20 = load i8** %"$0.17"
+  call void @Py_DecRef(i8* %20)
+  %21 = load i8** %"$0.90"
+  call void @Py_DecRef(i8* %21)
+  %22 = load i8** %"$0.91"
+  call void @Py_DecRef(i8* %22)
+  %23 = load i8** %"$0.92"
+  call void @Py_DecRef(i8* %23)
+  %24 = load i8** %"$0.93"
+  call void @Py_DecRef(i8* %24)
+  %25 = load i8** %"$0.94"
+  call void @Py_DecRef(i8* %25)
+  %26 = load i8** %"$0.95"
+  call void @Py_DecRef(i8* %26)
+  %27 = load i8** %"$0.96"
+  call void @Py_DecRef(i8* %27)
+  %28 = load i8** %"$0.97"
+  call void @Py_DecRef(i8* %28)
+  %29 = load i8** %"$0.98"
+  call void @Py_DecRef(i8* %29)
+  %30 = load i8** %"$0.99"
+  call void @Py_DecRef(i8* %30)
+  %31 = load i8** %"$0.136"
+  call void @Py_DecRef(i8* %31)
+  %32 = load i8** %"$0.124"
+  call void @Py_DecRef(i8* %32)
+  %33 = load i8** %"$0.130"
+  call void @Py_DecRef(i8* %33)
+  %34 = load i8** %"$0.131"
+  call void @Py_DecRef(i8* %34)
+  %35 = load i8** %"$0.132"
+  call void @Py_DecRef(i8* %35)
+  %36 = load i8** %"$0.133"
+  call void @Py_DecRef(i8* %36)
+  %37 = load i8** %"$0.158"
+  call void @Py_DecRef(i8* %37)
+  %38 = load i8** %"$0.159"
+  call void @Py_DecRef(i8* %38)
+  %39 = load i8** %"$0.156"
+  call void @Py_DecRef(i8* %39)
+  %40 = load i8** %"$0.157"
+  call void @Py_DecRef(i8* %40)
+  %41 = load i8** %"$0.154"
+  call void @Py_DecRef(i8* %41)
+  %42 = load i8** %"$0.155"
+  call void @Py_DecRef(i8* %42)
+  %43 = load i8** %"$0.152"
+  call void @Py_DecRef(i8* %43)
+  %44 = load i8** %"$0.153"
+  call void @Py_DecRef(i8* %44)
+  %45 = load i8** %"$0.150"
+  call void @Py_DecRef(i8* %45)
+  %46 = load i8** %"$0.151"
+  call void @Py_DecRef(i8* %46)
+  %47 = load i8** %"$0.129"
+  call void @Py_DecRef(i8* %47)
+  %48 = load i8** %"$0.128"
+  call void @Py_DecRef(i8* %48)
+  %49 = load i8** %"$0.69"
+  call void @Py_DecRef(i8* %49)
+  %50 = load i8** %"$0.68"
+  call void @Py_DecRef(i8* %50)
+  %51 = load i8** %"$0.65"
+  call void @Py_DecRef(i8* %51)
+  %52 = load i8** %"$0.64"
+  call void @Py_DecRef(i8* %52)
+  %53 = load i8** %"$0.67"
+  call void @Py_DecRef(i8* %53)
+  %54 = load i8** %"$0.66"
+  call void @Py_DecRef(i8* %54)
+  %55 = load i8** %"$0.61"
+  call void @Py_DecRef(i8* %55)
+  %56 = load i8** %"$0.60"
+  call void @Py_DecRef(i8* %56)
+  %57 = load i8** %"$0.63"
+  call void @Py_DecRef(i8* %57)
+  %58 = load i8** %"$0.62"
+  call void @Py_DecRef(i8* %58)
+  %59 = load i8** %"$0.149"
+  call void @Py_DecRef(i8* %59)
+  %60 = load i8** %"$0.148"
+  call void @Py_DecRef(i8* %60)
+  %61 = load i8** %"$0.145"
+  call void @Py_DecRef(i8* %61)
+  %62 = load i8** %"$0.144"
+  call void @Py_DecRef(i8* %62)
+  %63 = load i8** %"$0.147"
+  call void @Py_DecRef(i8* %63)
+  %64 = load i8** %"$0.146"
+  call void @Py_DecRef(i8* %64)
+  %65 = load i8** %"$0.141"
+  call void @Py_DecRef(i8* %65)
+  %66 = load i8** %"$0.140"
+  call void @Py_DecRef(i8* %66)
+  %67 = load i8** %"$0.143"
+  call void @Py_DecRef(i8* %67)
+  %68 = load i8** %"$0.142"
+  call void @Py_DecRef(i8* %68)
+  %69 = load i8** %counts
+  call void @Py_DecRef(i8* %69)
+  %70 = load i8** %"$0.111"
+  call void @Py_DecRef(i8* %70)
+  %71 = load i8** %"$0.164"
+  call void @Py_DecRef(i8* %71)
+  %72 = load i8** %"$0.78"
+  call void @Py_DecRef(i8* %72)
+  %73 = load i8** %"$0.79"
+  call void @Py_DecRef(i8* %73)
+  %74 = load i8** %"$0.76"
+  call void @Py_DecRef(i8* %74)
+  %75 = load i8** %"$0.77"
+  call void @Py_DecRef(i8* %75)
+  %76 = load i8** %"$0.74"
+  call void @Py_DecRef(i8* %76)
+  %77 = load i8** %"$0.75"
+  call void @Py_DecRef(i8* %77)
+  %78 = load i8** %"$0.72"
+  call void @Py_DecRef(i8* %78)
+  %79 = load i8** %"$0.73"
+  call void @Py_DecRef(i8* %79)
+  %80 = load i8** %"$0.70"
+  call void @Py_DecRef(i8* %80)
+  %81 = load i8** %"$0.71"
+  call void @Py_DecRef(i8* %81)
+  %82 = load i8** %"$0.178"
+  call void @Py_DecRef(i8* %82)
+  %83 = load i8** %"$0.179"
+  call void @Py_DecRef(i8* %83)
+  %84 = load i8** %"$0.170"
+  call void @Py_DecRef(i8* %84)
+  %85 = load i8** %"$0.171"
+  call void @Py_DecRef(i8* %85)
+  %86 = load i8** %"$0.172"
+  call void @Py_DecRef(i8* %86)
+  %87 = load i8** %"$0.173"
+  call void @Py_DecRef(i8* %87)
+  %88 = load i8** %"$0.174"
+  call void @Py_DecRef(i8* %88)
+  %89 = load i8** %"$0.175"
+  call void @Py_DecRef(i8* %89)
+  %90 = load i8** %"$0.176"
+  call void @Py_DecRef(i8* %90)
+  %91 = load i8** %"$0.177"
+  call void @Py_DecRef(i8* %91)
+  %92 = load i8** %"$0.123"
+  call void @Py_DecRef(i8* %92)
+  %93 = load i8** %"$0.122"
+  call void @Py_DecRef(i8* %93)
+  %94 = load i8** %vals
+  call void @Py_DecRef(i8* %94)
+  %95 = load i8** %"$0.121"
+  call void @Py_DecRef(i8* %95)
+  %96 = load i8** %"$0.120"
+  call void @Py_DecRef(i8* %96)
+  %97 = load i8** %"$0.127"
+  call void @Py_DecRef(i8* %97)
+  %98 = load i8** %"$0.126"
+  call void @Py_DecRef(i8* %98)
+  %99 = load i8** %"$0.49"
+  call void @Py_DecRef(i8* %99)
+  %100 = load i8** %"$0.48"
+  call void @Py_DecRef(i8* %100)
+  %101 = load i8** %"$0.125"
+  call void @Py_DecRef(i8* %101)
+  %102 = load i8** %"$0.43"
+  call void @Py_DecRef(i8* %102)
+  %103 = load i8** %"$0.42"
+  call void @Py_DecRef(i8* %103)
+  %104 = load i8** %"$0.41"
+  call void @Py_DecRef(i8* %104)
+  %105 = load i8** %"$0.40"
+  call void @Py_DecRef(i8* %105)
+  %106 = load i8** %"$0.47"
+  call void @Py_DecRef(i8* %106)
+  %107 = load i8** %"$0.46"
+  call void @Py_DecRef(i8* %107)
+  %108 = load i8** %"$0.45"
+  call void @Py_DecRef(i8* %108)
+  %109 = load i8** %"$0.44"
+  call void @Py_DecRef(i8* %109)
+  %110 = load i8** %"$0.208"
+  call void @Py_DecRef(i8* %110)
+  %111 = load i8** %"$0.200"
+  call void @Py_DecRef(i8* %111)
+  %112 = load i8** %"$0.201"
+  call void @Py_DecRef(i8* %112)
+  %113 = load i8** %"$0.206"
+  call void @Py_DecRef(i8* %113)
+  %114 = load i8** %"$0.207"
+  call void @Py_DecRef(i8* %114)
+  %115 = load i8** %"$0.54"
+  call void @Py_DecRef(i8* %115)
+  %116 = load i8** %"$0.55"
+  call void @Py_DecRef(i8* %116)
+  %117 = load i8** %"$0.56"
+  call void @Py_DecRef(i8* %117)
+  %118 = load i8** %"$0.57"
+  call void @Py_DecRef(i8* %118)
+  %119 = load i8** %"$0.50"
+  call void @Py_DecRef(i8* %119)
+  %120 = load i8** %"$0.51"
+  call void @Py_DecRef(i8* %120)
+  %121 = load i8** %"$0.52"
+  call void @Py_DecRef(i8* %121)
+  %122 = load i8** %"$0.53"
+  call void @Py_DecRef(i8* %122)
+  %123 = load i8** %"$0.58"
+  call void @Py_DecRef(i8* %123)
+  %124 = load i8** %"$0.59"
+  call void @Py_DecRef(i8* %124)
+  %125 = load i8** %"$0.138"
+  call void @Py_DecRef(i8* %125)
+  %126 = load i8** %"$0.139"
+  call void @Py_DecRef(i8* %126)
+  %127 = load i8** %"$0.134"
+  call void @Py_DecRef(i8* %127)
+  %128 = load i8** %"$0.198"
+  call void @Py_DecRef(i8* %128)
+  %129 = load i8** %"$0.199"
+  call void @Py_DecRef(i8* %129)
+  %130 = load i8** %"$0.135"
+  call void @Py_DecRef(i8* %130)
+  %131 = load i8** %"$0.192"
+  call void @Py_DecRef(i8* %131)
+  %132 = load i8** %"$0.193"
+  call void @Py_DecRef(i8* %132)
+  %133 = load i8** %"$0.190"
+  call void @Py_DecRef(i8* %133)
+  %134 = load i8** %"$0.191"
+  call void @Py_DecRef(i8* %134)
+  %135 = load i8** %"$0.196"
+  call void @Py_DecRef(i8* %135)
+  %136 = load i8** %"$0.197"
+  call void @Py_DecRef(i8* %136)
+  %137 = load i8** %"$0.194"
+  call void @Py_DecRef(i8* %137)
+  %138 = load i8** %"$0.195"
+  call void @Py_DecRef(i8* %138)
+  %139 = load i8** %"$0.21"
+  call void @Py_DecRef(i8* %139)
+  %140 = load i8** %"$0.20"
+  call void @Py_DecRef(i8* %140)
+  %141 = load i8** %"$0.23"
+  call void @Py_DecRef(i8* %141)
+  %142 = load i8** %"$0.22"
+  call void @Py_DecRef(i8* %142)
+  %143 = load i8** %"$0.25"
+  call void @Py_DecRef(i8* %143)
+  %144 = load i8** %"$0.24"
+  call void @Py_DecRef(i8* %144)
+  %145 = load i8** %"$0.27"
+  call void @Py_DecRef(i8* %145)
+  %146 = load i8** %"$0.26"
+  call void @Py_DecRef(i8* %146)
+  %147 = load i8** %"$0.29"
+  call void @Py_DecRef(i8* %147)
+  %148 = load i8** %"$0.28"
+  call void @Py_DecRef(i8* %148)
+  %149 = load i8** %"$0.167"
+  call void @Py_DecRef(i8* %149)
+  %150 = load i8** %"$0.166"
+  call void @Py_DecRef(i8* %150)
+  %151 = load i8** %"$0.165"
+  call void @Py_DecRef(i8* %151)
+  %152 = load i8** %"$0.100"
+  call void @Py_DecRef(i8* %152)
+  %153 = load i8** %"$0.163"
+  call void @Py_DecRef(i8* %153)
+  %154 = load i8** %"$0.162"
+  call void @Py_DecRef(i8* %154)
+  %155 = load i8** %"$0.161"
+  call void @Py_DecRef(i8* %155)
+  %156 = load i8** %"$0.160"
+  call void @Py_DecRef(i8* %156)
+  %157 = load i8** %"$0.169"
+  call void @Py_DecRef(i8* %157)
+  %158 = load i8** %"$0.168"
+  call void @Py_DecRef(i8* %158)
+  %159 = load i8** %"$0.189"
+  call void @Py_DecRef(i8* %159)
+  %160 = load i8** %"$0.188"
+  call void @Py_DecRef(i8* %160)
+  %161 = load i8** %"$0.181"
+  call void @Py_DecRef(i8* %161)
+  %162 = load i8** %"$0.180"
+  call void @Py_DecRef(i8* %162)
+  %163 = load i8** %"$0.183"
+  call void @Py_DecRef(i8* %163)
+  %164 = load i8** %"$0.182"
+  call void @Py_DecRef(i8* %164)
+  %165 = load i8** %"$0.185"
+  call void @Py_DecRef(i8* %165)
+  %166 = load i8** %"$0.184"
+  call void @Py_DecRef(i8* %166)
+  %167 = load i8** %"$0.187"
+  call void @Py_DecRef(i8* %167)
+  %168 = load i8** %"$0.186"
+  call void @Py_DecRef(i8* %168)
+  %169 = load i8** %"$0.32"
+  call void @Py_DecRef(i8* %169)
+  %170 = load i8** %"$0.33"
+  call void @Py_DecRef(i8* %170)
+  %171 = load i8** %"$0.30"
+  call void @Py_DecRef(i8* %171)
+  %172 = load i8** %"$0.31"
+  call void @Py_DecRef(i8* %172)
+  %173 = load i8** %"$0.36"
+  call void @Py_DecRef(i8* %173)
+  %174 = load i8** %"$0.37"
+  call void @Py_DecRef(i8* %174)
+  %175 = load i8** %"$0.34"
+  call void @Py_DecRef(i8* %175)
+  %176 = load i8** %"$0.35"
+  call void @Py_DecRef(i8* %176)
+  %177 = load i8** %"$0.38"
+  call void @Py_DecRef(i8* %177)
+  %178 = load i8** %"$0.39"
+  call void @Py_DecRef(i8* %178)
+  %179 = load i8** %"$0.103"
+  call void @Py_DecRef(i8* %179)
+  %180 = load i8** %"$0.112"
+  call void @Py_DecRef(i8* %180)
+  %181 = load i8** %"$0.113"
+  call void @Py_DecRef(i8* %181)
+  %182 = load i8** %"$0.110"
+  call void @Py_DecRef(i8* %182)
+  %183 = load i8** %"$0.102"
+  call void @Py_DecRef(i8* %183)
+  %184 = load i8** %"$0.116"
+  call void @Py_DecRef(i8* %184)
+  %185 = load i8** %"$0.117"
+  call void @Py_DecRef(i8* %185)
+  %186 = load i8** %"$0.114"
+  call void @Py_DecRef(i8* %186)
+  %187 = load i8** %"$0.115"
+  call void @Py_DecRef(i8* %187)
+  %188 = load i8** %"$0.105"
+  call void @Py_DecRef(i8* %188)
+  %189 = load i8** %"$0.118"
+  call void @Py_DecRef(i8* %189)
+  %190 = load i8** %"$0.119"
+  call void @Py_DecRef(i8* %190)
+  %191 = load i8** %"$0.104"
+  call void @Py_DecRef(i8* %191)
+  %192 = load i8** %"$0.107"
+  call void @Py_DecRef(i8* %192)
+  %193 = load i8** %"$0.106"
+  call void @Py_DecRef(i8* %193)
+  %194 = load i8** %dims
+  call void @Py_DecRef(i8* %194)
+  %195 = load i8** %"$0.137"
+  call void @Py_DecRef(i8* %195)
+  %196 = load i8** %data
+  call void @Py_DecRef(i8* %196)
+  %197 = load i8** %"$0.87"
+  call void @Py_DecRef(i8* %197)
+  %198 = load i8** %"$0.86"
+  call void @Py_DecRef(i8* %198)
+  %199 = load i8** %"$0.85"
+  call void @Py_DecRef(i8* %199)
+  %200 = load i8** %"$0.84"
+  call void @Py_DecRef(i8* %200)
+  %201 = load i8** %"$0.83"
+  call void @Py_DecRef(i8* %201)
+  %202 = load i8** %"$0.82"
+  call void @Py_DecRef(i8* %202)
+  %203 = load i8** %"$0.81"
+  call void @Py_DecRef(i8* %203)
+  %204 = load i8** %"$0.80"
+  call void @Py_DecRef(i8* %204)
+  %205 = load i8** %"$0.109"
+  call void @Py_DecRef(i8* %205)
+  %206 = load i8** %"$0.108"
+  call void @Py_DecRef(i8* %206)
+  %207 = load i8** %"$0.89"
+  call void @Py_DecRef(i8* %207)
+  %208 = load i8** %"$0.88"
+  call void @Py_DecRef(i8* %208)
+  ret i32 -1
+
+B0:                                               ; preds = %entry
+  %209 = call i8* @PyLong_FromSsize_t(i64 0)
+  %210 = load i8** %"$0.1"
+  store i8* %209, i8** %"$0.1"
+  call void @Py_DecRef(i8* %210)
+  %211 = call i8* @PyLong_FromSsize_t(i64 1)
+  %212 = load i8** %"$0.2"
+  store i8* %211, i8** %"$0.2"
+  call void @Py_DecRef(i8* %212)
+  %213 = call i8* @PyLong_FromSsize_t(i64 2)
+  %214 = load i8** %"$0.3"
+  store i8* %213, i8** %"$0.3"
+  call void @Py_DecRef(i8* %214)
+  %215 = call i8* @PyLong_FromSsize_t(i64 3)
+  %216 = load i8** %"$0.4"
+  store i8* %215, i8** %"$0.4"
+  call void @Py_DecRef(i8* %216)
+  %217 = call i8* @PyLong_FromSsize_t(i64 4)
+  %218 = load i8** %"$0.5"
+  store i8* %217, i8** %"$0.5"
+  call void @Py_DecRef(i8* %218)
+  %219 = call i8* @PyLong_FromSsize_t(i64 5)
+  %220 = load i8** %"$0.6"
+  store i8* %219, i8** %"$0.6"
+  call void @Py_DecRef(i8* %220)
+  %221 = call i8* @PyLong_FromSsize_t(i64 6)
+  %222 = load i8** %"$0.7"
+  store i8* %221, i8** %"$0.7"
+  call void @Py_DecRef(i8* %222)
+  %223 = call i8* @PyLong_FromSsize_t(i64 7)
+  %224 = load i8** %"$0.8"
+  store i8* %223, i8** %"$0.8"
+  call void @Py_DecRef(i8* %224)
+  %225 = call i8* @PyLong_FromSsize_t(i64 8)
+  %226 = load i8** %"$0.9"
+  store i8* %225, i8** %"$0.9"
+  call void @Py_DecRef(i8* %226)
+  %227 = call i8* @PyLong_FromSsize_t(i64 9)
+  %228 = load i8** %"$0.10"
+  store i8* %227, i8** %"$0.10"
+  call void @Py_DecRef(i8* %228)
+  %229 = call i8* @PyLong_FromSsize_t(i64 10)
+  %230 = load i8** %"$0.11"
+  store i8* %229, i8** %"$0.11"
+  call void @Py_DecRef(i8* %230)
+  %231 = call i8* @PyLong_FromSsize_t(i64 11)
+  %232 = load i8** %"$0.12"
+  store i8* %231, i8** %"$0.12"
+  call void @Py_DecRef(i8* %232)
+  %233 = call i8* @PyLong_FromSsize_t(i64 12)
+  %234 = load i8** %"$0.13"
+  store i8* %233, i8** %"$0.13"
+  call void @Py_DecRef(i8* %234)
+  %235 = call i8* @PyLong_FromSsize_t(i64 13)
+  %236 = load i8** %"$0.14"
+  store i8* %235, i8** %"$0.14"
+  call void @Py_DecRef(i8* %236)
+  %237 = call i8* @PyLong_FromSsize_t(i64 14)
+  %238 = load i8** %"$0.15"
+  store i8* %237, i8** %"$0.15"
+  call void @Py_DecRef(i8* %238)
+  %239 = call i8* @PyLong_FromSsize_t(i64 15)
+  %240 = load i8** %"$0.16"
+  store i8* %239, i8** %"$0.16"
+  call void @Py_DecRef(i8* %240)
+  %241 = call i8* @PyLong_FromSsize_t(i64 16)
+  %242 = load i8** %"$0.17"
+  store i8* %241, i8** %"$0.17"
+  call void @Py_DecRef(i8* %242)
+  %243 = call i8* @PyLong_FromSsize_t(i64 17)
+  %244 = load i8** %"$0.18"
+  store i8* %243, i8** %"$0.18"
+  call void @Py_DecRef(i8* %244)
+  %245 = call i8* @PyLong_FromSsize_t(i64 18)
+  %246 = load i8** %"$0.19"
+  store i8* %245, i8** %"$0.19"
+  call void @Py_DecRef(i8* %246)
+  %247 = call i8* @PyLong_FromSsize_t(i64 19)
+  %248 = load i8** %"$0.20"
+  store i8* %247, i8** %"$0.20"
+  call void @Py_DecRef(i8* %248)
+  %249 = call i8* @PyLong_FromSsize_t(i64 20)
+  %250 = load i8** %"$0.21"
+  store i8* %249, i8** %"$0.21"
+  call void @Py_DecRef(i8* %250)
+  %251 = call i8* @PyLong_FromSsize_t(i64 21)
+  %252 = load i8** %"$0.22"
+  store i8* %251, i8** %"$0.22"
+  call void @Py_DecRef(i8* %252)
+  %253 = call i8* @PyLong_FromSsize_t(i64 22)
+  %254 = load i8** %"$0.23"
+  store i8* %253, i8** %"$0.23"
+  call void @Py_DecRef(i8* %254)
+  %255 = call i8* @PyLong_FromSsize_t(i64 23)
+  %256 = load i8** %"$0.24"
+  store i8* %255, i8** %"$0.24"
+  call void @Py_DecRef(i8* %256)
+  %257 = call i8* @PyLong_FromSsize_t(i64 24)
+  %258 = load i8** %"$0.25"
+  store i8* %257, i8** %"$0.25"
+  call void @Py_DecRef(i8* %258)
+  %259 = call i8* @PyLong_FromSsize_t(i64 25)
+  %260 = load i8** %"$0.26"
+  store i8* %259, i8** %"$0.26"
+  call void @Py_DecRef(i8* %260)
+  %261 = call i8* @PyLong_FromSsize_t(i64 26)
+  %262 = load i8** %"$0.27"
+  store i8* %261, i8** %"$0.27"
+  call void @Py_DecRef(i8* %262)
+  %263 = call i8* @PyLong_FromSsize_t(i64 27)
+  %264 = load i8** %"$0.28"
+  store i8* %263, i8** %"$0.28"
+  call void @Py_DecRef(i8* %264)
+  %265 = call i8* @PyLong_FromSsize_t(i64 28)
+  %266 = load i8** %"$0.29"
+  store i8* %265, i8** %"$0.29"
+  call void @Py_DecRef(i8* %266)
+  %267 = call i8* @PyLong_FromSsize_t(i64 29)
+  %268 = load i8** %"$0.30"
+  store i8* %267, i8** %"$0.30"
+  call void @Py_DecRef(i8* %268)
+  %269 = call i8* @PyLong_FromSsize_t(i64 30)
+  %270 = load i8** %"$0.31"
+  store i8* %269, i8** %"$0.31"
+  call void @Py_DecRef(i8* %270)
+  %271 = call i8* @PyLong_FromSsize_t(i64 31)
+  %272 = load i8** %"$0.32"
+  store i8* %271, i8** %"$0.32"
+  call void @Py_DecRef(i8* %272)
+  %273 = call i8* @PyLong_FromSsize_t(i64 32)
+  %274 = load i8** %"$0.33"
+  store i8* %273, i8** %"$0.33"
+  call void @Py_DecRef(i8* %274)
+  %275 = call i8* @PyLong_FromSsize_t(i64 33)
+  %276 = load i8** %"$0.34"
+  store i8* %275, i8** %"$0.34"
+  call void @Py_DecRef(i8* %276)
+  %277 = call i8* @PyLong_FromSsize_t(i64 34)
+  %278 = load i8** %"$0.35"
+  store i8* %277, i8** %"$0.35"
+  call void @Py_DecRef(i8* %278)
+  %279 = call i8* @PyLong_FromSsize_t(i64 35)
+  %280 = load i8** %"$0.36"
+  store i8* %279, i8** %"$0.36"
+  call void @Py_DecRef(i8* %280)
+  %281 = call i8* @PyLong_FromSsize_t(i64 36)
+  %282 = load i8** %"$0.37"
+  store i8* %281, i8** %"$0.37"
+  call void @Py_DecRef(i8* %282)
+  %283 = call i8* @PyLong_FromSsize_t(i64 37)
+  %284 = load i8** %"$0.38"
+  store i8* %283, i8** %"$0.38"
+  call void @Py_DecRef(i8* %284)
+  %285 = call i8* @PyLong_FromSsize_t(i64 38)
+  %286 = load i8** %"$0.39"
+  store i8* %285, i8** %"$0.39"
+  call void @Py_DecRef(i8* %286)
+  %287 = call i8* @PyLong_FromSsize_t(i64 39)
+  %288 = load i8** %"$0.40"
+  store i8* %287, i8** %"$0.40"
+  call void @Py_DecRef(i8* %288)
+  %289 = call i8* @PyLong_FromSsize_t(i64 40)
+  %290 = load i8** %"$0.41"
+  store i8* %289, i8** %"$0.41"
+  call void @Py_DecRef(i8* %290)
+  %291 = call i8* @PyLong_FromSsize_t(i64 41)
+  %292 = load i8** %"$0.42"
+  store i8* %291, i8** %"$0.42"
+  call void @Py_DecRef(i8* %292)
+  %293 = call i8* @PyLong_FromSsize_t(i64 42)
+  %294 = load i8** %"$0.43"
+  store i8* %293, i8** %"$0.43"
+  call void @Py_DecRef(i8* %294)
+  %295 = call i8* @PyLong_FromSsize_t(i64 43)
+  %296 = load i8** %"$0.44"
+  store i8* %295, i8** %"$0.44"
+  call void @Py_DecRef(i8* %296)
+  %297 = call i8* @PyLong_FromSsize_t(i64 44)
+  %298 = load i8** %"$0.45"
+  store i8* %297, i8** %"$0.45"
+  call void @Py_DecRef(i8* %298)
+  %299 = call i8* @PyLong_FromSsize_t(i64 45)
+  %300 = load i8** %"$0.46"
+  store i8* %299, i8** %"$0.46"
+  call void @Py_DecRef(i8* %300)
+  %301 = call i8* @PyLong_FromSsize_t(i64 46)
+  %302 = load i8** %"$0.47"
+  store i8* %301, i8** %"$0.47"
+  call void @Py_DecRef(i8* %302)
+  %303 = call i8* @PyLong_FromSsize_t(i64 47)
+  %304 = load i8** %"$0.48"
+  store i8* %303, i8** %"$0.48"
+  call void @Py_DecRef(i8* %304)
+  %305 = call i8* @PyLong_FromSsize_t(i64 48)
+  %306 = load i8** %"$0.49"
+  store i8* %305, i8** %"$0.49"
+  call void @Py_DecRef(i8* %306)
+  %307 = call i8* @PyLong_FromSsize_t(i64 49)
+  %308 = load i8** %"$0.50"
+  store i8* %307, i8** %"$0.50"
+  call void @Py_DecRef(i8* %308)
+  %309 = call i8* @PyLong_FromSsize_t(i64 50)
+  %310 = load i8** %"$0.51"
+  store i8* %309, i8** %"$0.51"
+  call void @Py_DecRef(i8* %310)
+  %311 = call i8* @PyLong_FromSsize_t(i64 51)
+  %312 = load i8** %"$0.52"
+  store i8* %311, i8** %"$0.52"
+  call void @Py_DecRef(i8* %312)
+  %313 = call i8* @PyLong_FromSsize_t(i64 52)
+  %314 = load i8** %"$0.53"
+  store i8* %313, i8** %"$0.53"
+  call void @Py_DecRef(i8* %314)
+  %315 = call i8* @PyLong_FromSsize_t(i64 53)
+  %316 = load i8** %"$0.54"
+  store i8* %315, i8** %"$0.54"
+  call void @Py_DecRef(i8* %316)
+  %317 = call i8* @PyLong_FromSsize_t(i64 54)
+  %318 = load i8** %"$0.55"
+  store i8* %317, i8** %"$0.55"
+  call void @Py_DecRef(i8* %318)
+  %319 = call i8* @PyLong_FromSsize_t(i64 55)
+  %320 = load i8** %"$0.56"
+  store i8* %319, i8** %"$0.56"
+  call void @Py_DecRef(i8* %320)
+  %321 = call i8* @PyLong_FromSsize_t(i64 56)
+  %322 = load i8** %"$0.57"
+  store i8* %321, i8** %"$0.57"
+  call void @Py_DecRef(i8* %322)
+  %323 = call i8* @PyLong_FromSsize_t(i64 57)
+  %324 = load i8** %"$0.58"
+  store i8* %323, i8** %"$0.58"
+  call void @Py_DecRef(i8* %324)
+  %325 = call i8* @PyLong_FromSsize_t(i64 58)
+  %326 = load i8** %"$0.59"
+  store i8* %325, i8** %"$0.59"
+  call void @Py_DecRef(i8* %326)
+  %327 = call i8* @PyLong_FromSsize_t(i64 59)
+  %328 = load i8** %"$0.60"
+  store i8* %327, i8** %"$0.60"
+  call void @Py_DecRef(i8* %328)
+  %329 = call i8* @PyLong_FromSsize_t(i64 60)
+  %330 = load i8** %"$0.61"
+  store i8* %329, i8** %"$0.61"
+  call void @Py_DecRef(i8* %330)
+  %331 = call i8* @PyLong_FromSsize_t(i64 61)
+  %332 = load i8** %"$0.62"
+  store i8* %331, i8** %"$0.62"
+  call void @Py_DecRef(i8* %332)
+  %333 = call i8* @PyLong_FromSsize_t(i64 62)
+  %334 = load i8** %"$0.63"
+  store i8* %333, i8** %"$0.63"
+  call void @Py_DecRef(i8* %334)
+  %335 = call i8* @PyLong_FromSsize_t(i64 63)
+  %336 = load i8** %"$0.64"
+  store i8* %335, i8** %"$0.64"
+  call void @Py_DecRef(i8* %336)
+  %337 = call i8* @PyLong_FromSsize_t(i64 64)
+  %338 = load i8** %"$0.65"
+  store i8* %337, i8** %"$0.65"
+  call void @Py_DecRef(i8* %338)
+  %339 = call i8* @PyLong_FromSsize_t(i64 65)
+  %340 = load i8** %"$0.66"
+  store i8* %339, i8** %"$0.66"
+  call void @Py_DecRef(i8* %340)
+  %341 = call i8* @PyLong_FromSsize_t(i64 66)
+  %342 = load i8** %"$0.67"
+  store i8* %341, i8** %"$0.67"
+  call void @Py_DecRef(i8* %342)
+  %343 = call i8* @PyLong_FromSsize_t(i64 67)
+  %344 = load i8** %"$0.68"
+  store i8* %343, i8** %"$0.68"
+  call void @Py_DecRef(i8* %344)
+  %345 = call i8* @PyLong_FromSsize_t(i64 68)
+  %346 = load i8** %"$0.69"
+  store i8* %345, i8** %"$0.69"
+  call void @Py_DecRef(i8* %346)
+  %347 = call i8* @PyLong_FromSsize_t(i64 69)
+  %348 = load i8** %"$0.70"
+  store i8* %347, i8** %"$0.70"
+  call void @Py_DecRef(i8* %348)
+  %349 = call i8* @PyLong_FromSsize_t(i64 70)
+  %350 = load i8** %"$0.71"
+  store i8* %349, i8** %"$0.71"
+  call void @Py_DecRef(i8* %350)
+  %351 = call i8* @PyLong_FromSsize_t(i64 71)
+  %352 = load i8** %"$0.72"
+  store i8* %351, i8** %"$0.72"
+  call void @Py_DecRef(i8* %352)
+  %353 = call i8* @PyLong_FromSsize_t(i64 72)
+  %354 = load i8** %"$0.73"
+  store i8* %353, i8** %"$0.73"
+  call void @Py_DecRef(i8* %354)
+  %355 = call i8* @PyLong_FromSsize_t(i64 73)
+  %356 = load i8** %"$0.74"
+  store i8* %355, i8** %"$0.74"
+  call void @Py_DecRef(i8* %356)
+  %357 = call i8* @PyLong_FromSsize_t(i64 74)
+  %358 = load i8** %"$0.75"
+  store i8* %357, i8** %"$0.75"
+  call void @Py_DecRef(i8* %358)
+  %359 = call i8* @PyLong_FromSsize_t(i64 75)
+  %360 = load i8** %"$0.76"
+  store i8* %359, i8** %"$0.76"
+  call void @Py_DecRef(i8* %360)
+  %361 = call i8* @PyLong_FromSsize_t(i64 76)
+  %362 = load i8** %"$0.77"
+  store i8* %361, i8** %"$0.77"
+  call void @Py_DecRef(i8* %362)
+  %363 = call i8* @PyLong_FromSsize_t(i64 77)
+  %364 = load i8** %"$0.78"
+  store i8* %363, i8** %"$0.78"
+  call void @Py_DecRef(i8* %364)
+  %365 = call i8* @PyLong_FromSsize_t(i64 78)
+  %366 = load i8** %"$0.79"
+  store i8* %365, i8** %"$0.79"
+  call void @Py_DecRef(i8* %366)
+  %367 = call i8* @PyLong_FromSsize_t(i64 79)
+  %368 = load i8** %"$0.80"
+  store i8* %367, i8** %"$0.80"
+  call void @Py_DecRef(i8* %368)
+  %369 = call i8* @PyLong_FromSsize_t(i64 80)
+  %370 = load i8** %"$0.81"
+  store i8* %369, i8** %"$0.81"
+  call void @Py_DecRef(i8* %370)
+  %371 = call i8* @PyLong_FromSsize_t(i64 81)
+  %372 = load i8** %"$0.82"
+  store i8* %371, i8** %"$0.82"
+  call void @Py_DecRef(i8* %372)
+  %373 = call i8* @PyLong_FromSsize_t(i64 82)
+  %374 = load i8** %"$0.83"
+  store i8* %373, i8** %"$0.83"
+  call void @Py_DecRef(i8* %374)
+  %375 = call i8* @PyLong_FromSsize_t(i64 83)
+  %376 = load i8** %"$0.84"
+  store i8* %375, i8** %"$0.84"
+  call void @Py_DecRef(i8* %376)
+  %377 = call i8* @PyLong_FromSsize_t(i64 84)
+  %378 = load i8** %"$0.85"
+  store i8* %377, i8** %"$0.85"
+  call void @Py_DecRef(i8* %378)
+  %379 = call i8* @PyLong_FromSsize_t(i64 85)
+  %380 = load i8** %"$0.86"
+  store i8* %379, i8** %"$0.86"
+  call void @Py_DecRef(i8* %380)
+  %381 = call i8* @PyLong_FromSsize_t(i64 86)
+  %382 = load i8** %"$0.87"
+  store i8* %381, i8** %"$0.87"
+  call void @Py_DecRef(i8* %382)
+  %383 = call i8* @PyLong_FromSsize_t(i64 87)
+  %384 = load i8** %"$0.88"
+  store i8* %383, i8** %"$0.88"
+  call void @Py_DecRef(i8* %384)
+  %385 = call i8* @PyLong_FromSsize_t(i64 88)
+  %386 = load i8** %"$0.89"
+  store i8* %385, i8** %"$0.89"
+  call void @Py_DecRef(i8* %386)
+  %387 = call i8* @PyLong_FromSsize_t(i64 89)
+  %388 = load i8** %"$0.90"
+  store i8* %387, i8** %"$0.90"
+  call void @Py_DecRef(i8* %388)
+  %389 = call i8* @PyLong_FromSsize_t(i64 90)
+  %390 = load i8** %"$0.91"
+  store i8* %389, i8** %"$0.91"
+  call void @Py_DecRef(i8* %390)
+  %391 = call i8* @PyLong_FromSsize_t(i64 91)
+  %392 = load i8** %"$0.92"
+  store i8* %391, i8** %"$0.92"
+  call void @Py_DecRef(i8* %392)
+  %393 = call i8* @PyLong_FromSsize_t(i64 92)
+  %394 = load i8** %"$0.93"
+  store i8* %393, i8** %"$0.93"
+  call void @Py_DecRef(i8* %394)
+  %395 = call i8* @PyLong_FromSsize_t(i64 93)
+  %396 = load i8** %"$0.94"
+  store i8* %395, i8** %"$0.94"
+  call void @Py_DecRef(i8* %396)
+  %397 = call i8* @PyLong_FromSsize_t(i64 94)
+  %398 = load i8** %"$0.95"
+  store i8* %397, i8** %"$0.95"
+  call void @Py_DecRef(i8* %398)
+  %399 = call i8* @PyLong_FromSsize_t(i64 95)
+  %400 = load i8** %"$0.96"
+  store i8* %399, i8** %"$0.96"
+  call void @Py_DecRef(i8* %400)
+  %401 = call i8* @PyLong_FromSsize_t(i64 96)
+  %402 = load i8** %"$0.97"
+  store i8* %401, i8** %"$0.97"
+  call void @Py_DecRef(i8* %402)
+  %403 = call i8* @PyLong_FromSsize_t(i64 97)
+  %404 = load i8** %"$0.98"
+  store i8* %403, i8** %"$0.98"
+  call void @Py_DecRef(i8* %404)
+  %405 = call i8* @PyLong_FromSsize_t(i64 98)
+  %406 = load i8** %"$0.99"
+  store i8* %405, i8** %"$0.99"
+  call void @Py_DecRef(i8* %406)
+  %407 = call i8* @PyLong_FromSsize_t(i64 99)
+  %408 = load i8** %"$0.100"
+  store i8* %407, i8** %"$0.100"
+  call void @Py_DecRef(i8* %408)
+  %409 = load i8** %"$0.1"
+  %410 = load i8** %"$0.2"
+  %411 = load i8** %"$0.3"
+  %412 = load i8** %"$0.4"
+  %413 = load i8** %"$0.5"
+  %414 = load i8** %"$0.6"
+  %415 = load i8** %"$0.7"
+  %416 = load i8** %"$0.8"
+  %417 = load i8** %"$0.9"
+  %418 = load i8** %"$0.10"
+  %419 = load i8** %"$0.11"
+  %420 = load i8** %"$0.12"
+  %421 = load i8** %"$0.13"
+  %422 = load i8** %"$0.14"
+  %423 = load i8** %"$0.15"
+  %424 = load i8** %"$0.16"
+  %425 = load i8** %"$0.17"
+  %426 = load i8** %"$0.18"
+  %427 = load i8** %"$0.19"
+  %428 = load i8** %"$0.20"
+  %429 = load i8** %"$0.21"
+  %430 = load i8** %"$0.22"
+  %431 = load i8** %"$0.23"
+  %432 = load i8** %"$0.24"
+  %433 = load i8** %"$0.25"
+  %434 = load i8** %"$0.26"
+  %435 = load i8** %"$0.27"
+  %436 = load i8** %"$0.28"
+  %437 = load i8** %"$0.29"
+  %438 = load i8** %"$0.30"
+  %439 = load i8** %"$0.31"
+  %440 = load i8** %"$0.32"
+  %441 = load i8** %"$0.33"
+  %442 = load i8** %"$0.34"
+  %443 = load i8** %"$0.35"
+  %444 = load i8** %"$0.36"
+  %445 = load i8** %"$0.37"
+  %446 = load i8** %"$0.38"
+  %447 = load i8** %"$0.39"
+  %448 = load i8** %"$0.40"
+  %449 = load i8** %"$0.41"
+  %450 = load i8** %"$0.42"
+  %451 = load i8** %"$0.43"
+  %452 = load i8** %"$0.44"
+  %453 = load i8** %"$0.45"
+  %454 = load i8** %"$0.46"
+  %455 = load i8** %"$0.47"
+  %456 = load i8** %"$0.48"
+  %457 = load i8** %"$0.49"
+  %458 = load i8** %"$0.50"
+  %459 = load i8** %"$0.51"
+  %460 = load i8** %"$0.52"
+  %461 = load i8** %"$0.53"
+  %462 = load i8** %"$0.54"
+  %463 = load i8** %"$0.55"
+  %464 = load i8** %"$0.56"
+  %465 = load i8** %"$0.57"
+  %466 = load i8** %"$0.58"
+  %467 = load i8** %"$0.59"
+  %468 = load i8** %"$0.60"
+  %469 = load i8** %"$0.61"
+  %470 = load i8** %"$0.62"
+  %471 = load i8** %"$0.63"
+  %472 = load i8** %"$0.64"
+  %473 = load i8** %"$0.65"
+  %474 = load i8** %"$0.66"
+  %475 = load i8** %"$0.67"
+  %476 = load i8** %"$0.68"
+  %477 = load i8** %"$0.69"
+  %478 = load i8** %"$0.70"
+  %479 = load i8** %"$0.71"
+  %480 = load i8** %"$0.72"
+  %481 = load i8** %"$0.73"
+  %482 = load i8** %"$0.74"
+  %483 = load i8** %"$0.75"
+  %484 = load i8** %"$0.76"
+  %485 = load i8** %"$0.77"
+  %486 = load i8** %"$0.78"
+  %487 = load i8** %"$0.79"
+  %488 = load i8** %"$0.80"
+  %489 = load i8** %"$0.81"
+  %490 = load i8** %"$0.82"
+  %491 = load i8** %"$0.83"
+  %492 = load i8** %"$0.84"
+  %493 = load i8** %"$0.85"
+  %494 = load i8** %"$0.86"
+  %495 = load i8** %"$0.87"
+  %496 = load i8** %"$0.88"
+  %497 = load i8** %"$0.89"
+  %498 = load i8** %"$0.90"
+  %499 = load i8** %"$0.91"
+  %500 = load i8** %"$0.92"
+  %501 = load i8** %"$0.93"
+  %502 = load i8** %"$0.94"
+  %503 = load i8** %"$0.95"
+  %504 = load i8** %"$0.96"
+  %505 = load i8** %"$0.97"
+  %506 = load i8** %"$0.98"
+  %507 = load i8** %"$0.99"
+  %508 = load i8** %"$0.100"
+  %509 = call i8* @PyList_New(i64 100)
+  %510 = icmp ne i8* null, %509
+  br i1 %510, label %B0.if, label %B0.endif, !prof !1
+
+B0.if:                                            ; preds = %B0
+  call void @Py_IncRef(i8* %409)
+  %511 = call i32 @PyList_SetItem(i8* %509, i64 0, i8* %409)
+  call void @Py_IncRef(i8* %410)
+  %512 = call i32 @PyList_SetItem(i8* %509, i64 1, i8* %410)
+  call void @Py_IncRef(i8* %411)
+  %513 = call i32 @PyList_SetItem(i8* %509, i64 2, i8* %411)
+  call void @Py_IncRef(i8* %412)
+  %514 = call i32 @PyList_SetItem(i8* %509, i64 3, i8* %412)
+  call void @Py_IncRef(i8* %413)
+  %515 = call i32 @PyList_SetItem(i8* %509, i64 4, i8* %413)
+  call void @Py_IncRef(i8* %414)
+  %516 = call i32 @PyList_SetItem(i8* %509, i64 5, i8* %414)
+  call void @Py_IncRef(i8* %415)
+  %517 = call i32 @PyList_SetItem(i8* %509, i64 6, i8* %415)
+  call void @Py_IncRef(i8* %416)
+  %518 = call i32 @PyList_SetItem(i8* %509, i64 7, i8* %416)
+  call void @Py_IncRef(i8* %417)
+  %519 = call i32 @PyList_SetItem(i8* %509, i64 8, i8* %417)
+  call void @Py_IncRef(i8* %418)
+  %520 = call i32 @PyList_SetItem(i8* %509, i64 9, i8* %418)
+  call void @Py_IncRef(i8* %419)
+  %521 = call i32 @PyList_SetItem(i8* %509, i64 10, i8* %419)
+  call void @Py_IncRef(i8* %420)
+  %522 = call i32 @PyList_SetItem(i8* %509, i64 11, i8* %420)
+  call void @Py_IncRef(i8* %421)
+  %523 = call i32 @PyList_SetItem(i8* %509, i64 12, i8* %421)
+  call void @Py_IncRef(i8* %422)
+  %524 = call i32 @PyList_SetItem(i8* %509, i64 13, i8* %422)
+  call void @Py_IncRef(i8* %423)
+  %525 = call i32 @PyList_SetItem(i8* %509, i64 14, i8* %423)
+  call void @Py_IncRef(i8* %424)
+  %526 = call i32 @PyList_SetItem(i8* %509, i64 15, i8* %424)
+  call void @Py_IncRef(i8* %425)
+  %527 = call i32 @PyList_SetItem(i8* %509, i64 16, i8* %425)
+  call void @Py_IncRef(i8* %426)
+  %528 = call i32 @PyList_SetItem(i8* %509, i64 17, i8* %426)
+  call void @Py_IncRef(i8* %427)
+  %529 = call i32 @PyList_SetItem(i8* %509, i64 18, i8* %427)
+  call void @Py_IncRef(i8* %428)
+  %530 = call i32 @PyList_SetItem(i8* %509, i64 19, i8* %428)
+  call void @Py_IncRef(i8* %429)
+  %531 = call i32 @PyList_SetItem(i8* %509, i64 20, i8* %429)
+  call void @Py_IncRef(i8* %430)
+  %532 = call i32 @PyList_SetItem(i8* %509, i64 21, i8* %430)
+  call void @Py_IncRef(i8* %431)
+  %533 = call i32 @PyList_SetItem(i8* %509, i64 22, i8* %431)
+  call void @Py_IncRef(i8* %432)
+  %534 = call i32 @PyList_SetItem(i8* %509, i64 23, i8* %432)
+  call void @Py_IncRef(i8* %433)
+  %535 = call i32 @PyList_SetItem(i8* %509, i64 24, i8* %433)
+  call void @Py_IncRef(i8* %434)
+  %536 = call i32 @PyList_SetItem(i8* %509, i64 25, i8* %434)
+  call void @Py_IncRef(i8* %435)
+  %537 = call i32 @PyList_SetItem(i8* %509, i64 26, i8* %435)
+  call void @Py_IncRef(i8* %436)
+  %538 = call i32 @PyList_SetItem(i8* %509, i64 27, i8* %436)
+  call void @Py_IncRef(i8* %437)
+  %539 = call i32 @PyList_SetItem(i8* %509, i64 28, i8* %437)
+  call void @Py_IncRef(i8* %438)
+  %540 = call i32 @PyList_SetItem(i8* %509, i64 29, i8* %438)
+  call void @Py_IncRef(i8* %439)
+  %541 = call i32 @PyList_SetItem(i8* %509, i64 30, i8* %439)
+  call void @Py_IncRef(i8* %440)
+  %542 = call i32 @PyList_SetItem(i8* %509, i64 31, i8* %440)
+  call void @Py_IncRef(i8* %441)
+  %543 = call i32 @PyList_SetItem(i8* %509, i64 32, i8* %441)
+  call void @Py_IncRef(i8* %442)
+  %544 = call i32 @PyList_SetItem(i8* %509, i64 33, i8* %442)
+  call void @Py_IncRef(i8* %443)
+  %545 = call i32 @PyList_SetItem(i8* %509, i64 34, i8* %443)
+  call void @Py_IncRef(i8* %444)
+  %546 = call i32 @PyList_SetItem(i8* %509, i64 35, i8* %444)
+  call void @Py_IncRef(i8* %445)
+  %547 = call i32 @PyList_SetItem(i8* %509, i64 36, i8* %445)
+  call void @Py_IncRef(i8* %446)
+  %548 = call i32 @PyList_SetItem(i8* %509, i64 37, i8* %446)
+  call void @Py_IncRef(i8* %447)
+  %549 = call i32 @PyList_SetItem(i8* %509, i64 38, i8* %447)
+  call void @Py_IncRef(i8* %448)
+  %550 = call i32 @PyList_SetItem(i8* %509, i64 39, i8* %448)
+  call void @Py_IncRef(i8* %449)
+  %551 = call i32 @PyList_SetItem(i8* %509, i64 40, i8* %449)
+  call void @Py_IncRef(i8* %450)
+  %552 = call i32 @PyList_SetItem(i8* %509, i64 41, i8* %450)
+  call void @Py_IncRef(i8* %451)
+  %553 = call i32 @PyList_SetItem(i8* %509, i64 42, i8* %451)
+  call void @Py_IncRef(i8* %452)
+  %554 = call i32 @PyList_SetItem(i8* %509, i64 43, i8* %452)
+  call void @Py_IncRef(i8* %453)
+  %555 = call i32 @PyList_SetItem(i8* %509, i64 44, i8* %453)
+  call void @Py_IncRef(i8* %454)
+  %556 = call i32 @PyList_SetItem(i8* %509, i64 45, i8* %454)
+  call void @Py_IncRef(i8* %455)
+  %557 = call i32 @PyList_SetItem(i8* %509, i64 46, i8* %455)
+  call void @Py_IncRef(i8* %456)
+  %558 = call i32 @PyList_SetItem(i8* %509, i64 47, i8* %456)
+  call void @Py_IncRef(i8* %457)
+  %559 = call i32 @PyList_SetItem(i8* %509, i64 48, i8* %457)
+  call void @Py_IncRef(i8* %458)
+  %560 = call i32 @PyList_SetItem(i8* %509, i64 49, i8* %458)
+  call void @Py_IncRef(i8* %459)
+  %561 = call i32 @PyList_SetItem(i8* %509, i64 50, i8* %459)
+  call void @Py_IncRef(i8* %460)
+  %562 = call i32 @PyList_SetItem(i8* %509, i64 51, i8* %460)
+  call void @Py_IncRef(i8* %461)
+  %563 = call i32 @PyList_SetItem(i8* %509, i64 52, i8* %461)
+  call void @Py_IncRef(i8* %462)
+  %564 = call i32 @PyList_SetItem(i8* %509, i64 53, i8* %462)
+  call void @Py_IncRef(i8* %463)
+  %565 = call i32 @PyList_SetItem(i8* %509, i64 54, i8* %463)
+  call void @Py_IncRef(i8* %464)
+  %566 = call i32 @PyList_SetItem(i8* %509, i64 55, i8* %464)
+  call void @Py_IncRef(i8* %465)
+  %567 = call i32 @PyList_SetItem(i8* %509, i64 56, i8* %465)
+  call void @Py_IncRef(i8* %466)
+  %568 = call i32 @PyList_SetItem(i8* %509, i64 57, i8* %466)
+  call void @Py_IncRef(i8* %467)
+  %569 = call i32 @PyList_SetItem(i8* %509, i64 58, i8* %467)
+  call void @Py_IncRef(i8* %468)
+  %570 = call i32 @PyList_SetItem(i8* %509, i64 59, i8* %468)
+  call void @Py_IncRef(i8* %469)
+  %571 = call i32 @PyList_SetItem(i8* %509, i64 60, i8* %469)
+  call void @Py_IncRef(i8* %470)
+  %572 = call i32 @PyList_SetItem(i8* %509, i64 61, i8* %470)
+  call void @Py_IncRef(i8* %471)
+  %573 = call i32 @PyList_SetItem(i8* %509, i64 62, i8* %471)
+  call void @Py_IncRef(i8* %472)
+  %574 = call i32 @PyList_SetItem(i8* %509, i64 63, i8* %472)
+  call void @Py_IncRef(i8* %473)
+  %575 = call i32 @PyList_SetItem(i8* %509, i64 64, i8* %473)
+  call void @Py_IncRef(i8* %474)
+  %576 = call i32 @PyList_SetItem(i8* %509, i64 65, i8* %474)
+  call void @Py_IncRef(i8* %475)
+  %577 = call i32 @PyList_SetItem(i8* %509, i64 66, i8* %475)
+  call void @Py_IncRef(i8* %476)
+  %578 = call i32 @PyList_SetItem(i8* %509, i64 67, i8* %476)
+  call void @Py_IncRef(i8* %477)
+  %579 = call i32 @PyList_SetItem(i8* %509, i64 68, i8* %477)
+  call void @Py_IncRef(i8* %478)
+  %580 = call i32 @PyList_SetItem(i8* %509, i64 69, i8* %478)
+  call void @Py_IncRef(i8* %479)
+  %581 = call i32 @PyList_SetItem(i8* %509, i64 70, i8* %479)
+  call void @Py_IncRef(i8* %480)
+  %582 = call i32 @PyList_SetItem(i8* %509, i64 71, i8* %480)
+  call void @Py_IncRef(i8* %481)
+  %583 = call i32 @PyList_SetItem(i8* %509, i64 72, i8* %481)
+  call void @Py_IncRef(i8* %482)
+  %584 = call i32 @PyList_SetItem(i8* %509, i64 73, i8* %482)
+  call void @Py_IncRef(i8* %483)
+  %585 = call i32 @PyList_SetItem(i8* %509, i64 74, i8* %483)
+  call void @Py_IncRef(i8* %484)
+  %586 = call i32 @PyList_SetItem(i8* %509, i64 75, i8* %484)
+  call void @Py_IncRef(i8* %485)
+  %587 = call i32 @PyList_SetItem(i8* %509, i64 76, i8* %485)
+  call void @Py_IncRef(i8* %486)
+  %588 = call i32 @PyList_SetItem(i8* %509, i64 77, i8* %486)
+  call void @Py_IncRef(i8* %487)
+  %589 = call i32 @PyList_SetItem(i8* %509, i64 78, i8* %487)
+  call void @Py_IncRef(i8* %488)
+  %590 = call i32 @PyList_SetItem(i8* %509, i64 79, i8* %488)
+  call void @Py_IncRef(i8* %489)
+  %591 = call i32 @PyList_SetItem(i8* %509, i64 80, i8* %489)
+  call void @Py_IncRef(i8* %490)
+  %592 = call i32 @PyList_SetItem(i8* %509, i64 81, i8* %490)
+  call void @Py_IncRef(i8* %491)
+  %593 = call i32 @PyList_SetItem(i8* %509, i64 82, i8* %491)
+  call void @Py_IncRef(i8* %492)
+  %594 = call i32 @PyList_SetItem(i8* %509, i64 83, i8* %492)
+  call void @Py_IncRef(i8* %493)
+  %595 = call i32 @PyList_SetItem(i8* %509, i64 84, i8* %493)
+  call void @Py_IncRef(i8* %494)
+  %596 = call i32 @PyList_SetItem(i8* %509, i64 85, i8* %494)
+  call void @Py_IncRef(i8* %495)
+  %597 = call i32 @PyList_SetItem(i8* %509, i64 86, i8* %495)
+  call void @Py_IncRef(i8* %496)
+  %598 = call i32 @PyList_SetItem(i8* %509, i64 87, i8* %496)
+  call void @Py_IncRef(i8* %497)
+  %599 = call i32 @PyList_SetItem(i8* %509, i64 88, i8* %497)
+  call void @Py_IncRef(i8* %498)
+  %600 = call i32 @PyList_SetItem(i8* %509, i64 89, i8* %498)
+  call void @Py_IncRef(i8* %499)
+  %601 = call i32 @PyList_SetItem(i8* %509, i64 90, i8* %499)
+  call void @Py_IncRef(i8* %500)
+  %602 = call i32 @PyList_SetItem(i8* %509, i64 91, i8* %500)
+  call void @Py_IncRef(i8* %501)
+  %603 = call i32 @PyList_SetItem(i8* %509, i64 92, i8* %501)
+  call void @Py_IncRef(i8* %502)
+  %604 = call i32 @PyList_SetItem(i8* %509, i64 93, i8* %502)
+  call void @Py_IncRef(i8* %503)
+  %605 = call i32 @PyList_SetItem(i8* %509, i64 94, i8* %503)
+  call void @Py_IncRef(i8* %504)
+  %606 = call i32 @PyList_SetItem(i8* %509, i64 95, i8* %504)
+  call void @Py_IncRef(i8* %505)
+  %607 = call i32 @PyList_SetItem(i8* %509, i64 96, i8* %505)
+  call void @Py_IncRef(i8* %506)
+  %608 = call i32 @PyList_SetItem(i8* %509, i64 97, i8* %506)
+  call void @Py_IncRef(i8* %507)
+  %609 = call i32 @PyList_SetItem(i8* %509, i64 98, i8* %507)
+  call void @Py_IncRef(i8* %508)
+  %610 = call i32 @PyList_SetItem(i8* %509, i64 99, i8* %508)
+  br label %B0.endif
+
+B0.endif:                                         ; preds = %B0.if, %B0
+  %611 = icmp eq i8* null, %509
+  br i1 %611, label %B0.endif.if, label %B0.endif.endif, !prof !2
+
+B0.endif.if:                                      ; preds = %B0.endif
+  br label %error
+
+B0.endif.endif:                                   ; preds = %B0.endif
+  %612 = load i8** %data
+  store i8* %509, i8** %data
+  call void @Py_DecRef(i8* %612)
+  %613 = call i8* @PyLong_FromSsize_t(i64 0)
+  %614 = load i8** %"$0.102"
+  store i8* %613, i8** %"$0.102"
+  call void @Py_DecRef(i8* %614)
+  %615 = call i8* @PyLong_FromSsize_t(i64 0)
+  %616 = load i8** %"$0.103"
+  store i8* %615, i8** %"$0.103"
+  call void @Py_DecRef(i8* %616)
+  %617 = call i8* @PyLong_FromSsize_t(i64 0)
+  %618 = load i8** %"$0.104"
+  store i8* %617, i8** %"$0.104"
+  call void @Py_DecRef(i8* %618)
+  %619 = call i8* @PyLong_FromSsize_t(i64 0)
+  %620 = load i8** %"$0.105"
+  store i8* %619, i8** %"$0.105"
+  call void @Py_DecRef(i8* %620)
+  %621 = call i8* @PyLong_FromSsize_t(i64 0)
+  %622 = load i8** %"$0.106"
+  store i8* %621, i8** %"$0.106"
+  call void @Py_DecRef(i8* %622)
+  %623 = call i8* @PyLong_FromSsize_t(i64 0)
+  %624 = load i8** %"$0.107"
+  store i8* %623, i8** %"$0.107"
+  call void @Py_DecRef(i8* %624)
+  %625 = call i8* @PyLong_FromSsize_t(i64 0)
+  %626 = load i8** %"$0.108"
+  store i8* %625, i8** %"$0.108"
+  call void @Py_DecRef(i8* %626)
+  %627 = call i8* @PyLong_FromSsize_t(i64 0)
+  %628 = load i8** %"$0.109"
+  store i8* %627, i8** %"$0.109"
+  call void @Py_DecRef(i8* %628)
+  %629 = call i8* @PyLong_FromSsize_t(i64 0)
+  %630 = load i8** %"$0.110"
+  store i8* %629, i8** %"$0.110"
+  call void @Py_DecRef(i8* %630)
+  %631 = call i8* @PyLong_FromSsize_t(i64 0)
+  %632 = load i8** %"$0.111"
+  store i8* %631, i8** %"$0.111"
+  call void @Py_DecRef(i8* %632)
+  %633 = call i8* @PyLong_FromSsize_t(i64 0)
+  %634 = load i8** %"$0.112"
+  store i8* %633, i8** %"$0.112"
+  call void @Py_DecRef(i8* %634)
+  %635 = call i8* @PyLong_FromSsize_t(i64 0)
+  %636 = load i8** %"$0.113"
+  store i8* %635, i8** %"$0.113"
+  call void @Py_DecRef(i8* %636)
+  %637 = call i8* @PyLong_FromSsize_t(i64 0)
+  %638 = load i8** %"$0.114"
+  store i8* %637, i8** %"$0.114"
+  call void @Py_DecRef(i8* %638)
+  %639 = call i8* @PyLong_FromSsize_t(i64 0)
+  %640 = load i8** %"$0.115"
+  store i8* %639, i8** %"$0.115"
+  call void @Py_DecRef(i8* %640)
+  %641 = call i8* @PyLong_FromSsize_t(i64 0)
+  %642 = load i8** %"$0.116"
+  store i8* %641, i8** %"$0.116"
+  call void @Py_DecRef(i8* %642)
+  %643 = call i8* @PyLong_FromSsize_t(i64 0)
+  %644 = load i8** %"$0.117"
+  store i8* %643, i8** %"$0.117"
+  call void @Py_DecRef(i8* %644)
+  %645 = call i8* @PyLong_FromSsize_t(i64 0)
+  %646 = load i8** %"$0.118"
+  store i8* %645, i8** %"$0.118"
+  call void @Py_DecRef(i8* %646)
+  %647 = call i8* @PyLong_FromSsize_t(i64 0)
+  %648 = load i8** %"$0.119"
+  store i8* %647, i8** %"$0.119"
+  call void @Py_DecRef(i8* %648)
+  %649 = call i8* @PyLong_FromSsize_t(i64 0)
+  %650 = load i8** %"$0.120"
+  store i8* %649, i8** %"$0.120"
+  call void @Py_DecRef(i8* %650)
+  %651 = call i8* @PyLong_FromSsize_t(i64 0)
+  %652 = load i8** %"$0.121"
+  store i8* %651, i8** %"$0.121"
+  call void @Py_DecRef(i8* %652)
+  %653 = call i8* @PyLong_FromSsize_t(i64 0)
+  %654 = load i8** %"$0.122"
+  store i8* %653, i8** %"$0.122"
+  call void @Py_DecRef(i8* %654)
+  %655 = call i8* @PyLong_FromSsize_t(i64 0)
+  %656 = load i8** %"$0.123"
+  store i8* %655, i8** %"$0.123"
+  call void @Py_DecRef(i8* %656)
+  %657 = call i8* @PyLong_FromSsize_t(i64 0)
+  %658 = load i8** %"$0.124"
+  store i8* %657, i8** %"$0.124"
+  call void @Py_DecRef(i8* %658)
+  %659 = call i8* @PyLong_FromSsize_t(i64 0)
+  %660 = load i8** %"$0.125"
+  store i8* %659, i8** %"$0.125"
+  call void @Py_DecRef(i8* %660)
+  %661 = call i8* @PyLong_FromSsize_t(i64 0)
+  %662 = load i8** %"$0.126"
+  store i8* %661, i8** %"$0.126"
+  call void @Py_DecRef(i8* %662)
+  %663 = call i8* @PyLong_FromSsize_t(i64 0)
+  %664 = load i8** %"$0.127"
+  store i8* %663, i8** %"$0.127"
+  call void @Py_DecRef(i8* %664)
+  %665 = call i8* @PyLong_FromSsize_t(i64 0)
+  %666 = load i8** %"$0.128"
+  store i8* %665, i8** %"$0.128"
+  call void @Py_DecRef(i8* %666)
+  %667 = call i8* @PyLong_FromSsize_t(i64 0)
+  %668 = load i8** %"$0.129"
+  store i8* %667, i8** %"$0.129"
+  call void @Py_DecRef(i8* %668)
+  %669 = call i8* @PyLong_FromSsize_t(i64 0)
+  %670 = load i8** %"$0.130"
+  store i8* %669, i8** %"$0.130"
+  call void @Py_DecRef(i8* %670)
+  %671 = call i8* @PyLong_FromSsize_t(i64 0)
+  %672 = load i8** %"$0.131"
+  store i8* %671, i8** %"$0.131"
+  call void @Py_DecRef(i8* %672)
+  %673 = call i8* @PyLong_FromSsize_t(i64 0)
+  %674 = load i8** %"$0.132"
+  store i8* %673, i8** %"$0.132"
+  call void @Py_DecRef(i8* %674)
+  %675 = call i8* @PyLong_FromSsize_t(i64 0)
+  %676 = load i8** %"$0.133"
+  store i8* %675, i8** %"$0.133"
+  call void @Py_DecRef(i8* %676)
+  %677 = call i8* @PyLong_FromSsize_t(i64 0)
+  %678 = load i8** %"$0.134"
+  store i8* %677, i8** %"$0.134"
+  call void @Py_DecRef(i8* %678)
+  %679 = call i8* @PyLong_FromSsize_t(i64 0)
+  %680 = load i8** %"$0.135"
+  store i8* %679, i8** %"$0.135"
+  call void @Py_DecRef(i8* %680)
+  %681 = call i8* @PyLong_FromSsize_t(i64 0)
+  %682 = load i8** %"$0.136"
+  store i8* %681, i8** %"$0.136"
+  call void @Py_DecRef(i8* %682)
+  %683 = call i8* @PyLong_FromSsize_t(i64 0)
+  %684 = load i8** %"$0.137"
+  store i8* %683, i8** %"$0.137"
+  call void @Py_DecRef(i8* %684)
+  %685 = call i8* @PyLong_FromSsize_t(i64 0)
+  %686 = load i8** %"$0.138"
+  store i8* %685, i8** %"$0.138"
+  call void @Py_DecRef(i8* %686)
+  %687 = call i8* @PyLong_FromSsize_t(i64 0)
+  %688 = load i8** %"$0.139"
+  store i8* %687, i8** %"$0.139"
+  call void @Py_DecRef(i8* %688)
+  %689 = call i8* @PyLong_FromSsize_t(i64 0)
+  %690 = load i8** %"$0.140"
+  store i8* %689, i8** %"$0.140"
+  call void @Py_DecRef(i8* %690)
+  %691 = call i8* @PyLong_FromSsize_t(i64 0)
+  %692 = load i8** %"$0.141"
+  store i8* %691, i8** %"$0.141"
+  call void @Py_DecRef(i8* %692)
+  %693 = call i8* @PyLong_FromSsize_t(i64 0)
+  %694 = load i8** %"$0.142"
+  store i8* %693, i8** %"$0.142"
+  call void @Py_DecRef(i8* %694)
+  %695 = call i8* @PyLong_FromSsize_t(i64 0)
+  %696 = load i8** %"$0.143"
+  store i8* %695, i8** %"$0.143"
+  call void @Py_DecRef(i8* %696)
+  %697 = call i8* @PyLong_FromSsize_t(i64 0)
+  %698 = load i8** %"$0.144"
+  store i8* %697, i8** %"$0.144"
+  call void @Py_DecRef(i8* %698)
+  %699 = call i8* @PyLong_FromSsize_t(i64 0)
+  %700 = load i8** %"$0.145"
+  store i8* %699, i8** %"$0.145"
+  call void @Py_DecRef(i8* %700)
+  %701 = call i8* @PyLong_FromSsize_t(i64 0)
+  %702 = load i8** %"$0.146"
+  store i8* %701, i8** %"$0.146"
+  call void @Py_DecRef(i8* %702)
+  %703 = call i8* @PyLong_FromSsize_t(i64 0)
+  %704 = load i8** %"$0.147"
+  store i8* %703, i8** %"$0.147"
+  call void @Py_DecRef(i8* %704)
+  %705 = call i8* @PyLong_FromSsize_t(i64 0)
+  %706 = load i8** %"$0.148"
+  store i8* %705, i8** %"$0.148"
+  call void @Py_DecRef(i8* %706)
+  %707 = call i8* @PyLong_FromSsize_t(i64 0)
+  %708 = load i8** %"$0.149"
+  store i8* %707, i8** %"$0.149"
+  call void @Py_DecRef(i8* %708)
+  %709 = call i8* @PyLong_FromSsize_t(i64 0)
+  %710 = load i8** %"$0.150"
+  store i8* %709, i8** %"$0.150"
+  call void @Py_DecRef(i8* %710)
+  %711 = call i8* @PyLong_FromSsize_t(i64 0)
+  %712 = load i8** %"$0.151"
+  store i8* %711, i8** %"$0.151"
+  call void @Py_DecRef(i8* %712)
+  %713 = call i8* @PyLong_FromSsize_t(i64 0)
+  %714 = load i8** %"$0.152"
+  store i8* %713, i8** %"$0.152"
+  call void @Py_DecRef(i8* %714)
+  %715 = call i8* @PyLong_FromSsize_t(i64 0)
+  %716 = load i8** %"$0.153"
+  store i8* %715, i8** %"$0.153"
+  call void @Py_DecRef(i8* %716)
+  %717 = call i8* @PyLong_FromSsize_t(i64 0)
+  %718 = load i8** %"$0.154"
+  store i8* %717, i8** %"$0.154"
+  call void @Py_DecRef(i8* %718)
+  %719 = call i8* @PyLong_FromSsize_t(i64 0)
+  %720 = load i8** %"$0.155"
+  store i8* %719, i8** %"$0.155"
+  call void @Py_DecRef(i8* %720)
+  %721 = call i8* @PyLong_FromSsize_t(i64 0)
+  %722 = load i8** %"$0.156"
+  store i8* %721, i8** %"$0.156"
+  call void @Py_DecRef(i8* %722)
+  %723 = call i8* @PyLong_FromSsize_t(i64 0)
+  %724 = load i8** %"$0.157"
+  store i8* %723, i8** %"$0.157"
+  call void @Py_DecRef(i8* %724)
+  %725 = call i8* @PyLong_FromSsize_t(i64 0)
+  %726 = load i8** %"$0.158"
+  store i8* %725, i8** %"$0.158"
+  call void @Py_DecRef(i8* %726)
+  %727 = call i8* @PyLong_FromSsize_t(i64 0)
+  %728 = load i8** %"$0.159"
+  store i8* %727, i8** %"$0.159"
+  call void @Py_DecRef(i8* %728)
+  %729 = call i8* @PyLong_FromSsize_t(i64 0)
+  %730 = load i8** %"$0.160"
+  store i8* %729, i8** %"$0.160"
+  call void @Py_DecRef(i8* %730)
+  %731 = call i8* @PyLong_FromSsize_t(i64 0)
+  %732 = load i8** %"$0.161"
+  store i8* %731, i8** %"$0.161"
+  call void @Py_DecRef(i8* %732)
+  %733 = call i8* @PyLong_FromSsize_t(i64 0)
+  %734 = load i8** %"$0.162"
+  store i8* %733, i8** %"$0.162"
+  call void @Py_DecRef(i8* %734)
+  %735 = call i8* @PyLong_FromSsize_t(i64 0)
+  %736 = load i8** %"$0.163"
+  store i8* %735, i8** %"$0.163"
+  call void @Py_DecRef(i8* %736)
+  %737 = call i8* @PyLong_FromSsize_t(i64 0)
+  %738 = load i8** %"$0.164"
+  store i8* %737, i8** %"$0.164"
+  call void @Py_DecRef(i8* %738)
+  %739 = call i8* @PyLong_FromSsize_t(i64 0)
+  %740 = load i8** %"$0.165"
+  store i8* %739, i8** %"$0.165"
+  call void @Py_DecRef(i8* %740)
+  %741 = call i8* @PyLong_FromSsize_t(i64 0)
+  %742 = load i8** %"$0.166"
+  store i8* %741, i8** %"$0.166"
+  call void @Py_DecRef(i8* %742)
+  %743 = call i8* @PyLong_FromSsize_t(i64 0)
+  %744 = load i8** %"$0.167"
+  store i8* %743, i8** %"$0.167"
+  call void @Py_DecRef(i8* %744)
+  %745 = call i8* @PyLong_FromSsize_t(i64 0)
+  %746 = load i8** %"$0.168"
+  store i8* %745, i8** %"$0.168"
+  call void @Py_DecRef(i8* %746)
+  %747 = call i8* @PyLong_FromSsize_t(i64 0)
+  %748 = load i8** %"$0.169"
+  store i8* %747, i8** %"$0.169"
+  call void @Py_DecRef(i8* %748)
+  %749 = call i8* @PyLong_FromSsize_t(i64 0)
+  %750 = load i8** %"$0.170"
+  store i8* %749, i8** %"$0.170"
+  call void @Py_DecRef(i8* %750)
+  %751 = call i8* @PyLong_FromSsize_t(i64 0)
+  %752 = load i8** %"$0.171"
+  store i8* %751, i8** %"$0.171"
+  call void @Py_DecRef(i8* %752)
+  %753 = call i8* @PyLong_FromSsize_t(i64 0)
+  %754 = load i8** %"$0.172"
+  store i8* %753, i8** %"$0.172"
+  call void @Py_DecRef(i8* %754)
+  %755 = call i8* @PyLong_FromSsize_t(i64 0)
+  %756 = load i8** %"$0.173"
+  store i8* %755, i8** %"$0.173"
+  call void @Py_DecRef(i8* %756)
+  %757 = call i8* @PyLong_FromSsize_t(i64 0)
+  %758 = load i8** %"$0.174"
+  store i8* %757, i8** %"$0.174"
+  call void @Py_DecRef(i8* %758)
+  %759 = call i8* @PyLong_FromSsize_t(i64 0)
+  %760 = load i8** %"$0.175"
+  store i8* %759, i8** %"$0.175"
+  call void @Py_DecRef(i8* %760)
+  %761 = call i8* @PyLong_FromSsize_t(i64 0)
+  %762 = load i8** %"$0.176"
+  store i8* %761, i8** %"$0.176"
+  call void @Py_DecRef(i8* %762)
+  %763 = call i8* @PyLong_FromSsize_t(i64 0)
+  %764 = load i8** %"$0.177"
+  store i8* %763, i8** %"$0.177"
+  call void @Py_DecRef(i8* %764)
+  %765 = call i8* @PyLong_FromSsize_t(i64 0)
+  %766 = load i8** %"$0.178"
+  store i8* %765, i8** %"$0.178"
+  call void @Py_DecRef(i8* %766)
+  %767 = call i8* @PyLong_FromSsize_t(i64 0)
+  %768 = load i8** %"$0.179"
+  store i8* %767, i8** %"$0.179"
+  call void @Py_DecRef(i8* %768)
+  %769 = call i8* @PyLong_FromSsize_t(i64 0)
+  %770 = load i8** %"$0.180"
+  store i8* %769, i8** %"$0.180"
+  call void @Py_DecRef(i8* %770)
+  %771 = call i8* @PyLong_FromSsize_t(i64 0)
+  %772 = load i8** %"$0.181"
+  store i8* %771, i8** %"$0.181"
+  call void @Py_DecRef(i8* %772)
+  %773 = call i8* @PyLong_FromSsize_t(i64 0)
+  %774 = load i8** %"$0.182"
+  store i8* %773, i8** %"$0.182"
+  call void @Py_DecRef(i8* %774)
+  %775 = call i8* @PyLong_FromSsize_t(i64 0)
+  %776 = load i8** %"$0.183"
+  store i8* %775, i8** %"$0.183"
+  call void @Py_DecRef(i8* %776)
+  %777 = call i8* @PyLong_FromSsize_t(i64 0)
+  %778 = load i8** %"$0.184"
+  store i8* %777, i8** %"$0.184"
+  call void @Py_DecRef(i8* %778)
+  %779 = call i8* @PyLong_FromSsize_t(i64 0)
+  %780 = load i8** %"$0.185"
+  store i8* %779, i8** %"$0.185"
+  call void @Py_DecRef(i8* %780)
+  %781 = call i8* @PyLong_FromSsize_t(i64 0)
+  %782 = load i8** %"$0.186"
+  store i8* %781, i8** %"$0.186"
+  call void @Py_DecRef(i8* %782)
+  %783 = call i8* @PyLong_FromSsize_t(i64 0)
+  %784 = load i8** %"$0.187"
+  store i8* %783, i8** %"$0.187"
+  call void @Py_DecRef(i8* %784)
+  %785 = call i8* @PyLong_FromSsize_t(i64 0)
+  %786 = load i8** %"$0.188"
+  store i8* %785, i8** %"$0.188"
+  call void @Py_DecRef(i8* %786)
+  %787 = call i8* @PyLong_FromSsize_t(i64 0)
+  %788 = load i8** %"$0.189"
+  store i8* %787, i8** %"$0.189"
+  call void @Py_DecRef(i8* %788)
+  %789 = call i8* @PyLong_FromSsize_t(i64 0)
+  %790 = load i8** %"$0.190"
+  store i8* %789, i8** %"$0.190"
+  call void @Py_DecRef(i8* %790)
+  %791 = call i8* @PyLong_FromSsize_t(i64 0)
+  %792 = load i8** %"$0.191"
+  store i8* %791, i8** %"$0.191"
+  call void @Py_DecRef(i8* %792)
+  %793 = call i8* @PyLong_FromSsize_t(i64 0)
+  %794 = load i8** %"$0.192"
+  store i8* %793, i8** %"$0.192"
+  call void @Py_DecRef(i8* %794)
+  %795 = call i8* @PyLong_FromSsize_t(i64 0)
+  %796 = load i8** %"$0.193"
+  store i8* %795, i8** %"$0.193"
+  call void @Py_DecRef(i8* %796)
+  %797 = call i8* @PyLong_FromSsize_t(i64 0)
+  %798 = load i8** %"$0.194"
+  store i8* %797, i8** %"$0.194"
+  call void @Py_DecRef(i8* %798)
+  %799 = call i8* @PyLong_FromSsize_t(i64 0)
+  %800 = load i8** %"$0.195"
+  store i8* %799, i8** %"$0.195"
+  call void @Py_DecRef(i8* %800)
+  %801 = call i8* @PyLong_FromSsize_t(i64 0)
+  %802 = load i8** %"$0.196"
+  store i8* %801, i8** %"$0.196"
+  call void @Py_DecRef(i8* %802)
+  %803 = call i8* @PyLong_FromSsize_t(i64 0)
+  %804 = load i8** %"$0.197"
+  store i8* %803, i8** %"$0.197"
+  call void @Py_DecRef(i8* %804)
+  %805 = call i8* @PyLong_FromSsize_t(i64 0)
+  %806 = load i8** %"$0.198"
+  store i8* %805, i8** %"$0.198"
+  call void @Py_DecRef(i8* %806)
+  %807 = call i8* @PyLong_FromSsize_t(i64 0)
+  %808 = load i8** %"$0.199"
+  store i8* %807, i8** %"$0.199"
+  call void @Py_DecRef(i8* %808)
+  %809 = call i8* @PyLong_FromSsize_t(i64 0)
+  %810 = load i8** %"$0.200"
+  store i8* %809, i8** %"$0.200"
+  call void @Py_DecRef(i8* %810)
+  %811 = call i8* @PyLong_FromSsize_t(i64 0)
+  %812 = load i8** %"$0.201"
+  store i8* %811, i8** %"$0.201"
+  call void @Py_DecRef(i8* %812)
+  %813 = load i8** %"$0.102"
+  %814 = load i8** %"$0.103"
+  %815 = load i8** %"$0.104"
+  %816 = load i8** %"$0.105"
+  %817 = load i8** %"$0.106"
+  %818 = load i8** %"$0.107"
+  %819 = load i8** %"$0.108"
+  %820 = load i8** %"$0.109"
+  %821 = load i8** %"$0.110"
+  %822 = load i8** %"$0.111"
+  %823 = load i8** %"$0.112"
+  %824 = load i8** %"$0.113"
+  %825 = load i8** %"$0.114"
+  %826 = load i8** %"$0.115"
+  %827 = load i8** %"$0.116"
+  %828 = load i8** %"$0.117"
+  %829 = load i8** %"$0.118"
+  %830 = load i8** %"$0.119"
+  %831 = load i8** %"$0.120"
+  %832 = load i8** %"$0.121"
+  %833 = load i8** %"$0.122"
+  %834 = load i8** %"$0.123"
+  %835 = load i8** %"$0.124"
+  %836 = load i8** %"$0.125"
+  %837 = load i8** %"$0.126"
+  %838 = load i8** %"$0.127"
+  %839 = load i8** %"$0.128"
+  %840 = load i8** %"$0.129"
+  %841 = load i8** %"$0.130"
+  %842 = load i8** %"$0.131"
+  %843 = load i8** %"$0.132"
+  %844 = load i8** %"$0.133"
+  %845 = load i8** %"$0.134"
+  %846 = load i8** %"$0.135"
+  %847 = load i8** %"$0.136"
+  %848 = load i8** %"$0.137"
+  %849 = load i8** %"$0.138"
+  %850 = load i8** %"$0.139"
+  %851 = load i8** %"$0.140"
+  %852 = load i8** %"$0.141"
+  %853 = load i8** %"$0.142"
+  %854 = load i8** %"$0.143"
+  %855 = load i8** %"$0.144"
+  %856 = load i8** %"$0.145"
+  %857 = load i8** %"$0.146"
+  %858 = load i8** %"$0.147"
+  %859 = load i8** %"$0.148"
+  %860 = load i8** %"$0.149"
+  %861 = load i8** %"$0.150"
+  %862 = load i8** %"$0.151"
+  %863 = load i8** %"$0.152"
+  %864 = load i8** %"$0.153"
+  %865 = load i8** %"$0.154"
+  %866 = load i8** %"$0.155"
+  %867 = load i8** %"$0.156"
+  %868 = load i8** %"$0.157"
+  %869 = load i8** %"$0.158"
+  %870 = load i8** %"$0.159"
+  %871 = load i8** %"$0.160"
+  %872 = load i8** %"$0.161"
+  %873 = load i8** %"$0.162"
+  %874 = load i8** %"$0.163"
+  %875 = load i8** %"$0.164"
+  %876 = load i8** %"$0.165"
+  %877 = load i8** %"$0.166"
+  %878 = load i8** %"$0.167"
+  %879 = load i8** %"$0.168"
+  %880 = load i8** %"$0.169"
+  %881 = load i8** %"$0.170"
+  %882 = load i8** %"$0.171"
+  %883 = load i8** %"$0.172"
+  %884 = load i8** %"$0.173"
+  %885 = load i8** %"$0.174"
+  %886 = load i8** %"$0.175"
+  %887 = load i8** %"$0.176"
+  %888 = load i8** %"$0.177"
+  %889 = load i8** %"$0.178"
+  %890 = load i8** %"$0.179"
+  %891 = load i8** %"$0.180"
+  %892 = load i8** %"$0.181"
+  %893 = load i8** %"$0.182"
+  %894 = load i8** %"$0.183"
+  %895 = load i8** %"$0.184"
+  %896 = load i8** %"$0.185"
+  %897 = load i8** %"$0.186"
+  %898 = load i8** %"$0.187"
+  %899 = load i8** %"$0.188"
+  %900 = load i8** %"$0.189"
+  %901 = load i8** %"$0.190"
+  %902 = load i8** %"$0.191"
+  %903 = load i8** %"$0.192"
+  %904 = load i8** %"$0.193"
+  %905 = load i8** %"$0.194"
+  %906 = load i8** %"$0.195"
+  %907 = load i8** %"$0.196"
+  %908 = load i8** %"$0.197"
+  %909 = load i8** %"$0.198"
+  %910 = load i8** %"$0.199"
+  %911 = load i8** %"$0.200"
+  %912 = load i8** %"$0.201"
+  %913 = call i8* @PyList_New(i64 100)
+  %914 = icmp ne i8* null, %913
+  br i1 %914, label %B0.endif.endif.if, label %B0.endif.endif.endif, !prof !1
+
+B0.endif.endif.if:                                ; preds = %B0.endif.endif
+  call void @Py_IncRef(i8* %813)
+  %915 = call i32 @PyList_SetItem(i8* %913, i64 0, i8* %813)
+  call void @Py_IncRef(i8* %814)
+  %916 = call i32 @PyList_SetItem(i8* %913, i64 1, i8* %814)
+  call void @Py_IncRef(i8* %815)
+  %917 = call i32 @PyList_SetItem(i8* %913, i64 2, i8* %815)
+  call void @Py_IncRef(i8* %816)
+  %918 = call i32 @PyList_SetItem(i8* %913, i64 3, i8* %816)
+  call void @Py_IncRef(i8* %817)
+  %919 = call i32 @PyList_SetItem(i8* %913, i64 4, i8* %817)
+  call void @Py_IncRef(i8* %818)
+  %920 = call i32 @PyList_SetItem(i8* %913, i64 5, i8* %818)
+  call void @Py_IncRef(i8* %819)
+  %921 = call i32 @PyList_SetItem(i8* %913, i64 6, i8* %819)
+  call void @Py_IncRef(i8* %820)
+  %922 = call i32 @PyList_SetItem(i8* %913, i64 7, i8* %820)
+  call void @Py_IncRef(i8* %821)
+  %923 = call i32 @PyList_SetItem(i8* %913, i64 8, i8* %821)
+  call void @Py_IncRef(i8* %822)
+  %924 = call i32 @PyList_SetItem(i8* %913, i64 9, i8* %822)
+  call void @Py_IncRef(i8* %823)
+  %925 = call i32 @PyList_SetItem(i8* %913, i64 10, i8* %823)
+  call void @Py_IncRef(i8* %824)
+  %926 = call i32 @PyList_SetItem(i8* %913, i64 11, i8* %824)
+  call void @Py_IncRef(i8* %825)
+  %927 = call i32 @PyList_SetItem(i8* %913, i64 12, i8* %825)
+  call void @Py_IncRef(i8* %826)
+  %928 = call i32 @PyList_SetItem(i8* %913, i64 13, i8* %826)
+  call void @Py_IncRef(i8* %827)
+  %929 = call i32 @PyList_SetItem(i8* %913, i64 14, i8* %827)
+  call void @Py_IncRef(i8* %828)
+  %930 = call i32 @PyList_SetItem(i8* %913, i64 15, i8* %828)
+  call void @Py_IncRef(i8* %829)
+  %931 = call i32 @PyList_SetItem(i8* %913, i64 16, i8* %829)
+  call void @Py_IncRef(i8* %830)
+  %932 = call i32 @PyList_SetItem(i8* %913, i64 17, i8* %830)
+  call void @Py_IncRef(i8* %831)
+  %933 = call i32 @PyList_SetItem(i8* %913, i64 18, i8* %831)
+  call void @Py_IncRef(i8* %832)
+  %934 = call i32 @PyList_SetItem(i8* %913, i64 19, i8* %832)
+  call void @Py_IncRef(i8* %833)
+  %935 = call i32 @PyList_SetItem(i8* %913, i64 20, i8* %833)
+  call void @Py_IncRef(i8* %834)
+  %936 = call i32 @PyList_SetItem(i8* %913, i64 21, i8* %834)
+  call void @Py_IncRef(i8* %835)
+  %937 = call i32 @PyList_SetItem(i8* %913, i64 22, i8* %835)
+  call void @Py_IncRef(i8* %836)
+  %938 = call i32 @PyList_SetItem(i8* %913, i64 23, i8* %836)
+  call void @Py_IncRef(i8* %837)
+  %939 = call i32 @PyList_SetItem(i8* %913, i64 24, i8* %837)
+  call void @Py_IncRef(i8* %838)
+  %940 = call i32 @PyList_SetItem(i8* %913, i64 25, i8* %838)
+  call void @Py_IncRef(i8* %839)
+  %941 = call i32 @PyList_SetItem(i8* %913, i64 26, i8* %839)
+  call void @Py_IncRef(i8* %840)
+  %942 = call i32 @PyList_SetItem(i8* %913, i64 27, i8* %840)
+  call void @Py_IncRef(i8* %841)
+  %943 = call i32 @PyList_SetItem(i8* %913, i64 28, i8* %841)
+  call void @Py_IncRef(i8* %842)
+  %944 = call i32 @PyList_SetItem(i8* %913, i64 29, i8* %842)
+  call void @Py_IncRef(i8* %843)
+  %945 = call i32 @PyList_SetItem(i8* %913, i64 30, i8* %843)
+  call void @Py_IncRef(i8* %844)
+  %946 = call i32 @PyList_SetItem(i8* %913, i64 31, i8* %844)
+  call void @Py_IncRef(i8* %845)
+  %947 = call i32 @PyList_SetItem(i8* %913, i64 32, i8* %845)
+  call void @Py_IncRef(i8* %846)
+  %948 = call i32 @PyList_SetItem(i8* %913, i64 33, i8* %846)
+  call void @Py_IncRef(i8* %847)
+  %949 = call i32 @PyList_SetItem(i8* %913, i64 34, i8* %847)
+  call void @Py_IncRef(i8* %848)
+  %950 = call i32 @PyList_SetItem(i8* %913, i64 35, i8* %848)
+  call void @Py_IncRef(i8* %849)
+  %951 = call i32 @PyList_SetItem(i8* %913, i64 36, i8* %849)
+  call void @Py_IncRef(i8* %850)
+  %952 = call i32 @PyList_SetItem(i8* %913, i64 37, i8* %850)
+  call void @Py_IncRef(i8* %851)
+  %953 = call i32 @PyList_SetItem(i8* %913, i64 38, i8* %851)
+  call void @Py_IncRef(i8* %852)
+  %954 = call i32 @PyList_SetItem(i8* %913, i64 39, i8* %852)
+  call void @Py_IncRef(i8* %853)
+  %955 = call i32 @PyList_SetItem(i8* %913, i64 40, i8* %853)
+  call void @Py_IncRef(i8* %854)
+  %956 = call i32 @PyList_SetItem(i8* %913, i64 41, i8* %854)
+  call void @Py_IncRef(i8* %855)
+  %957 = call i32 @PyList_SetItem(i8* %913, i64 42, i8* %855)
+  call void @Py_IncRef(i8* %856)
+  %958 = call i32 @PyList_SetItem(i8* %913, i64 43, i8* %856)
+  call void @Py_IncRef(i8* %857)
+  %959 = call i32 @PyList_SetItem(i8* %913, i64 44, i8* %857)
+  call void @Py_IncRef(i8* %858)
+  %960 = call i32 @PyList_SetItem(i8* %913, i64 45, i8* %858)
+  call void @Py_IncRef(i8* %859)
+  %961 = call i32 @PyList_SetItem(i8* %913, i64 46, i8* %859)
+  call void @Py_IncRef(i8* %860)
+  %962 = call i32 @PyList_SetItem(i8* %913, i64 47, i8* %860)
+  call void @Py_IncRef(i8* %861)
+  %963 = call i32 @PyList_SetItem(i8* %913, i64 48, i8* %861)
+  call void @Py_IncRef(i8* %862)
+  %964 = call i32 @PyList_SetItem(i8* %913, i64 49, i8* %862)
+  call void @Py_IncRef(i8* %863)
+  %965 = call i32 @PyList_SetItem(i8* %913, i64 50, i8* %863)
+  call void @Py_IncRef(i8* %864)
+  %966 = call i32 @PyList_SetItem(i8* %913, i64 51, i8* %864)
+  call void @Py_IncRef(i8* %865)
+  %967 = call i32 @PyList_SetItem(i8* %913, i64 52, i8* %865)
+  call void @Py_IncRef(i8* %866)
+  %968 = call i32 @PyList_SetItem(i8* %913, i64 53, i8* %866)
+  call void @Py_IncRef(i8* %867)
+  %969 = call i32 @PyList_SetItem(i8* %913, i64 54, i8* %867)
+  call void @Py_IncRef(i8* %868)
+  %970 = call i32 @PyList_SetItem(i8* %913, i64 55, i8* %868)
+  call void @Py_IncRef(i8* %869)
+  %971 = call i32 @PyList_SetItem(i8* %913, i64 56, i8* %869)
+  call void @Py_IncRef(i8* %870)
+  %972 = call i32 @PyList_SetItem(i8* %913, i64 57, i8* %870)
+  call void @Py_IncRef(i8* %871)
+  %973 = call i32 @PyList_SetItem(i8* %913, i64 58, i8* %871)
+  call void @Py_IncRef(i8* %872)
+  %974 = call i32 @PyList_SetItem(i8* %913, i64 59, i8* %872)
+  call void @Py_IncRef(i8* %873)
+  %975 = call i32 @PyList_SetItem(i8* %913, i64 60, i8* %873)
+  call void @Py_IncRef(i8* %874)
+  %976 = call i32 @PyList_SetItem(i8* %913, i64 61, i8* %874)
+  call void @Py_IncRef(i8* %875)
+  %977 = call i32 @PyList_SetItem(i8* %913, i64 62, i8* %875)
+  call void @Py_IncRef(i8* %876)
+  %978 = call i32 @PyList_SetItem(i8* %913, i64 63, i8* %876)
+  call void @Py_IncRef(i8* %877)
+  %979 = call i32 @PyList_SetItem(i8* %913, i64 64, i8* %877)
+  call void @Py_IncRef(i8* %878)
+  %980 = call i32 @PyList_SetItem(i8* %913, i64 65, i8* %878)
+  call void @Py_IncRef(i8* %879)
+  %981 = call i32 @PyList_SetItem(i8* %913, i64 66, i8* %879)
+  call void @Py_IncRef(i8* %880)
+  %982 = call i32 @PyList_SetItem(i8* %913, i64 67, i8* %880)
+  call void @Py_IncRef(i8* %881)
+  %983 = call i32 @PyList_SetItem(i8* %913, i64 68, i8* %881)
+  call void @Py_IncRef(i8* %882)
+  %984 = call i32 @PyList_SetItem(i8* %913, i64 69, i8* %882)
+  call void @Py_IncRef(i8* %883)
+  %985 = call i32 @PyList_SetItem(i8* %913, i64 70, i8* %883)
+  call void @Py_IncRef(i8* %884)
+  %986 = call i32 @PyList_SetItem(i8* %913, i64 71, i8* %884)
+  call void @Py_IncRef(i8* %885)
+  %987 = call i32 @PyList_SetItem(i8* %913, i64 72, i8* %885)
+  call void @Py_IncRef(i8* %886)
+  %988 = call i32 @PyList_SetItem(i8* %913, i64 73, i8* %886)
+  call void @Py_IncRef(i8* %887)
+  %989 = call i32 @PyList_SetItem(i8* %913, i64 74, i8* %887)
+  call void @Py_IncRef(i8* %888)
+  %990 = call i32 @PyList_SetItem(i8* %913, i64 75, i8* %888)
+  call void @Py_IncRef(i8* %889)
+  %991 = call i32 @PyList_SetItem(i8* %913, i64 76, i8* %889)
+  call void @Py_IncRef(i8* %890)
+  %992 = call i32 @PyList_SetItem(i8* %913, i64 77, i8* %890)
+  call void @Py_IncRef(i8* %891)
+  %993 = call i32 @PyList_SetItem(i8* %913, i64 78, i8* %891)
+  call void @Py_IncRef(i8* %892)
+  %994 = call i32 @PyList_SetItem(i8* %913, i64 79, i8* %892)
+  call void @Py_IncRef(i8* %893)
+  %995 = call i32 @PyList_SetItem(i8* %913, i64 80, i8* %893)
+  call void @Py_IncRef(i8* %894)
+  %996 = call i32 @PyList_SetItem(i8* %913, i64 81, i8* %894)
+  call void @Py_IncRef(i8* %895)
+  %997 = call i32 @PyList_SetItem(i8* %913, i64 82, i8* %895)
+  call void @Py_IncRef(i8* %896)
+  %998 = call i32 @PyList_SetItem(i8* %913, i64 83, i8* %896)
+  call void @Py_IncRef(i8* %897)
+  %999 = call i32 @PyList_SetItem(i8* %913, i64 84, i8* %897)
+  call void @Py_IncRef(i8* %898)
+  %1000 = call i32 @PyList_SetItem(i8* %913, i64 85, i8* %898)
+  call void @Py_IncRef(i8* %899)
+  %1001 = call i32 @PyList_SetItem(i8* %913, i64 86, i8* %899)
+  call void @Py_IncRef(i8* %900)
+  %1002 = call i32 @PyList_SetItem(i8* %913, i64 87, i8* %900)
+  call void @Py_IncRef(i8* %901)
+  %1003 = call i32 @PyList_SetItem(i8* %913, i64 88, i8* %901)
+  call void @Py_IncRef(i8* %902)
+  %1004 = call i32 @PyList_SetItem(i8* %913, i64 89, i8* %902)
+  call void @Py_IncRef(i8* %903)
+  %1005 = call i32 @PyList_SetItem(i8* %913, i64 90, i8* %903)
+  call void @Py_IncRef(i8* %904)
+  %1006 = call i32 @PyList_SetItem(i8* %913, i64 91, i8* %904)
+  call void @Py_IncRef(i8* %905)
+  %1007 = call i32 @PyList_SetItem(i8* %913, i64 92, i8* %905)
+  call void @Py_IncRef(i8* %906)
+  %1008 = call i32 @PyList_SetItem(i8* %913, i64 93, i8* %906)
+  call void @Py_IncRef(i8* %907)
+  %1009 = call i32 @PyList_SetItem(i8* %913, i64 94, i8* %907)
+  call void @Py_IncRef(i8* %908)
+  %1010 = call i32 @PyList_SetItem(i8* %913, i64 95, i8* %908)
+  call void @Py_IncRef(i8* %909)
+  %1011 = call i32 @PyList_SetItem(i8* %913, i64 96, i8* %909)
+  call void @Py_IncRef(i8* %910)
+  %1012 = call i32 @PyList_SetItem(i8* %913, i64 97, i8* %910)
+  call void @Py_IncRef(i8* %911)
+  %1013 = call i32 @PyList_SetItem(i8* %913, i64 98, i8* %911)
+  call void @Py_IncRef(i8* %912)
+  %1014 = call i32 @PyList_SetItem(i8* %913, i64 99, i8* %912)
+  br label %B0.endif.endif.endif
+
+B0.endif.endif.endif:                             ; preds = %B0.endif.endif.if, %B0.endif.endif
+  %1015 = icmp eq i8* null, %913
+  br i1 %1015, label %B0.endif.endif.endif.if, label %B0.endif.endif.endif.endif, !prof !2
+
+B0.endif.endif.endif.if:                          ; preds = %B0.endif.endif.endif
+  br label %error
+
+B0.endif.endif.endif.endif:                       ; preds = %B0.endif.endif.endif
+  %1016 = load i8** %counts
+  store i8* %913, i8** %counts
+  call void @Py_DecRef(i8* %1016)
+  %1017 = call i8* @PyLong_FromSsize_t(i64 99)
+  %1018 = load i8** %dims
+  store i8* %1017, i8** %dims
+  call void @Py_DecRef(i8* %1018)
+  %1019 = call i8* @PyLong_FromSsize_t(i64 1)
+  %1020 = load i8** %vals
+  store i8* %1019, i8** %vals
+  call void @Py_DecRef(i8* %1020)
+  %1021 = call i8* @PyLong_FromSsize_t(i64 1)
+  %1022 = load i8** %labels
+  store i8* %1021, i8** %labels
+  call void @Py_DecRef(i8* %1022)
+  %1023 = call i8* @PyDict_GetItemString(i8* @.pymodule.dict.bayes_numba, i8* getelementptr inbounds ([12 x i8]* @.const.naive_bayes, i32 0, i32 0))
+  call void @Py_IncRef(i8* %1023)
+  %1024 = icmp eq i8* null, %1023
+  br i1 %1024, label %B0.endif.endif.endif.endif.if, label %B0.endif.endif.endif.endif.endif, !prof !2
+
+B0.endif.endif.endif.endif.if:                    ; preds = %B0.endif.endif.endif.endif
+  call void @PyErr_SetString(i8* @PyExc_NameError, i8* getelementptr inbounds ([41 x i8]* @".const.global name 'naive_bayes' is not defined", i32 0, i32 0))
+  br label %error
+
+B0.endif.endif.endif.endif.endif:                 ; preds = %B0.endif.endif.endif.endif
+  call void @Py_IncRef(i8* %1023)
+  %1025 = load i8** %"$0.206"
+  store i8* %1023, i8** %"$0.206"
+  call void @Py_DecRef(i8* %1025)
+  %1026 = load i8** %data
+  %1027 = load i8** %counts
+  %1028 = load i8** %dims
+  %1029 = load i8** %vals
+  %1030 = load i8** %labels
+  %1031 = load i8** %"$0.206"
+  %1032 = call i8* (i8*, ...)* @PyObject_CallFunctionObjArgs(i8* %1031, i8* %1026, i8* %1027, i8* %1028, i8* %1029, i8* %1030, i8* null)
+  %1033 = icmp eq i8* null, %1032
+  br i1 %1033, label %B0.endif.endif.endif.endif.endif.if, label %B0.endif.endif.endif.endif.endif.endif, !prof !2
+
+B0.endif.endif.endif.endif.endif.if:              ; preds = %B0.endif.endif.endif.endif.endif
+  br label %error
+
+B0.endif.endif.endif.endif.endif.endif:           ; preds = %B0.endif.endif.endif.endif.endif
+  %1034 = load i8** %"$0.207"
+  store i8* %1032, i8** %"$0.207"
+  call void @Py_DecRef(i8* %1034)
+  %1035 = load i8** @Py_None
+  call void @Py_IncRef(i8* %1035)
+  %1036 = load i8** %"$0.208"
+  store i8* %1035, i8** %"$0.208"
+  call void @Py_DecRef(i8* %1036)
+  %1037 = load i8** %"$0.208"
+  call void @Py_IncRef(i8* %1037)
+  %1038 = load i8** %labels
+  call void @Py_DecRef(i8* %1038)
+  %1039 = load i8** %"$0.8"
+  call void @Py_DecRef(i8* %1039)
+  %1040 = load i8** %"$0.9"
+  call void @Py_DecRef(i8* %1040)
+  %1041 = load i8** %"$0.2"
+  call void @Py_DecRef(i8* %1041)
+  %1042 = load i8** %"$0.3"
+  call void @Py_DecRef(i8* %1042)
+  %1043 = load i8** %"$0.1"
+  call void @Py_DecRef(i8* %1043)
+  %1044 = load i8** %"$0.6"
+  call void @Py_DecRef(i8* %1044)
+  %1045 = load i8** %"$0.7"
+  call void @Py_DecRef(i8* %1045)
+  %1046 = load i8** %"$0.4"
+  call void @Py_DecRef(i8* %1046)
+  %1047 = load i8** %"$0.5"
+  call void @Py_DecRef(i8* %1047)
+  %1048 = load i8** %"$0.18"
+  call void @Py_DecRef(i8* %1048)
+  %1049 = load i8** %"$0.19"
+  call void @Py_DecRef(i8* %1049)
+  %1050 = load i8** %"$0.10"
+  call void @Py_DecRef(i8* %1050)
+  %1051 = load i8** %"$0.11"
+  call void @Py_DecRef(i8* %1051)
+  %1052 = load i8** %"$0.12"
+  call void @Py_DecRef(i8* %1052)
+  %1053 = load i8** %"$0.13"
+  call void @Py_DecRef(i8* %1053)
+  %1054 = load i8** %"$0.14"
+  call void @Py_DecRef(i8* %1054)
+  %1055 = load i8** %"$0.15"
+  call void @Py_DecRef(i8* %1055)
+  %1056 = load i8** %"$0.16"
+  call void @Py_DecRef(i8* %1056)
+  %1057 = load i8** %"$0.17"
+  call void @Py_DecRef(i8* %1057)
+  %1058 = load i8** %"$0.90"
+  call void @Py_DecRef(i8* %1058)
+  %1059 = load i8** %"$0.91"
+  call void @Py_DecRef(i8* %1059)
+  %1060 = load i8** %"$0.92"
+  call void @Py_DecRef(i8* %1060)
+  %1061 = load i8** %"$0.93"
+  call void @Py_DecRef(i8* %1061)
+  %1062 = load i8** %"$0.94"
+  call void @Py_DecRef(i8* %1062)
+  %1063 = load i8** %"$0.95"
+  call void @Py_DecRef(i8* %1063)
+  %1064 = load i8** %"$0.96"
+  call void @Py_DecRef(i8* %1064)
+  %1065 = load i8** %"$0.97"
+  call void @Py_DecRef(i8* %1065)
+  %1066 = load i8** %"$0.98"
+  call void @Py_DecRef(i8* %1066)
+  %1067 = load i8** %"$0.99"
+  call void @Py_DecRef(i8* %1067)
+  %1068 = load i8** %"$0.136"
+  call void @Py_DecRef(i8* %1068)
+  %1069 = load i8** %"$0.124"
+  call void @Py_DecRef(i8* %1069)
+  %1070 = load i8** %"$0.130"
+  call void @Py_DecRef(i8* %1070)
+  %1071 = load i8** %"$0.131"
+  call void @Py_DecRef(i8* %1071)
+  %1072 = load i8** %"$0.132"
+  call void @Py_DecRef(i8* %1072)
+  %1073 = load i8** %"$0.133"
+  call void @Py_DecRef(i8* %1073)
+  %1074 = load i8** %"$0.158"
+  call void @Py_DecRef(i8* %1074)
+  %1075 = load i8** %"$0.159"
+  call void @Py_DecRef(i8* %1075)
+  %1076 = load i8** %"$0.156"
+  call void @Py_DecRef(i8* %1076)
+  %1077 = load i8** %"$0.157"
+  call void @Py_DecRef(i8* %1077)
+  %1078 = load i8** %"$0.154"
+  call void @Py_DecRef(i8* %1078)
+  %1079 = load i8** %"$0.155"
+  call void @Py_DecRef(i8* %1079)
+  %1080 = load i8** %"$0.152"
+  call void @Py_DecRef(i8* %1080)
+  %1081 = load i8** %"$0.153"
+  call void @Py_DecRef(i8* %1081)
+  %1082 = load i8** %"$0.150"
+  call void @Py_DecRef(i8* %1082)
+  %1083 = load i8** %"$0.151"
+  call void @Py_DecRef(i8* %1083)
+  %1084 = load i8** %"$0.129"
+  call void @Py_DecRef(i8* %1084)
+  %1085 = load i8** %"$0.128"
+  call void @Py_DecRef(i8* %1085)
+  %1086 = load i8** %"$0.69"
+  call void @Py_DecRef(i8* %1086)
+  %1087 = load i8** %"$0.68"
+  call void @Py_DecRef(i8* %1087)
+  %1088 = load i8** %"$0.65"
+  call void @Py_DecRef(i8* %1088)
+  %1089 = load i8** %"$0.64"
+  call void @Py_DecRef(i8* %1089)
+  %1090 = load i8** %"$0.67"
+  call void @Py_DecRef(i8* %1090)
+  %1091 = load i8** %"$0.66"
+  call void @Py_DecRef(i8* %1091)
+  %1092 = load i8** %"$0.61"
+  call void @Py_DecRef(i8* %1092)
+  %1093 = load i8** %"$0.60"
+  call void @Py_DecRef(i8* %1093)
+  %1094 = load i8** %"$0.63"
+  call void @Py_DecRef(i8* %1094)
+  %1095 = load i8** %"$0.62"
+  call void @Py_DecRef(i8* %1095)
+  %1096 = load i8** %"$0.149"
+  call void @Py_DecRef(i8* %1096)
+  %1097 = load i8** %"$0.148"
+  call void @Py_DecRef(i8* %1097)
+  %1098 = load i8** %"$0.145"
+  call void @Py_DecRef(i8* %1098)
+  %1099 = load i8** %"$0.144"
+  call void @Py_DecRef(i8* %1099)
+  %1100 = load i8** %"$0.147"
+  call void @Py_DecRef(i8* %1100)
+  %1101 = load i8** %"$0.146"
+  call void @Py_DecRef(i8* %1101)
+  %1102 = load i8** %"$0.141"
+  call void @Py_DecRef(i8* %1102)
+  %1103 = load i8** %"$0.140"
+  call void @Py_DecRef(i8* %1103)
+  %1104 = load i8** %"$0.143"
+  call void @Py_DecRef(i8* %1104)
+  %1105 = load i8** %"$0.142"
+  call void @Py_DecRef(i8* %1105)
+  %1106 = load i8** %counts
+  call void @Py_DecRef(i8* %1106)
+  %1107 = load i8** %"$0.111"
+  call void @Py_DecRef(i8* %1107)
+  %1108 = load i8** %"$0.164"
+  call void @Py_DecRef(i8* %1108)
+  %1109 = load i8** %"$0.78"
+  call void @Py_DecRef(i8* %1109)
+  %1110 = load i8** %"$0.79"
+  call void @Py_DecRef(i8* %1110)
+  %1111 = load i8** %"$0.76"
+  call void @Py_DecRef(i8* %1111)
+  %1112 = load i8** %"$0.77"
+  call void @Py_DecRef(i8* %1112)
+  %1113 = load i8** %"$0.74"
+  call void @Py_DecRef(i8* %1113)
+  %1114 = load i8** %"$0.75"
+  call void @Py_DecRef(i8* %1114)
+  %1115 = load i8** %"$0.72"
+  call void @Py_DecRef(i8* %1115)
+  %1116 = load i8** %"$0.73"
+  call void @Py_DecRef(i8* %1116)
+  %1117 = load i8** %"$0.70"
+  call void @Py_DecRef(i8* %1117)
+  %1118 = load i8** %"$0.71"
+  call void @Py_DecRef(i8* %1118)
+  %1119 = load i8** %"$0.178"
+  call void @Py_DecRef(i8* %1119)
+  %1120 = load i8** %"$0.179"
+  call void @Py_DecRef(i8* %1120)
+  %1121 = load i8** %"$0.170"
+  call void @Py_DecRef(i8* %1121)
+  %1122 = load i8** %"$0.171"
+  call void @Py_DecRef(i8* %1122)
+  %1123 = load i8** %"$0.172"
+  call void @Py_DecRef(i8* %1123)
+  %1124 = load i8** %"$0.173"
+  call void @Py_DecRef(i8* %1124)
+  %1125 = load i8** %"$0.174"
+  call void @Py_DecRef(i8* %1125)
+  %1126 = load i8** %"$0.175"
+  call void @Py_DecRef(i8* %1126)
+  %1127 = load i8** %"$0.176"
+  call void @Py_DecRef(i8* %1127)
+  %1128 = load i8** %"$0.177"
+  call void @Py_DecRef(i8* %1128)
+  %1129 = load i8** %"$0.123"
+  call void @Py_DecRef(i8* %1129)
+  %1130 = load i8** %"$0.122"
+  call void @Py_DecRef(i8* %1130)
+  %1131 = load i8** %vals
+  call void @Py_DecRef(i8* %1131)
+  %1132 = load i8** %"$0.121"
+  call void @Py_DecRef(i8* %1132)
+  %1133 = load i8** %"$0.120"
+  call void @Py_DecRef(i8* %1133)
+  %1134 = load i8** %"$0.127"
+  call void @Py_DecRef(i8* %1134)
+  %1135 = load i8** %"$0.126"
+  call void @Py_DecRef(i8* %1135)
+  %1136 = load i8** %"$0.49"
+  call void @Py_DecRef(i8* %1136)
+  %1137 = load i8** %"$0.48"
+  call void @Py_DecRef(i8* %1137)
+  %1138 = load i8** %"$0.125"
+  call void @Py_DecRef(i8* %1138)
+  %1139 = load i8** %"$0.43"
+  call void @Py_DecRef(i8* %1139)
+  %1140 = load i8** %"$0.42"
+  call void @Py_DecRef(i8* %1140)
+  %1141 = load i8** %"$0.41"
+  call void @Py_DecRef(i8* %1141)
+  %1142 = load i8** %"$0.40"
+  call void @Py_DecRef(i8* %1142)
+  %1143 = load i8** %"$0.47"
+  call void @Py_DecRef(i8* %1143)
+  %1144 = load i8** %"$0.46"
+  call void @Py_DecRef(i8* %1144)
+  %1145 = load i8** %"$0.45"
+  call void @Py_DecRef(i8* %1145)
+  %1146 = load i8** %"$0.44"
+  call void @Py_DecRef(i8* %1146)
+  %1147 = load i8** %"$0.208"
+  call void @Py_DecRef(i8* %1147)
+  %1148 = load i8** %"$0.200"
+  call void @Py_DecRef(i8* %1148)
+  %1149 = load i8** %"$0.201"
+  call void @Py_DecRef(i8* %1149)
+  %1150 = load i8** %"$0.206"
+  call void @Py_DecRef(i8* %1150)
+  %1151 = load i8** %"$0.207"
+  call void @Py_DecRef(i8* %1151)
+  %1152 = load i8** %"$0.54"
+  call void @Py_DecRef(i8* %1152)
+  %1153 = load i8** %"$0.55"
+  call void @Py_DecRef(i8* %1153)
+  %1154 = load i8** %"$0.56"
+  call void @Py_DecRef(i8* %1154)
+  %1155 = load i8** %"$0.57"
+  call void @Py_DecRef(i8* %1155)
+  %1156 = load i8** %"$0.50"
+  call void @Py_DecRef(i8* %1156)
+  %1157 = load i8** %"$0.51"
+  call void @Py_DecRef(i8* %1157)
+  %1158 = load i8** %"$0.52"
+  call void @Py_DecRef(i8* %1158)
+  %1159 = load i8** %"$0.53"
+  call void @Py_DecRef(i8* %1159)
+  %1160 = load i8** %"$0.58"
+  call void @Py_DecRef(i8* %1160)
+  %1161 = load i8** %"$0.59"
+  call void @Py_DecRef(i8* %1161)
+  %1162 = load i8** %"$0.138"
+  call void @Py_DecRef(i8* %1162)
+  %1163 = load i8** %"$0.139"
+  call void @Py_DecRef(i8* %1163)
+  %1164 = load i8** %"$0.134"
+  call void @Py_DecRef(i8* %1164)
+  %1165 = load i8** %"$0.198"
+  call void @Py_DecRef(i8* %1165)
+  %1166 = load i8** %"$0.199"
+  call void @Py_DecRef(i8* %1166)
+  %1167 = load i8** %"$0.135"
+  call void @Py_DecRef(i8* %1167)
+  %1168 = load i8** %"$0.192"
+  call void @Py_DecRef(i8* %1168)
+  %1169 = load i8** %"$0.193"
+  call void @Py_DecRef(i8* %1169)
+  %1170 = load i8** %"$0.190"
+  call void @Py_DecRef(i8* %1170)
+  %1171 = load i8** %"$0.191"
+  call void @Py_DecRef(i8* %1171)
+  %1172 = load i8** %"$0.196"
+  call void @Py_DecRef(i8* %1172)
+  %1173 = load i8** %"$0.197"
+  call void @Py_DecRef(i8* %1173)
+  %1174 = load i8** %"$0.194"
+  call void @Py_DecRef(i8* %1174)
+  %1175 = load i8** %"$0.195"
+  call void @Py_DecRef(i8* %1175)
+  %1176 = load i8** %"$0.21"
+  call void @Py_DecRef(i8* %1176)
+  %1177 = load i8** %"$0.20"
+  call void @Py_DecRef(i8* %1177)
+  %1178 = load i8** %"$0.23"
+  call void @Py_DecRef(i8* %1178)
+  %1179 = load i8** %"$0.22"
+  call void @Py_DecRef(i8* %1179)
+  %1180 = load i8** %"$0.25"
+  call void @Py_DecRef(i8* %1180)
+  %1181 = load i8** %"$0.24"
+  call void @Py_DecRef(i8* %1181)
+  %1182 = load i8** %"$0.27"
+  call void @Py_DecRef(i8* %1182)
+  %1183 = load i8** %"$0.26"
+  call void @Py_DecRef(i8* %1183)
+  %1184 = load i8** %"$0.29"
+  call void @Py_DecRef(i8* %1184)
+  %1185 = load i8** %"$0.28"
+  call void @Py_DecRef(i8* %1185)
+  %1186 = load i8** %"$0.167"
+  call void @Py_DecRef(i8* %1186)
+  %1187 = load i8** %"$0.166"
+  call void @Py_DecRef(i8* %1187)
+  %1188 = load i8** %"$0.165"
+  call void @Py_DecRef(i8* %1188)
+  %1189 = load i8** %"$0.100"
+  call void @Py_DecRef(i8* %1189)
+  %1190 = load i8** %"$0.163"
+  call void @Py_DecRef(i8* %1190)
+  %1191 = load i8** %"$0.162"
+  call void @Py_DecRef(i8* %1191)
+  %1192 = load i8** %"$0.161"
+  call void @Py_DecRef(i8* %1192)
+  %1193 = load i8** %"$0.160"
+  call void @Py_DecRef(i8* %1193)
+  %1194 = load i8** %"$0.169"
+  call void @Py_DecRef(i8* %1194)
+  %1195 = load i8** %"$0.168"
+  call void @Py_DecRef(i8* %1195)
+  %1196 = load i8** %"$0.189"
+  call void @Py_DecRef(i8* %1196)
+  %1197 = load i8** %"$0.188"
+  call void @Py_DecRef(i8* %1197)
+  %1198 = load i8** %"$0.181"
+  call void @Py_DecRef(i8* %1198)
+  %1199 = load i8** %"$0.180"
+  call void @Py_DecRef(i8* %1199)
+  %1200 = load i8** %"$0.183"
+  call void @Py_DecRef(i8* %1200)
+  %1201 = load i8** %"$0.182"
+  call void @Py_DecRef(i8* %1201)
+  %1202 = load i8** %"$0.185"
+  call void @Py_DecRef(i8* %1202)
+  %1203 = load i8** %"$0.184"
+  call void @Py_DecRef(i8* %1203)
+  %1204 = load i8** %"$0.187"
+  call void @Py_DecRef(i8* %1204)
+  %1205 = load i8** %"$0.186"
+  call void @Py_DecRef(i8* %1205)
+  %1206 = load i8** %"$0.32"
+  call void @Py_DecRef(i8* %1206)
+  %1207 = load i8** %"$0.33"
+  call void @Py_DecRef(i8* %1207)
+  %1208 = load i8** %"$0.30"
+  call void @Py_DecRef(i8* %1208)
+  %1209 = load i8** %"$0.31"
+  call void @Py_DecRef(i8* %1209)
+  %1210 = load i8** %"$0.36"
+  call void @Py_DecRef(i8* %1210)
+  %1211 = load i8** %"$0.37"
+  call void @Py_DecRef(i8* %1211)
+  %1212 = load i8** %"$0.34"
+  call void @Py_DecRef(i8* %1212)
+  %1213 = load i8** %"$0.35"
+  call void @Py_DecRef(i8* %1213)
+  %1214 = load i8** %"$0.38"
+  call void @Py_DecRef(i8* %1214)
+  %1215 = load i8** %"$0.39"
+  call void @Py_DecRef(i8* %1215)
+  %1216 = load i8** %"$0.103"
+  call void @Py_DecRef(i8* %1216)
+  %1217 = load i8** %"$0.112"
+  call void @Py_DecRef(i8* %1217)
+  %1218 = load i8** %"$0.113"
+  call void @Py_DecRef(i8* %1218)
+  %1219 = load i8** %"$0.110"
+  call void @Py_DecRef(i8* %1219)
+  %1220 = load i8** %"$0.102"
+  call void @Py_DecRef(i8* %1220)
+  %1221 = load i8** %"$0.116"
+  call void @Py_DecRef(i8* %1221)
+  %1222 = load i8** %"$0.117"
+  call void @Py_DecRef(i8* %1222)
+  %1223 = load i8** %"$0.114"
+  call void @Py_DecRef(i8* %1223)
+  %1224 = load i8** %"$0.115"
+  call void @Py_DecRef(i8* %1224)
+  %1225 = load i8** %"$0.105"
+  call void @Py_DecRef(i8* %1225)
+  %1226 = load i8** %"$0.118"
+  call void @Py_DecRef(i8* %1226)
+  %1227 = load i8** %"$0.119"
+  call void @Py_DecRef(i8* %1227)
+  %1228 = load i8** %"$0.104"
+  call void @Py_DecRef(i8* %1228)
+  %1229 = load i8** %"$0.107"
+  call void @Py_DecRef(i8* %1229)
+  %1230 = load i8** %"$0.106"
+  call void @Py_DecRef(i8* %1230)
+  %1231 = load i8** %dims
+  call void @Py_DecRef(i8* %1231)
+  %1232 = load i8** %"$0.137"
+  call void @Py_DecRef(i8* %1232)
+  %1233 = load i8** %data
+  call void @Py_DecRef(i8* %1233)
+  %1234 = load i8** %"$0.87"
+  call void @Py_DecRef(i8* %1234)
+  %1235 = load i8** %"$0.86"
+  call void @Py_DecRef(i8* %1235)
+  %1236 = load i8** %"$0.85"
+  call void @Py_DecRef(i8* %1236)
+  %1237 = load i8** %"$0.84"
+  call void @Py_DecRef(i8* %1237)
+  %1238 = load i8** %"$0.83"
+  call void @Py_DecRef(i8* %1238)
+  %1239 = load i8** %"$0.82"
+  call void @Py_DecRef(i8* %1239)
+  %1240 = load i8** %"$0.81"
+  call void @Py_DecRef(i8* %1240)
+  %1241 = load i8** %"$0.80"
+  call void @Py_DecRef(i8* %1241)
+  %1242 = load i8** %"$0.109"
+  call void @Py_DecRef(i8* %1242)
+  %1243 = load i8** %"$0.108"
+  call void @Py_DecRef(i8* %1243)
+  %1244 = load i8** %"$0.89"
+  call void @Py_DecRef(i8* %1244)
+  %1245 = load i8** %"$0.88"
+  call void @Py_DecRef(i8* %1245)
+  store i8* %1037, i8** %0
+  ret i32 0
+}
+
+declare i8* @PyLong_FromSsize_t(i64)
+
+declare void @Py_DecRef(i8*)
+
+declare i8* @PyList_New(i64)
+
+declare void @Py_IncRef(i8*)
+
+declare i32 @PyList_SetItem(i8*, i64, i8*)
+
+declare i8* @PyDict_GetItemString(i8*, i8*)
+
+declare void @PyErr_SetString(i8*, i8*)
+
+declare i8* @PyObject_CallFunctionObjArgs(i8*, ...)
+
+!python.module = !{!0}
+
+!0 = metadata !{metadata !"bayes_numba"}
+!1 = metadata !{metadata !"branch_weights", i32 99, i32 1}
+!2 = metadata !{metadata !"branch_weights", i32 1, i32 99}
+
+;================================================================================
+;-----------------------LLVM DUMP bayes_numba.naive_bayes------------------------
+; ModuleID = 'module.naive_bayes'
+
+;@Py_None = external global i8*
+;@.pymodule.dict.bayes_numba = external global i8
+@.const.naive_bayes__numba__loop50__ = internal constant [29 x i8] c"naive_bayes__numba__loop50__\00"
+@".const.global name 'naive_bayes__numba__loop50__' is not defined" = internal constant [58 x i8] c"global name 'naive_bayes__numba__loop50__' is not defined\00"
+;@PyExc_NameError = external global i8
+
+define i32 @bayes_numba.naive_bayes.pyobject.pyobject.pyobject.pyobject.pyobject(i8**, i8* %arg.data, i8* %arg.counts, i8* %arg.dims, i8* %arg.vals, i8* %arg.labels) {
+entry:
+  call void @Py_IncRef(i8* %arg.data)
+  %data = alloca i8*
+  store i8* null, i8** %data
+  %1 = load i8** %data
+  store i8* %arg.data, i8** %data
+  call void @Py_DecRef(i8* %1)
+  call void @Py_IncRef(i8* %arg.counts)
+  %counts = alloca i8*
+  store i8* null, i8** %counts
+  %2 = load i8** %counts
+  store i8* %arg.counts, i8** %counts
+  call void @Py_DecRef(i8* %2)
+  call void @Py_IncRef(i8* %arg.dims)
+  %dims = alloca i8*
+  store i8* null, i8** %dims
+  %3 = load i8** %dims
+  store i8* %arg.dims, i8** %dims
+  call void @Py_DecRef(i8* %3)
+  call void @Py_IncRef(i8* %arg.vals)
+  %vals = alloca i8*
+  store i8* null, i8** %vals
+  %4 = load i8** %vals
+  store i8* %arg.vals, i8** %vals
+  call void @Py_DecRef(i8* %4)
+  call void @Py_IncRef(i8* %arg.labels)
+  %labels = alloca i8*
+  store i8* null, i8** %labels
+  %5 = load i8** %labels
+  store i8* %arg.labels, i8** %labels
+  call void @Py_DecRef(i8* %5)
+  %label = alloca i8*
+  store i8* null, i8** %label
+  %"$0.2" = alloca i8*
+  store i8* null, i8** %"$0.2"
+  %"$0.3" = alloca i8*
+  store i8* null, i8** %"$0.3"
+  %"$0.4" = alloca i8*
+  store i8* null, i8** %"$0.4"
+  %"$0.5" = alloca i8*
+  store i8* null, i8** %"$0.5"
+  %"$0.6" = alloca i8*
+  store i8* null, i8** %"$0.6"
+  %offset = alloca i8*
+  store i8* null, i8** %offset
+  %c = alloca i8*
+  store i8* null, i8** %c
+  %"$115.1" = alloca i8*
+  store i8* null, i8** %"$115.1"
+  %"$119.1" = alloca i8*
+  store i8* null, i8** %"$119.1"
+  %"$119.2" = alloca i8*
+  store i8* null, i8** %"$119.2"
+  br label %B0
+
+error:                                            ; preds = %B119.endif.if, %B119.if, %B0.endif.endif.endif.endif.endif.endif.if, %B0.endif.endif.endif.endif.endif.if, %B0.endif.endif.endif.endif.if, %B0.endif.endif.endif.if, %B0.endif.endif.if, %B0.endif.if, %B0.if
+  %6 = load i8** %c
+  call void @Py_DecRef(i8* %6)
+  %7 = load i8** %"$115.1"
+  call void @Py_DecRef(i8* %7)
+  %8 = load i8** %"$0.2"
+  call void @Py_DecRef(i8* %8)
+  %9 = load i8** %"$0.6"
+  call void @Py_DecRef(i8* %9)
+  %10 = load i8** %labels
+  call void @Py_DecRef(i8* %10)
+  %11 = load i8** %label
+  call void @Py_DecRef(i8* %11)
+  %12 = load i8** %"$119.2"
+  call void @Py_DecRef(i8* %12)
+  %13 = load i8** %dims
+  call void @Py_DecRef(i8* %13)
+  %14 = load i8** %offset
+  call void @Py_DecRef(i8* %14)
+  %15 = load i8** %vals
+  call void @Py_DecRef(i8* %15)
+  %16 = load i8** %"$0.3"
+  call void @Py_DecRef(i8* %16)
+  %17 = load i8** %counts
+  call void @Py_DecRef(i8* %17)
+  %18 = load i8** %data
+  call void @Py_DecRef(i8* %18)
+  %19 = load i8** %"$119.1"
+  call void @Py_DecRef(i8* %19)
+  %20 = load i8** %"$0.4"
+  call void @Py_DecRef(i8* %20)
+  %21 = load i8** %"$0.5"
+  call void @Py_DecRef(i8* %21)
+  ret i32 -1
+
+B0:                                               ; preds = %entry
+  %22 = load i8** %data
+  %23 = load i8** %dims
+  %24 = call i8* @PyObject_GetItem(i8* %22, i8* %23)
+  %25 = icmp eq i8* null, %24
+  br i1 %25, label %B0.if, label %B0.endif, !prof !1
+
+B115:                                             ; preds = %B119.endif.endif
+  %26 = load i8** @Py_None
+  call void @Py_IncRef(i8* %26)
+  %27 = load i8** %"$115.1"
+  store i8* %26, i8** %"$115.1"
+  call void @Py_DecRef(i8* %27)
+  %28 = load i8** %"$115.1"
+  call void @Py_IncRef(i8* %28)
+  %29 = load i8** %c
+  call void @Py_DecRef(i8* %29)
+  %30 = load i8** %"$115.1"
+  call void @Py_DecRef(i8* %30)
+  %31 = load i8** %"$0.2"
+  call void @Py_DecRef(i8* %31)
+  %32 = load i8** %"$0.6"
+  call void @Py_DecRef(i8* %32)
+  %33 = load i8** %labels
+  call void @Py_DecRef(i8* %33)
+  %34 = load i8** %label
+  call void @Py_DecRef(i8* %34)
+  %35 = load i8** %dims
+  call void @Py_DecRef(i8* %35)
+  %36 = load i8** %offset
+  call void @Py_DecRef(i8* %36)
+  %37 = load i8** %vals
+  call void @Py_DecRef(i8* %37)
+  %38 = load i8** %"$0.3"
+  call void @Py_DecRef(i8* %38)
+  %39 = load i8** %counts
+  call void @Py_DecRef(i8* %39)
+  %40 = load i8** %data
+  call void @Py_DecRef(i8* %40)
+  %41 = load i8** %"$0.4"
+  call void @Py_DecRef(i8* %41)
+  %42 = load i8** %"$0.5"
+  call void @Py_DecRef(i8* %42)
+  store i8* %28, i8** %0
+  ret i32 0
+
+B119:                                             ; preds = %B0.endif.endif.endif.endif.endif.endif.endif
+  %43 = call i8* @PyDict_GetItemString(i8* @.pymodule.dict.bayes_numba, i8* getelementptr inbounds ([29 x i8]* @.const.naive_bayes__numba__loop50__, i32 0, i32 0))
+  call void @Py_IncRef(i8* %43)
+  %44 = icmp eq i8* null, %43
+  br i1 %44, label %B119.if, label %B119.endif, !prof !1
+
+B0.if:                                            ; preds = %B0
+  br label %error
+
+B0.endif:                                         ; preds = %B0
+  %45 = load i8** %label
+  store i8* %24, i8** %label
+  call void @Py_DecRef(i8* %45)
+  %46 = load i8** %counts
+  %47 = load i8** %label
+  %48 = call i8* @PyObject_GetItem(i8* %46, i8* %47)
+  %49 = icmp eq i8* null, %48
+  br i1 %49, label %B0.endif.if, label %B0.endif.endif, !prof !1
+
+B0.endif.if:                                      ; preds = %B0.endif
+  br label %error
+
+B0.endif.endif:                                   ; preds = %B0.endif
+  %50 = load i8** %"$0.2"
+  store i8* %48, i8** %"$0.2"
+  call void @Py_DecRef(i8* %50)
+  %51 = call i8* @PyLong_FromSsize_t(i64 1)
+  %52 = load i8** %"$0.3"
+  store i8* %51, i8** %"$0.3"
+  call void @Py_DecRef(i8* %52)
+  %53 = load i8** %"$0.2"
+  %54 = load i8** %"$0.3"
+  %55 = call i8* @PyNumber_Add(i8* %53, i8* %54)
+  %56 = icmp eq i8* null, %55
+  br i1 %56, label %B0.endif.endif.if, label %B0.endif.endif.endif, !prof !1
+
+B0.endif.endif.if:                                ; preds = %B0.endif.endif
+  br label %error
+
+B0.endif.endif.endif:                             ; preds = %B0.endif.endif
+  %57 = load i8** %"$0.4"
+  store i8* %55, i8** %"$0.4"
+  call void @Py_DecRef(i8* %57)
+  %58 = load i8** %counts
+  %59 = load i8** %label
+  %60 = load i8** %"$0.4"
+  %61 = call i32 @PyObject_SetItem(i8* %58, i8* %59, i8* %60)
+  %62 = icmp eq i32 %61, -1
+  br i1 %62, label %B0.endif.endif.endif.if, label %B0.endif.endif.endif.endif, !prof !1
+
+B0.endif.endif.endif.if:                          ; preds = %B0.endif.endif.endif
+  br label %error
+
+B0.endif.endif.endif.endif:                       ; preds = %B0.endif.endif.endif
+  %63 = load i8** %label
+  %64 = load i8** %dims
+  %65 = call i8* @PyNumber_Multiply(i8* %63, i8* %64)
+  %66 = icmp eq i8* null, %65
+  br i1 %66, label %B0.endif.endif.endif.endif.if, label %B0.endif.endif.endif.endif.endif, !prof !1
+
+B0.endif.endif.endif.endif.if:                    ; preds = %B0.endif.endif.endif.endif
+  br label %error
+
+B0.endif.endif.endif.endif.endif:                 ; preds = %B0.endif.endif.endif.endif
+  %67 = load i8** %"$0.5"
+  store i8* %65, i8** %"$0.5"
+  call void @Py_DecRef(i8* %67)
+  %68 = load i8** %"$0.5"
+  %69 = load i8** %vals
+  %70 = call i8* @PyNumber_Multiply(i8* %68, i8* %69)
+  %71 = icmp eq i8* null, %70
+  br i1 %71, label %B0.endif.endif.endif.endif.endif.if, label %B0.endif.endif.endif.endif.endif.endif, !prof !1
+
+B0.endif.endif.endif.endif.endif.if:              ; preds = %B0.endif.endif.endif.endif.endif
+  br label %error
+
+B0.endif.endif.endif.endif.endif.endif:           ; preds = %B0.endif.endif.endif.endif.endif
+  %72 = load i8** %"$0.6"
+  store i8* %70, i8** %"$0.6"
+  call void @Py_DecRef(i8* %72)
+  %73 = load i8** %labels
+  %74 = load i8** %"$0.6"
+  %75 = call i8* @PyNumber_Add(i8* %73, i8* %74)
+  %76 = icmp eq i8* null, %75
+  br i1 %76, label %B0.endif.endif.endif.endif.endif.endif.if, label %B0.endif.endif.endif.endif.endif.endif.endif, !prof !1
+
+B0.endif.endif.endif.endif.endif.endif.if:        ; preds = %B0.endif.endif.endif.endif.endif.endif
+  br label %error
+
+B0.endif.endif.endif.endif.endif.endif.endif:     ; preds = %B0.endif.endif.endif.endif.endif.endif
+  %77 = load i8** %offset
+  store i8* %75, i8** %offset
+  call void @Py_DecRef(i8* %77)
+  %78 = call i8* @PyLong_FromSsize_t(i64 0)
+  %79 = load i8** %c
+  store i8* %78, i8** %c
+  call void @Py_DecRef(i8* %79)
+  br label %B119
+
+B119.if:                                          ; preds = %B119
+  call void @PyErr_SetString(i8* @PyExc_NameError, i8* getelementptr inbounds ([58 x i8]* @".const.global name 'naive_bayes__numba__loop50__' is not defined", i32 0, i32 0))
+  br label %error
+
+B119.endif:                                       ; preds = %B119
+  call void @Py_IncRef(i8* %43)
+  %80 = load i8** %"$119.1"
+  store i8* %43, i8** %"$119.1"
+  call void @Py_DecRef(i8* %80)
+  %81 = load i8** %c
+  %82 = load i8** %dims
+  %83 = load i8** %offset
+  %84 = load i8** %vals
+  %85 = load i8** %counts
+  %86 = load i8** %data
+  %87 = load i8** %"$119.1"
+  %88 = call i8* (i8*, ...)* @PyObject_CallFunctionObjArgs(i8* %87, i8* %81, i8* %82, i8* %83, i8* %84, i8* %85, i8* %86, i8* null)
+  %89 = icmp eq i8* null, %88
+  br i1 %89, label %B119.endif.if, label %B119.endif.endif, !prof !1
+
+B119.endif.if:                                    ; preds = %B119.endif
+  br label %error
+
+B119.endif.endif:                                 ; preds = %B119.endif
+  %90 = load i8** %"$119.2"
+  store i8* %88, i8** %"$119.2"
+  call void @Py_DecRef(i8* %90)
+  br label %B115
+}
+
+;declare void @Py_IncRef(i8*)
+
+;declare void @Py_DecRef(i8*)
+
+;declare i8* @PyObject_GetItem(i8*, i8*)
+
+;declare i8* @PyLong_FromSsize_t(i64)
+
+;declare i8* @PyNumber_Add(i8*, i8*)
+
+;declare i32 @PyObject_SetItem(i8*, i8*, i8*)
+
+;declare i8* @PyNumber_Multiply(i8*, i8*)
+
+;declare i8* @PyDict_GetItemString(i8*, i8*)
+
+;declare void @PyErr_SetString(i8*, i8*)
+
+;declare i8* @PyObject_CallFunctionObjArgs(i8*, ...)
+
+!python.module = !{!0}
+
+;!0 = metadata !{metadata !"bayes_numba"}
+;!1 = metadata !{metadata !"branch_weights", i32 1, i32 99}
+
+;================================================================================
+;---------------LLVM DUMP bayes_numba.naive_bayes__numba__loop50__---------------
+; ModuleID = 'module.naive_bayes__numba__loop50__'
+
+;@Py_None = external global i8*
+
+define i32 @bayes_numba.naive_bayes__numba__loop50__.pyobject.pyobject.pyobject.pyobject.pyobject.pyobject(i8**, i8* %arg.c, i8* %arg.dims, i8* %arg.offset, i8* %arg.vals, i8* %arg.counts, i8* %arg.data) {
+entry:
+  call void @Py_IncRef(i8* %arg.c)
+  %c = alloca i8*
+  store i8* null, i8** %c
+  %1 = load i8** %c
+  store i8* %arg.c, i8** %c
+  call void @Py_DecRef(i8* %1)
+  call void @Py_IncRef(i8* %arg.dims)
+  %dims = alloca i8*
+  store i8* null, i8** %dims
+  %2 = load i8** %dims
+  store i8* %arg.dims, i8** %dims
+  call void @Py_DecRef(i8* %2)
+  call void @Py_IncRef(i8* %arg.offset)
+  %offset = alloca i8*
+  store i8* null, i8** %offset
+  %3 = load i8** %offset
+  store i8* %arg.offset, i8** %offset
+  call void @Py_DecRef(i8* %3)
+  call void @Py_IncRef(i8* %arg.vals)
+  %vals = alloca i8*
+  store i8* null, i8** %vals
+  %4 = load i8** %vals
+  store i8* %arg.vals, i8** %vals
+  call void @Py_DecRef(i8* %4)
+  call void @Py_IncRef(i8* %arg.counts)
+  %counts = alloca i8*
+  store i8* null, i8** %counts
+  %5 = load i8** %counts
+  store i8* %arg.counts, i8** %counts
+  call void @Py_DecRef(i8* %5)
+  call void @Py_IncRef(i8* %arg.data)
+  %data = alloca i8*
+  store i8* null, i8** %data
+  %6 = load i8** %data
+  store i8* %arg.data, i8** %data
+  call void @Py_DecRef(i8* %6)
+  %"$53.1" = alloca i8*
+  store i8* null, i8** %"$53.1"
+  %"$65.1" = alloca i8*
+  store i8* null, i8** %"$65.1"
+  %"$65.2" = alloca i8*
+  store i8* null, i8** %"$65.2"
+  %"$65.3" = alloca i8*
+  store i8* null, i8** %"$65.3"
+  %"$65.4" = alloca i8*
+  store i8* null, i8** %"$65.4"
+  %"$65.5" = alloca i8*
+  store i8* null, i8** %"$65.5"
+  %"$65.6" = alloca i8*
+  store i8* null, i8** %"$65.6"
+  %"$65.7" = alloca i8*
+  store i8* null, i8** %"$65.7"
+  %"$65.8" = alloca i8*
+  store i8* null, i8** %"$65.8"
+  %"$65.9" = alloca i8*
+  store i8* null, i8** %"$65.9"
+  %"$65.10" = alloca i8*
+  store i8* null, i8** %"$65.10"
+  %"$115.1" = alloca i8*
+  store i8* null, i8** %"$115.1"
+  br label %B50
+
+error:                                            ; preds = %B65.endif.endif.endif.endif.endif.endif.endif.endif.if, %B65.endif.endif.endif.endif.endif.endif.endif.if, %B65.endif.endif.endif.endif.endif.endif.if, %B65.endif.endif.endif.endif.endif.if, %B65.endif.endif.endif.endif.if, %B65.endif.endif.endif.if, %B65.endif.endif.if, %B65.endif.if, %B65.if, %B53.if
+  %7 = load i8** %"$65.8"
+  call void @Py_DecRef(i8* %7)
+  %8 = load i8** %"$65.9"
+  call void @Py_DecRef(i8* %8)
+  %9 = load i8** %c
+  call void @Py_DecRef(i8* %9)
+  %10 = load i8** %"$115.1"
+  call void @Py_DecRef(i8* %10)
+  %11 = load i8** %"$53.1"
+  call void @Py_DecRef(i8* %11)
+  %12 = load i8** %"$65.1"
+  call void @Py_DecRef(i8* %12)
+  %13 = load i8** %"$65.2"
+  call void @Py_DecRef(i8* %13)
+  %14 = load i8** %"$65.3"
+  call void @Py_DecRef(i8* %14)
+  %15 = load i8** %"$65.4"
+  call void @Py_DecRef(i8* %15)
+  %16 = load i8** %"$65.5"
+  call void @Py_DecRef(i8* %16)
+  %17 = load i8** %"$65.6"
+  call void @Py_DecRef(i8* %17)
+  %18 = load i8** %"$65.7"
+  call void @Py_DecRef(i8* %18)
+  %19 = load i8** %dims
+  call void @Py_DecRef(i8* %19)
+  %20 = load i8** %"$65.10"
+  call void @Py_DecRef(i8* %20)
+  %21 = load i8** %offset
+  call void @Py_DecRef(i8* %21)
+  %22 = load i8** %vals
+  call void @Py_DecRef(i8* %22)
+  %23 = load i8** %counts
+  call void @Py_DecRef(i8* %23)
+  %24 = load i8** %data
+  call void @Py_DecRef(i8* %24)
+  ret i32 -1
+
+B50:                                              ; preds = %entry
+  br label %B53
+
+B53:                                              ; preds = %B65.endif.endif.endif.endif.endif.endif.endif.endif.endif, %B50
+  %25 = load i8** %c
+  %26 = load i8** %dims
+  %27 = call i8* @PyObject_RichCompare(i8* %25, i8* %26, i32 0)
+  %28 = icmp eq i8* null, %27
+  br i1 %28, label %B53.if, label %B53.endif, !prof !1
+
+B65:                                              ; preds = %B53.endif
+  %29 = load i8** %c
+  %30 = load i8** %vals
+  %31 = call i8* @PyNumber_Multiply(i8* %29, i8* %30)
+  %32 = icmp eq i8* null, %31
+  br i1 %32, label %B65.if, label %B65.endif, !prof !1
+
+B114:                                             ; preds = %B53.endif
+  br label %B115
+
+B115:                                             ; preds = %B114
+  %33 = load i8** @Py_None
+  call void @Py_IncRef(i8* %33)
+  %34 = load i8** %"$115.1"
+  store i8* %33, i8** %"$115.1"
+  call void @Py_DecRef(i8* %34)
+  %35 = load i8** %"$115.1"
+  call void @Py_IncRef(i8* %35)
+  %36 = load i8** %"$65.8"
+  call void @Py_DecRef(i8* %36)
+  %37 = load i8** %"$65.9"
+  call void @Py_DecRef(i8* %37)
+  %38 = load i8** %c
+  call void @Py_DecRef(i8* %38)
+  %39 = load i8** %"$115.1"
+  call void @Py_DecRef(i8* %39)
+  %40 = load i8** %"$53.1"
+  call void @Py_DecRef(i8* %40)
+  %41 = load i8** %"$65.1"
+  call void @Py_DecRef(i8* %41)
+  %42 = load i8** %"$65.2"
+  call void @Py_DecRef(i8* %42)
+  %43 = load i8** %"$65.3"
+  call void @Py_DecRef(i8* %43)
+  %44 = load i8** %"$65.4"
+  call void @Py_DecRef(i8* %44)
+  %45 = load i8** %"$65.5"
+  call void @Py_DecRef(i8* %45)
+  %46 = load i8** %"$65.6"
+  call void @Py_DecRef(i8* %46)
+  %47 = load i8** %"$65.7"
+  call void @Py_DecRef(i8* %47)
+  %48 = load i8** %dims
+  call void @Py_DecRef(i8* %48)
+  %49 = load i8** %"$65.10"
+  call void @Py_DecRef(i8* %49)
+  %50 = load i8** %offset
+  call void @Py_DecRef(i8* %50)
+  %51 = load i8** %vals
+  call void @Py_DecRef(i8* %51)
+  %52 = load i8** %counts
+  call void @Py_DecRef(i8* %52)
+  %53 = load i8** %data
+  call void @Py_DecRef(i8* %53)
+  store i8* %35, i8** %0
+  ret i32 0
+
+B53.if:                                           ; preds = %B53
+  br label %error
+
+B53.endif:                                        ; preds = %B53
+  %54 = load i8** %"$53.1"
+  store i8* %27, i8** %"$53.1"
+  call void @Py_DecRef(i8* %54)
+  %55 = load i8** %"$53.1"
+  %56 = call i32 @PyObject_IsTrue(i8* %55)
+  %57 = icmp ne i32 %56, 0
+  br i1 %57, label %B65, label %B114
+
+B65.if:                                           ; preds = %B65
+  br label %error
+
+B65.endif:                                        ; preds = %B65
+  %58 = load i8** %"$65.1"
+  store i8* %31, i8** %"$65.1"
+  call void @Py_DecRef(i8* %58)
+  %59 = load i8** %offset
+  %60 = load i8** %"$65.1"
+  %61 = call i8* @PyNumber_Add(i8* %59, i8* %60)
+  %62 = icmp eq i8* null, %61
+  br i1 %62, label %B65.endif.if, label %B65.endif.endif, !prof !1
+
+B65.endif.if:                                     ; preds = %B65.endif
+  br label %error
+
+B65.endif.endif:                                  ; preds = %B65.endif
+  %63 = load i8** %"$65.2"
+  store i8* %61, i8** %"$65.2"
+  call void @Py_DecRef(i8* %63)
+  %64 = load i8** %data
+  %65 = load i8** %c
+  %66 = call i8* @PyObject_GetItem(i8* %64, i8* %65)
+  %67 = icmp eq i8* null, %66
+  br i1 %67, label %B65.endif.endif.if, label %B65.endif.endif.endif, !prof !1
+
+B65.endif.endif.if:                               ; preds = %B65.endif.endif
+  br label %error
+
+B65.endif.endif.endif:                            ; preds = %B65.endif.endif
+  %68 = load i8** %"$65.3"
+  store i8* %66, i8** %"$65.3"
+  call void @Py_DecRef(i8* %68)
+  %69 = load i8** %"$65.2"
+  %70 = load i8** %"$65.3"
+  %71 = call i8* @PyNumber_Add(i8* %69, i8* %70)
+  %72 = icmp eq i8* null, %71
+  br i1 %72, label %B65.endif.endif.endif.if, label %B65.endif.endif.endif.endif, !prof !1
+
+B65.endif.endif.endif.if:                         ; preds = %B65.endif.endif.endif
+  br label %error
+
+B65.endif.endif.endif.endif:                      ; preds = %B65.endif.endif.endif
+  %73 = load i8** %"$65.4"
+  store i8* %71, i8** %"$65.4"
+  call void @Py_DecRef(i8* %73)
+  %74 = call i8* @PyLong_FromSsize_t(i64 100)
+  %75 = load i8** %"$65.5"
+  store i8* %74, i8** %"$65.5"
+  call void @Py_DecRef(i8* %75)
+  %76 = load i8** %"$65.4"
+  %77 = load i8** %"$65.5"
+  %78 = call i8* @PyNumber_Remainder(i8* %76, i8* %77)
+  %79 = icmp eq i8* null, %78
+  br i1 %79, label %B65.endif.endif.endif.endif.if, label %B65.endif.endif.endif.endif.endif, !prof !1
+
+B65.endif.endif.endif.endif.if:                   ; preds = %B65.endif.endif.endif.endif
+  br label %error
+
+B65.endif.endif.endif.endif.endif:                ; preds = %B65.endif.endif.endif.endif
+  %80 = load i8** %"$65.6"
+  store i8* %78, i8** %"$65.6"
+  call void @Py_DecRef(i8* %80)
+  %81 = load i8** %counts
+  %82 = load i8** %"$65.6"
+  %83 = call i8* @PyObject_GetItem(i8* %81, i8* %82)
+  %84 = icmp eq i8* null, %83
+  br i1 %84, label %B65.endif.endif.endif.endif.endif.if, label %B65.endif.endif.endif.endif.endif.endif, !prof !1
+
+B65.endif.endif.endif.endif.endif.if:             ; preds = %B65.endif.endif.endif.endif.endif
+  br label %error
+
+B65.endif.endif.endif.endif.endif.endif:          ; preds = %B65.endif.endif.endif.endif.endif
+  %85 = load i8** %"$65.7"
+  store i8* %83, i8** %"$65.7"
+  call void @Py_DecRef(i8* %85)
+  %86 = call i8* @PyLong_FromSsize_t(i64 1)
+  %87 = load i8** %"$65.8"
+  store i8* %86, i8** %"$65.8"
+  call void @Py_DecRef(i8* %87)
+  %88 = load i8** %"$65.7"
+  %89 = load i8** %"$65.8"
+  %90 = call i8* @PyNumber_Add(i8* %88, i8* %89)
+  %91 = icmp eq i8* null, %90
+  br i1 %91, label %B65.endif.endif.endif.endif.endif.endif.if, label %B65.endif.endif.endif.endif.endif.endif.endif, !prof !1
+
+B65.endif.endif.endif.endif.endif.endif.if:       ; preds = %B65.endif.endif.endif.endif.endif.endif
+  br label %error
+
+B65.endif.endif.endif.endif.endif.endif.endif:    ; preds = %B65.endif.endif.endif.endif.endif.endif
+  %92 = load i8** %"$65.9"
+  store i8* %90, i8** %"$65.9"
+  call void @Py_DecRef(i8* %92)
+  %93 = load i8** %counts
+  %94 = load i8** %"$65.6"
+  %95 = load i8** %"$65.9"
+  %96 = call i32 @PyObject_SetItem(i8* %93, i8* %94, i8* %95)
+  %97 = icmp eq i32 %96, -1
+  br i1 %97, label %B65.endif.endif.endif.endif.endif.endif.endif.if, label %B65.endif.endif.endif.endif.endif.endif.endif.endif, !prof !1
+
+B65.endif.endif.endif.endif.endif.endif.endif.if: ; preds = %B65.endif.endif.endif.endif.endif.endif.endif
+  br label %error
+
+B65.endif.endif.endif.endif.endif.endif.endif.endif: ; preds = %B65.endif.endif.endif.endif.endif.endif.endif
+  %98 = call i8* @PyLong_FromSsize_t(i64 1)
+  %99 = load i8** %"$65.10"
+  store i8* %98, i8** %"$65.10"
+  call void @Py_DecRef(i8* %99)
+  %100 = load i8** %c
+  %101 = load i8** %"$65.10"
+  %102 = call i8* @PyNumber_Add(i8* %100, i8* %101)
+  %103 = icmp eq i8* null, %102
+  br i1 %103, label %B65.endif.endif.endif.endif.endif.endif.endif.endif.if, label %B65.endif.endif.endif.endif.endif.endif.endif.endif.endif, !prof !1
+
+B65.endif.endif.endif.endif.endif.endif.endif.endif.if: ; preds = %B65.endif.endif.endif.endif.endif.endif.endif.endif
+  br label %error
+
+B65.endif.endif.endif.endif.endif.endif.endif.endif.endif: ; preds = %B65.endif.endif.endif.endif.endif.endif.endif.endif
+  %104 = load i8** %c
+  store i8* %102, i8** %c
+  call void @Py_DecRef(i8* %104)
+  br label %B53
+}
+
+;declare void @Py_IncRef(i8*)
+;
+;declare void @Py_DecRef(i8*)
+
+;declare i8* @PyObject_RichCompare(i8*, i8*, i32)
+
+;declare i32 @PyObject_IsTrue(i8*)
+
+;declare i8* @PyNumber_Multiply(i8*, i8*)
+
+;declare i8* @PyNumber_Add(i8*, i8*)
+
+;declare i8* @PyObject_GetItem(i8*, i8*)
+
+;declare i8* @PyLong_FromSsize_t(i64)
+
+;declare i8* @PyNumber_Remainder(i8*, i8*)
+
+;declare i32 @PyObject_SetItem(i8*, i8*, i8*)
+
+!python.module = !{!0}
+
+;!0 = metadata !{metadata !"bayes_numba"}
+;!1 = metadata !{metadata !"branch_weights", i32 1, i32 99}
+
