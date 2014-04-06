@@ -1,4 +1,4 @@
-def logreg(data=listf8, g=listf8, w=listf8, dims=int): 
+def logreg(data=listf100, g=listf100, w=listf100, dims=int): 
     dot = 0.0
     j = 0
     while(j<dims):
@@ -13,10 +13,8 @@ def logreg(data=listf8, g=listf8, w=listf8, dims=int):
     g[3] = 100.0
 
 def main():
-    data = range(8.0)
-    g = range(8.0)
-    w = range(8.0)
-    dims = 8
-    print g
+    data = range(100.0)
+    g = range(100.0)
+    w = range(100.0)
+    dims = 100
     logreg(data, g, w, dims)
-    print g

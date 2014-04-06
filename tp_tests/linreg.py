@@ -9,7 +9,7 @@
 #}
 
 
-def linreg(data=listf8, w=listf8, g=listf8, dims=int):
+def linreg(data=listf100, w=listf100, g=listf100, dims=int):
     dot = 0.0
     c = 0
     while c<dims:
@@ -22,8 +22,8 @@ def linreg(data=listf8, w=listf8, g=listf8, dims=int):
         g[c2] = g[c2]+ dot*data[c2]
         c2=c2+1
 def main():
-    data = [1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0]
-    w = range(0.0,8.0)
-    g = range(0.0,8.0)
-    linreg(data, w, g, 8)
+    data = range(100.0)
+    w = range(100.0)
+    g = range(0.0,100.0)
+    linreg(data, w, g, 100)
 

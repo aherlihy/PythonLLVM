@@ -11,6 +11,6 @@ if __name__ == '__main__':
         print "Usage: <udf file>"
         sys.exit(0)
     
-    time = timeit.timeit("run_test()", setup="from __main__ import run_test", number=100)
+    time = timeit.timeit("run_test()", setup="from __main__ import run_test", number=500)
     
     print time
