@@ -178,7 +178,7 @@ class TypeInference(object):
                 return int
             if(node.node.name=='float'):
                 return float
-            if(node.node.name=='range'):
+            if(node.node.name=='range' or node.node.name=='zeros'):
                 return list
             if x.has_key(node.node.name):
                 #return x[node.node.name][0]

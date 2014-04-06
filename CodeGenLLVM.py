@@ -326,6 +326,11 @@ class CodeGenLLVM:
                     end = int(expr.args[1].value)
                 ty = typer.inferType(expr.args[0])
                 return (ty, end-start, False)
+            elif expr.node.name=='zeros':
+                start=0
+                end=int(expr.args[0].value)
+                ty = typer.inferType(expr.args[1])
+                return (ty, end-start, False)
             listType, listLen, isStr = symbolTable.find(expr.node.name).getDim()
         elif isinstance(expr, compiler.ast.Const):
             listType = int

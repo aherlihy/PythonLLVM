@@ -22,7 +22,8 @@ intrinsics = {
     , 'mod'   : ( int    , [ int, int   ] )
     , 'int'   : ( float  , [ int        ] )
     , 'float' : ( int    , [ float      ] )
-    , 'range' : ( list   , [ int        ])
+    , 'range' : ( list   , [ int        ] )
+    , 'zeros' : ( list   , [ int        ] )
 }
 
 class mMathFuncs(object):
@@ -168,6 +169,49 @@ class mMathFuncs(object):
                 val = llvm.core.Constant.int(llIntType, v)
             else:
                 val = llvm.core.Constant.real(llFloatType, float(v))
+            # store values in malloc'd array
+            m = self.codeGen.builder.gep(m_ptr, [zero, index])
+            self.codeGen.builder.store(val, m)
+            count = count+1
+        # reset expr to the malloc'd array ptr
+        return m_ptr
+    def emitzeros(self, node):
+        # get start and end points
+        ty = self.codeGen.typer.inferType(node.args[0])
+        if(ty!=int and ty!= float):
+            raise PyllvmError("mmath: zeros needs numerical arguments")
+        for n in node.args:
+            if not isinstance(n, compiler.ast.Const):
+                raise PyllvmError("mmath: need to pass zeros constant values")
+        if len(node.args) == 1:
+            start = 0
+            end = int(node.args[0].value)
+            z = 0
+        else:
+            start = 0
+            end = int(node.args[0].value)
+            z = node.args[1].value
+            ty = self.codeGen.typer.inferType(node.args[1])
+
+        if(end<start):
+            raise PyllvmError("mmath: bad zeros args")
+        
+        # malloc array
+        if(ty==int):
+            arrTy = llvm.core.Type.array(llIntType, end-start)
+        else:
+            arrTy = llvm.core.Type.array(llFloatType, end-start)
+        m_ptr = self.codeGen.builder.alloca_array(arrTy, llvm.core.Constant.int(llIntType, end-start))
+        # copy all the values from the stack one into the heap
+        zero = llvm.core.Constant.int(llIntType, 0)
+        count = 0
+        for v in range(start, end+1):
+            index = llvm.core.Constant.int(llIntType, count)
+            # create value to store
+            if ty==int:
+                val = llvm.core.Constant.int(llIntType, z)
+            else:
+                val = llvm.core.Constant.real(llFloatType, z)
             # store values in malloc'd array
             m = self.codeGen.builder.gep(m_ptr, [zero, index])
             self.codeGen.builder.store(val, m)
