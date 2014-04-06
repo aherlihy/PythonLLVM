@@ -24,10 +24,10 @@ def kmeans(i=int, data=listi100, x=listi100, y=listi100, c=listi100, t=listi100,
 
 def main():
     i=100
-#    CENT=100
-#    data=range(100)
-#    x=range(100)
-#    y=range(100)
-#    c=range(100)
-#    t=range(100)
-##    kmeans(i, data, x, y, c, t, CENT)
+    CENT=25
+    data=zeros(100, 8)
+    x=range(100)
+    y=range(100)
+    c=range(100)
+    t=zeros(100)
+    kmeans(i, data, x, y, c, t, CENT)

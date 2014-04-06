@@ -10,7 +10,7 @@
 
 
 def linreg(data=listf100, w=listf100, g=listf100, dims=int):
-    dot = 0.0
+    dot = 1.0
     c = 0
     while c<dims:
         dot+=data[c]*w[c]
@@ -22,8 +22,8 @@ def linreg(data=listf100, w=listf100, g=listf100, dims=int):
         g[c2] += dot*data[c2]
         c2+=1
 def main():
-#    data = range(100.0)
-#    w = range(100.0)
-#    g = range(0.0,100.0)
-#    linreg(data, w, g, 100)
-    x = 1
+    data = range(100.0)
+    data[99]=1.0
+    w = range(100.0)
+    g = zeros(100.0)
+    linreg(data, w, g, 99)
