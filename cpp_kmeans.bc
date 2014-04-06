@@ -1,0 +1,334 @@
+; ModuleID = 'kmeans.cpp'
+target datalayout = "e-p:64:64:64-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:64:64-f32:32:32-f64:64:64-v64:64:64-v128:128:128-a0:0:64-s0:64:64-f80:128:128-n8:16:32:64-S128"
+target triple = "x86_64-unknown-linux-gnu"
+
+; Function Attrs: nounwind uwtable
+define void @_Z6kmeansiPiS_S_S_S_i(i32 %i, i32* %data, i32* %x, i32* %y, i32* %c, i32* %t, i32 %CENT) #0 {
+entry:
+  %i.addr = alloca i32, align 4
+  %data.addr = alloca i32*, align 8
+  %x.addr = alloca i32*, align 8
+  %y.addr = alloca i32*, align 8
+  %c.addr = alloca i32*, align 8
+  %t.addr = alloca i32*, align 8
+  %CENT.addr = alloca i32, align 4
+  %xd0 = alloca i32, align 4
+  %xd1 = alloca i32, align 4
+  %xd2 = alloca i32, align 4
+  %yd0 = alloca i32, align 4
+  %yd1 = alloca i32, align 4
+  %yd2 = alloca i32, align 4
+  %d0 = alloca i32, align 4
+  %d1 = alloca i32, align 4
+  %d2 = alloca i32, align 4
+  %min = alloca i32, align 4
+  %assign = alloca i32, align 4
+  store i32 %i, i32* %i.addr, align 4
+  store i32* %data, i32** %data.addr, align 8
+  store i32* %x, i32** %x.addr, align 8
+  store i32* %y, i32** %y.addr, align 8
+  store i32* %c, i32** %c.addr, align 8
+  store i32* %t, i32** %t.addr, align 8
+  store i32 %CENT, i32* %CENT.addr, align 4
+  %0 = load i32** %c.addr, align 8
+  %arrayidx = getelementptr inbounds i32* %0, i64 0
+  %1 = load i32* %arrayidx, align 4
+  %2 = load i32* %i.addr, align 4
+  %idxprom = sext i32 %2 to i64
+  %3 = load i32** %x.addr, align 8
+  %arrayidx1 = getelementptr inbounds i32* %3, i64 %idxprom
+  %4 = load i32* %arrayidx1, align 4
+  %sub = sub nsw i32 %1, %4
+  store i32 %sub, i32* %xd0, align 4
+  %5 = load i32** %c.addr, align 8
+  %arrayidx2 = getelementptr inbounds i32* %5, i64 1
+  %6 = load i32* %arrayidx2, align 4
+  %7 = load i32* %i.addr, align 4
+  %idxprom3 = sext i32 %7 to i64
+  %8 = load i32** %x.addr, align 8
+  %arrayidx4 = getelementptr inbounds i32* %8, i64 %idxprom3
+  %9 = load i32* %arrayidx4, align 4
+  %sub5 = sub nsw i32 %6, %9
+  store i32 %sub5, i32* %xd1, align 4
+  %10 = load i32** %c.addr, align 8
+  %arrayidx6 = getelementptr inbounds i32* %10, i64 2
+  %11 = load i32* %arrayidx6, align 4
+  %12 = load i32* %i.addr, align 4
+  %idxprom7 = sext i32 %12 to i64
+  %13 = load i32** %x.addr, align 8
+  %arrayidx8 = getelementptr inbounds i32* %13, i64 %idxprom7
+  %14 = load i32* %arrayidx8, align 4
+  %sub9 = sub nsw i32 %11, %14
+  store i32 %sub9, i32* %xd2, align 4
+  %15 = load i32** %c.addr, align 8
+  %arrayidx10 = getelementptr inbounds i32* %15, i64 3
+  %16 = load i32* %arrayidx10, align 4
+  %17 = load i32* %i.addr, align 4
+  %idxprom11 = sext i32 %17 to i64
+  %18 = load i32** %y.addr, align 8
+  %arrayidx12 = getelementptr inbounds i32* %18, i64 %idxprom11
+  %19 = load i32* %arrayidx12, align 4
+  %sub13 = sub nsw i32 %16, %19
+  store i32 %sub13, i32* %yd0, align 4
+  %20 = load i32** %c.addr, align 8
+  %arrayidx14 = getelementptr inbounds i32* %20, i64 4
+  %21 = load i32* %arrayidx14, align 4
+  %22 = load i32* %i.addr, align 4
+  %idxprom15 = sext i32 %22 to i64
+  %23 = load i32** %y.addr, align 8
+  %arrayidx16 = getelementptr inbounds i32* %23, i64 %idxprom15
+  %24 = load i32* %arrayidx16, align 4
+  %sub17 = sub nsw i32 %21, %24
+  store i32 %sub17, i32* %yd1, align 4
+  %25 = load i32** %c.addr, align 8
+  %arrayidx18 = getelementptr inbounds i32* %25, i64 5
+  %26 = load i32* %arrayidx18, align 4
+  %27 = load i32* %i.addr, align 4
+  %idxprom19 = sext i32 %27 to i64
+  %28 = load i32** %y.addr, align 8
+  %arrayidx20 = getelementptr inbounds i32* %28, i64 %idxprom19
+  %29 = load i32* %arrayidx20, align 4
+  %sub21 = sub nsw i32 %26, %29
+  store i32 %sub21, i32* %yd2, align 4
+  %30 = load i32* %xd0, align 4
+  %31 = load i32* %xd0, align 4
+  %mul = mul nsw i32 %30, %31
+  %32 = load i32* %yd0, align 4
+  %33 = load i32* %yd0, align 4
+  %mul22 = mul nsw i32 %32, %33
+  %add = add nsw i32 %mul, %mul22
+  %conv = sitofp i32 %add to double
+  %call = call double @sqrt(double %conv) #4
+  %conv23 = fptosi double %call to i32
+  store i32 %conv23, i32* %d0, align 4
+  %34 = load i32* %xd1, align 4
+  %35 = load i32* %xd1, align 4
+  %mul24 = mul nsw i32 %34, %35
+  %36 = load i32* %yd1, align 4
+  %37 = load i32* %yd1, align 4
+  %mul25 = mul nsw i32 %36, %37
+  %add26 = add nsw i32 %mul24, %mul25
+  %conv27 = sitofp i32 %add26 to double
+  %call28 = call double @sqrt(double %conv27) #4
+  %conv29 = fptosi double %call28 to i32
+  store i32 %conv29, i32* %d1, align 4
+  %38 = load i32* %xd2, align 4
+  %39 = load i32* %xd2, align 4
+  %mul30 = mul nsw i32 %38, %39
+  %40 = load i32* %yd2, align 4
+  %41 = load i32* %yd2, align 4
+  %mul31 = mul nsw i32 %40, %41
+  %add32 = add nsw i32 %mul30, %mul31
+  %conv33 = sitofp i32 %add32 to double
+  %call34 = call double @sqrt(double %conv33) #4
+  %conv35 = fptosi double %call34 to i32
+  store i32 %conv35, i32* %d2, align 4
+  %42 = load i32* %d0, align 4
+  store i32 %42, i32* %min, align 4
+  store i32 0, i32* %assign, align 4
+  %43 = load i32* %d1, align 4
+  %44 = load i32* %min, align 4
+  %cmp = icmp slt i32 %43, %44
+  br i1 %cmp, label %if.then, label %if.end
+
+if.then:                                          ; preds = %entry
+  %45 = load i32* %d1, align 4
+  store i32 %45, i32* %min, align 4
+  store i32 1, i32* %assign, align 4
+  br label %if.end
+
+if.end:                                           ; preds = %if.then, %entry
+  %46 = load i32* %d2, align 4
+  %47 = load i32* %min, align 4
+  %cmp36 = icmp slt i32 %46, %47
+  br i1 %cmp36, label %if.then37, label %if.end38
+
+if.then37:                                        ; preds = %if.end
+  store i32 2, i32* %assign, align 4
+  br label %if.end38
+
+if.end38:                                         ; preds = %if.then37, %if.end
+  %48 = load i32* %i.addr, align 4
+  %idxprom39 = sext i32 %48 to i64
+  %49 = load i32** %x.addr, align 8
+  %arrayidx40 = getelementptr inbounds i32* %49, i64 %idxprom39
+  %50 = load i32* %arrayidx40, align 4
+  %51 = load i32* %assign, align 4
+  %idxprom41 = sext i32 %51 to i64
+  %52 = load i32** %t.addr, align 8
+  %arrayidx42 = getelementptr inbounds i32* %52, i64 %idxprom41
+  %53 = load i32* %arrayidx42, align 4
+  %add43 = add nsw i32 %53, %50
+  store i32 %add43, i32* %arrayidx42, align 4
+  %54 = load i32* %i.addr, align 4
+  %idxprom44 = sext i32 %54 to i64
+  %55 = load i32** %y.addr, align 8
+  %arrayidx45 = getelementptr inbounds i32* %55, i64 %idxprom44
+  %56 = load i32* %arrayidx45, align 4
+  %57 = load i32* %CENT.addr, align 4
+  %58 = load i32* %assign, align 4
+  %add46 = add nsw i32 %57, %58
+  %idxprom47 = sext i32 %add46 to i64
+  %59 = load i32** %t.addr, align 8
+  %arrayidx48 = getelementptr inbounds i32* %59, i64 %idxprom47
+  %60 = load i32* %arrayidx48, align 4
+  %add49 = add nsw i32 %60, %56
+  store i32 %add49, i32* %arrayidx48, align 4
+  %61 = load i32* %CENT.addr, align 4
+  %mul50 = mul nsw i32 2, %61
+  %62 = load i32* %assign, align 4
+  %add51 = add nsw i32 %mul50, %62
+  %idxprom52 = sext i32 %add51 to i64
+  %63 = load i32** %t.addr, align 8
+  %arrayidx53 = getelementptr inbounds i32* %63, i64 %idxprom52
+  %64 = load i32* %arrayidx53, align 4
+  %inc = add nsw i32 %64, 1
+  store i32 %inc, i32* %arrayidx53, align 4
+  ret void
+}
+
+; Function Attrs: nounwind
+declare double @sqrt(double) #1
+
+; Function Attrs: uwtable
+define i32 @main() #2 {
+entry:
+  %retval = alloca i32, align 4
+  %data = alloca i32*, align 8
+  %x = alloca i32*, align 8
+  %y = alloca i32*, align 8
+  %c = alloca i32*, align 8
+  %t = alloca i32*, align 8
+  %i = alloca i32, align 4
+  store i32 0, i32* %retval
+  %call = call noalias i8* @_Znam(i64 400)
+  %0 = bitcast i8* %call to i32*
+  store i32* %0, i32** %data, align 8
+  %call1 = call noalias i8* @_Znam(i64 400)
+  %1 = bitcast i8* %call1 to i32*
+  store i32* %1, i32** %x, align 8
+  %call2 = call noalias i8* @_Znam(i64 400)
+  %2 = bitcast i8* %call2 to i32*
+  store i32* %2, i32** %y, align 8
+  %call3 = call noalias i8* @_Znam(i64 400)
+  %3 = bitcast i8* %call3 to i32*
+  store i32* %3, i32** %c, align 8
+  %call4 = call noalias i8* @_Znam(i64 400)
+  %4 = bitcast i8* %call4 to i32*
+  store i32* %4, i32** %t, align 8
+  store i32 0, i32* %i, align 4
+  br label %for.cond
+
+for.cond:                                         ; preds = %for.inc, %entry
+  %5 = load i32* %i, align 4
+  %cmp = icmp slt i32 %5, 100
+  br i1 %cmp, label %for.body, label %for.end
+
+for.body:                                         ; preds = %for.cond
+  %6 = load i32* %i, align 4
+  %idxprom = sext i32 %6 to i64
+  %7 = load i32** %data, align 8
+  %arrayidx = getelementptr inbounds i32* %7, i64 %idxprom
+  store i32 8, i32* %arrayidx, align 4
+  %8 = load i32* %i, align 4
+  %9 = load i32* %i, align 4
+  %idxprom5 = sext i32 %9 to i64
+  %10 = load i32** %x, align 8
+  %arrayidx6 = getelementptr inbounds i32* %10, i64 %idxprom5
+  store i32 %8, i32* %arrayidx6, align 4
+  %11 = load i32* %i, align 4
+  %12 = load i32* %i, align 4
+  %idxprom7 = sext i32 %12 to i64
+  %13 = load i32** %y, align 8
+  %arrayidx8 = getelementptr inbounds i32* %13, i64 %idxprom7
+  store i32 %11, i32* %arrayidx8, align 4
+  %14 = load i32* %i, align 4
+  %15 = load i32* %i, align 4
+  %idxprom9 = sext i32 %15 to i64
+  %16 = load i32** %c, align 8
+  %arrayidx10 = getelementptr inbounds i32* %16, i64 %idxprom9
+  store i32 %14, i32* %arrayidx10, align 4
+  %17 = load i32* %i, align 4
+  %idxprom11 = sext i32 %17 to i64
+  %18 = load i32** %t, align 8
+  %arrayidx12 = getelementptr inbounds i32* %18, i64 %idxprom11
+  store i32 0, i32* %arrayidx12, align 4
+  br label %for.inc
+
+for.inc:                                          ; preds = %for.body
+  %19 = load i32* %i, align 4
+  %inc = add nsw i32 %19, 1
+  store i32 %inc, i32* %i, align 4
+  br label %for.cond
+
+for.end:                                          ; preds = %for.cond
+  %20 = load i32** %data, align 8
+  %21 = load i32** %x, align 8
+  %22 = load i32** %y, align 8
+  %23 = load i32** %c, align 8
+  %24 = load i32** %t, align 8
+  call void @_Z6kmeansiPiS_S_S_S_i(i32 99, i32* %20, i32* %21, i32* %22, i32* %23, i32* %24, i32 25)
+  %25 = load i32** %data, align 8
+  %isnull = icmp eq i32* %25, null
+  br i1 %isnull, label %delete.end, label %delete.notnull
+
+delete.notnull:                                   ; preds = %for.end
+  %26 = bitcast i32* %25 to i8*
+  call void @_ZdaPv(i8* %26) #4
+  br label %delete.end
+
+delete.end:                                       ; preds = %delete.notnull, %for.end
+  %27 = load i32** %x, align 8
+  %isnull13 = icmp eq i32* %27, null
+  br i1 %isnull13, label %delete.end15, label %delete.notnull14
+
+delete.notnull14:                                 ; preds = %delete.end
+  %28 = bitcast i32* %27 to i8*
+  call void @_ZdaPv(i8* %28) #4
+  br label %delete.end15
+
+delete.end15:                                     ; preds = %delete.notnull14, %delete.end
+  %29 = load i32** %y, align 8
+  %isnull16 = icmp eq i32* %29, null
+  br i1 %isnull16, label %delete.end18, label %delete.notnull17
+
+delete.notnull17:                                 ; preds = %delete.end15
+  %30 = bitcast i32* %29 to i8*
+  call void @_ZdaPv(i8* %30) #4
+  br label %delete.end18
+
+delete.end18:                                     ; preds = %delete.notnull17, %delete.end15
+  %31 = load i32** %c, align 8
+  %isnull19 = icmp eq i32* %31, null
+  br i1 %isnull19, label %delete.end21, label %delete.notnull20
+
+delete.notnull20:                                 ; preds = %delete.end18
+  %32 = bitcast i32* %31 to i8*
+  call void @_ZdaPv(i8* %32) #4
+  br label %delete.end21
+
+delete.end21:                                     ; preds = %delete.notnull20, %delete.end18
+  %33 = load i32** %t, align 8
+  %isnull22 = icmp eq i32* %33, null
+  br i1 %isnull22, label %delete.end24, label %delete.notnull23
+
+delete.notnull23:                                 ; preds = %delete.end21
+  %34 = bitcast i32* %33 to i8*
+  call void @_ZdaPv(i8* %34) #4
+  br label %delete.end24
+
+delete.end24:                                     ; preds = %delete.notnull23, %delete.end21
+  %35 = load i32* %retval
+  ret i32 %35
+}
+
+declare noalias i8* @_Znam(i64) #3
+
+; Function Attrs: nounwind
+declare void @_ZdaPv(i8*) #1
+
+attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf"="true" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #1 = { nounwind "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf"="true" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #2 = { uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf"="true" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #3 = { "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf"="true" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #4 = { nounwind }

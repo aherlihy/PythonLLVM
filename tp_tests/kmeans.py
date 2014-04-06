@@ -23,7 +23,7 @@ def kmeans(i=int, data=listi100, x=listi100, y=listi100, c=listi100, t=listi100,
 
 
 def main():
-    i=100
+    i=99
     CENT=25
     data=zeros(100, 8)
     x=range(100)

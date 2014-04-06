@@ -1,0 +1,204 @@
+; ModuleID = 'linreg.cpp'
+target datalayout = "e-p:64:64:64-i1:8:8-i8:8:8-i16:16:16-i32:32:32-i64:64:64-f32:32:32-f64:64:64-v64:64:64-v128:128:128-a0:0:64-s0:64:64-f80:128:128-n8:16:32:64-S128"
+target triple = "x86_64-unknown-linux-gnu"
+
+; Function Attrs: nounwind uwtable
+define void @_Z6linregPfS_S_i(float* %data, float* %w, float* %g, i32 %DIMS) #0 {
+entry:
+  %data.addr = alloca float*, align 8
+  %w.addr = alloca float*, align 8
+  %g.addr = alloca float*, align 8
+  %DIMS.addr = alloca i32, align 4
+  %dot = alloca float, align 4
+  %j = alloca i32, align 4
+  %label = alloca float, align 4
+  %j6 = alloca i32, align 4
+  store float* %data, float** %data.addr, align 8
+  store float* %w, float** %w.addr, align 8
+  store float* %g, float** %g.addr, align 8
+  store i32 %DIMS, i32* %DIMS.addr, align 4
+  store float 0.000000e+00, float* %dot, align 4
+  store i32 0, i32* %j, align 4
+  br label %for.cond
+
+for.cond:                                         ; preds = %for.inc, %entry
+  %0 = load i32* %j, align 4
+  %1 = load i32* %DIMS.addr, align 4
+  %cmp = icmp sle i32 %0, %1
+  br i1 %cmp, label %for.body, label %for.end
+
+for.body:                                         ; preds = %for.cond
+  %2 = load i32* %j, align 4
+  %idxprom = sext i32 %2 to i64
+  %3 = load float** %data.addr, align 8
+  %arrayidx = getelementptr inbounds float* %3, i64 %idxprom
+  %4 = load float* %arrayidx, align 4
+  %5 = load i32* %j, align 4
+  %idxprom1 = sext i32 %5 to i64
+  %6 = load float** %w.addr, align 8
+  %arrayidx2 = getelementptr inbounds float* %6, i64 %idxprom1
+  %7 = load float* %arrayidx2, align 4
+  %mul = fmul float %4, %7
+  %8 = load float* %dot, align 4
+  %add = fadd float %8, %mul
+  store float %add, float* %dot, align 4
+  br label %for.inc
+
+for.inc:                                          ; preds = %for.body
+  %9 = load i32* %j, align 4
+  %inc = add nsw i32 %9, 1
+  store i32 %inc, i32* %j, align 4
+  br label %for.cond
+
+for.end:                                          ; preds = %for.cond
+  %10 = load i32* %DIMS.addr, align 4
+  %idxprom3 = sext i32 %10 to i64
+  %11 = load float** %data.addr, align 8
+  %arrayidx4 = getelementptr inbounds float* %11, i64 %idxprom3
+  %12 = load float* %arrayidx4, align 4
+  store float %12, float* %label, align 4
+  %13 = load float* %label, align 4
+  %sub = fsub float -0.000000e+00, %13
+  %14 = load float* %dot, align 4
+  %mul5 = fmul float %14, %sub
+  store float %mul5, float* %dot, align 4
+  store i32 0, i32* %j6, align 4
+  br label %for.cond7
+
+for.cond7:                                        ; preds = %for.inc16, %for.end
+  %15 = load i32* %j6, align 4
+  %16 = load i32* %DIMS.addr, align 4
+  %cmp8 = icmp sle i32 %15, %16
+  br i1 %cmp8, label %for.body9, label %for.end18
+
+for.body9:                                        ; preds = %for.cond7
+  %17 = load float* %dot, align 4
+  %18 = load i32* %j6, align 4
+  %idxprom10 = sext i32 %18 to i64
+  %19 = load float** %data.addr, align 8
+  %arrayidx11 = getelementptr inbounds float* %19, i64 %idxprom10
+  %20 = load float* %arrayidx11, align 4
+  %mul12 = fmul float %17, %20
+  %21 = load i32* %j6, align 4
+  %idxprom13 = sext i32 %21 to i64
+  %22 = load float** %g.addr, align 8
+  %arrayidx14 = getelementptr inbounds float* %22, i64 %idxprom13
+  %23 = load float* %arrayidx14, align 4
+  %add15 = fadd float %23, %mul12
+  store float %add15, float* %arrayidx14, align 4
+  br label %for.inc16
+
+for.inc16:                                        ; preds = %for.body9
+  %24 = load i32* %j6, align 4
+  %inc17 = add nsw i32 %24, 1
+  store i32 %inc17, i32* %j6, align 4
+  br label %for.cond7
+
+for.end18:                                        ; preds = %for.cond7
+  ret void
+}
+
+; Function Attrs: uwtable
+define i32 @main() #1 {
+entry:
+  %retval = alloca i32, align 4
+  %data = alloca float*, align 8
+  %w = alloca float*, align 8
+  %g = alloca float*, align 8
+  %i = alloca i32, align 4
+  store i32 0, i32* %retval
+  %call = call noalias i8* @_Znam(i64 400)
+  %0 = bitcast i8* %call to float*
+  store float* %0, float** %data, align 8
+  %call1 = call noalias i8* @_Znam(i64 400)
+  %1 = bitcast i8* %call1 to float*
+  store float* %1, float** %w, align 8
+  %call2 = call noalias i8* @_Znam(i64 400)
+  %2 = bitcast i8* %call2 to float*
+  store float* %2, float** %g, align 8
+  store i32 0, i32* %i, align 4
+  br label %for.cond
+
+for.cond:                                         ; preds = %for.inc, %entry
+  %3 = load i32* %i, align 4
+  %cmp = icmp slt i32 %3, 100
+  br i1 %cmp, label %for.body, label %for.end
+
+for.body:                                         ; preds = %for.cond
+  %4 = load i32* %i, align 4
+  %conv = sitofp i32 %4 to float
+  %5 = load i32* %i, align 4
+  %idxprom = sext i32 %5 to i64
+  %6 = load float** %data, align 8
+  %arrayidx = getelementptr inbounds float* %6, i64 %idxprom
+  store float %conv, float* %arrayidx, align 4
+  %7 = load i32* %i, align 4
+  %idxprom3 = sext i32 %7 to i64
+  %8 = load float** %w, align 8
+  %arrayidx4 = getelementptr inbounds float* %8, i64 %idxprom3
+  store float 0.000000e+00, float* %arrayidx4, align 4
+  %9 = load i32* %i, align 4
+  %idxprom5 = sext i32 %9 to i64
+  %10 = load float** %g, align 8
+  %arrayidx6 = getelementptr inbounds float* %10, i64 %idxprom5
+  store float 0.000000e+00, float* %arrayidx6, align 4
+  br label %for.inc
+
+for.inc:                                          ; preds = %for.body
+  %11 = load i32* %i, align 4
+  %inc = add nsw i32 %11, 1
+  store i32 %inc, i32* %i, align 4
+  br label %for.cond
+
+for.end:                                          ; preds = %for.cond
+  %12 = load float** %data, align 8
+  %arrayidx7 = getelementptr inbounds float* %12, i64 99
+  store float 1.000000e+00, float* %arrayidx7, align 4
+  %13 = load float** %data, align 8
+  %14 = load float** %w, align 8
+  %15 = load float** %g, align 8
+  call void @_Z6linregPfS_S_i(float* %13, float* %14, float* %15, i32 99)
+  %16 = load float** %data, align 8
+  %isnull = icmp eq float* %16, null
+  br i1 %isnull, label %delete.end, label %delete.notnull
+
+delete.notnull:                                   ; preds = %for.end
+  %17 = bitcast float* %16 to i8*
+  call void @_ZdaPv(i8* %17) #4
+  br label %delete.end
+
+delete.end:                                       ; preds = %delete.notnull, %for.end
+  %18 = load float** %w, align 8
+  %isnull8 = icmp eq float* %18, null
+  br i1 %isnull8, label %delete.end10, label %delete.notnull9
+
+delete.notnull9:                                  ; preds = %delete.end
+  %19 = bitcast float* %18 to i8*
+  call void @_ZdaPv(i8* %19) #4
+  br label %delete.end10
+
+delete.end10:                                     ; preds = %delete.notnull9, %delete.end
+  %20 = load float** %g, align 8
+  %isnull11 = icmp eq float* %20, null
+  br i1 %isnull11, label %delete.end13, label %delete.notnull12
+
+delete.notnull12:                                 ; preds = %delete.end10
+  %21 = bitcast float* %20 to i8*
+  call void @_ZdaPv(i8* %21) #4
+  br label %delete.end13
+
+delete.end13:                                     ; preds = %delete.notnull12, %delete.end10
+  %22 = load i32* %retval
+  ret i32 %22
+}
+
+declare noalias i8* @_Znam(i64) #2
+
+; Function Attrs: nounwind
+declare void @_ZdaPv(i8*) #3
+
+attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf"="true" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #1 = { uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf"="true" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #2 = { "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf"="true" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #3 = { nounwind "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf"="true" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #4 = { nounwind }

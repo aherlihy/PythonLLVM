@@ -2,5 +2,5 @@
 
 for i in {1..2500}
 do
-   lli logreg.bc
+   lli $1
 done

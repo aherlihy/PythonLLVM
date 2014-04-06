@@ -26,4 +26,6 @@ def main():
     data[99]=1.0
     w = range(100.0)
     g = zeros(100.0)
+    print g
     linreg(data, w, g, 99)
+    print g

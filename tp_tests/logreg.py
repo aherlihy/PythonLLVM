@@ -16,4 +16,6 @@ def main():
     data[99]=-1.0
     g = zeros(100.0)
     w = range(100.0)
+    print g
     logreg(data, g, w, 99)
+    print g
