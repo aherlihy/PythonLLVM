@@ -39,8 +39,6 @@ class TypeInference(object):
 
         # Register intrinsic functions from MUDA module
         self.intrinsics = GetIntrinsicFunctions()
-#        for (k,v) in GetIntrinsicMathFunctions().items():
-#            self.intrinsics[k]=v
 
         for (k, v) in self.intrinsics.items():
             retTy  = v[0]
@@ -318,10 +316,6 @@ class TypeInference(object):
 
         elif isinstance(value, type(1)):
             return int
-
-        elif isinstance(value, type('muda')):
-            #STR: changed from str to list
-            return list
 
         else:
             raise PyllvmError("Type Inference: Unknown type of value:", value)

@@ -332,13 +332,3 @@ intrinsics = {
 def GetIntrinsicFunctions():
     return intrinsics
 
-
-def _test():
-    import doctest
-
-    _testVec()
-
-    doctest.testmod()
-
-if __name__ == '__main__':
-    _test()

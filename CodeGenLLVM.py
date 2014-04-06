@@ -77,7 +77,6 @@ class CodeGenLLVM:
         self.emitMmath()
         self.visit(node.node)
         #print self.module   # Output LLVM code to stdout.
-        #print self.emitCommonHeader()
 
     def getString(self):
         return self.module
@@ -258,7 +257,6 @@ class CodeGenLLVM:
             return self.builder.call(self._printInt, [lln])
         if(ty==float):
             return self.builder.call(self._printFloat, [lln])
-        # for now prints vec(1) as 4
         elif(ty==vec):
             idx = [llvm.core.Constant.int(llvm.core.Type.int(32), 0), llvm.core.Constant.int(llvm.core.Type.int(32), 0)]
             realAddr_v = self.vec.gep(idx)
@@ -444,10 +442,6 @@ class CodeGenLLVM:
             else:
                 llTy = toLLVMTy(ty)
 
-            # vector argument is passed by pointer.
-            # if llTy == llFVec4Type:
-            #     llTy = llFVec4PtrType
-
             argLLTys.append(llTy)
 
         funcLLVMTy = llvm.core.Type.function(retTy, argLLTys)
@@ -456,10 +450,6 @@ class CodeGenLLVM:
         # assign name for each arg
         for i, name in enumerate(node.argnames):
 
-            # if llTy == llFVec4Type:
-            #     argname = name + "_p"
-            # else:
-            #     argname = name
             argname = name
 
             func.args[i].name = argname
@@ -600,7 +590,6 @@ class CodeGenLLVM:
         l = self.builder.gep(intoList, [zero, index])
         out = self.builder.store(expr, l)
         return out
-        #return self.builder.load(l, tmp0.name)
     def handleOp(self, op, ty, l, r):
         if(ty!=int and ty!=float):
             raise PyLLVMError("CodeGen: cannot augassign a non-numerical value")
@@ -858,13 +847,7 @@ class CodeGenLLVM:
 
         self.builder.branch(start_for)
         self.builder.position_at_end(end_for)
-        # enter_for block:
-            # if end_condition-->end_for
-           # # <do body code>
-            # update phi node to be the next index
-            # jump to enter_for
-        # end_for block:
-
+    
     def visitWhile(self, node):
         #print ";----" + sys._getframe().f_code.co_name + "----"
         # get function
@@ -999,8 +982,6 @@ class CodeGenLLVM:
                 return llvm.core.Constant.real(llFloatType, 0.00)
 
         
-        #if rTy == vec:
-        #    return self.emitVCompare(op, lLLInst, rLLInst)
         if rTy == int:
             result = self.builder.icmp(di[op], lLLInst, rLLInst, 'cmptmp')
             return self.builder.uitofp(result, llFloatType, 'booltmp')
@@ -1280,8 +1261,6 @@ class CodeGenLLVM:
                 elems = args
             else:
                 elems =[args[0], args[0], args[0], args[0]]
-            #else:
-            #    elems = [args[0], args[0], args[0], args[0]]
 
             s0 = symbolTable.genUniqueSymbol(llFVec4Type)
             s1 = symbolTable.genUniqueSymbol(llFVec4Type)
@@ -1294,7 +1273,6 @@ class CodeGenLLVM:
             r3 = self.builder.insert_element(r2, elems[3] , i3, s3.name)
 
             return r3
-    #TODO
     def emitVSel(self, node):
         #print ";----" + sys._getframe().f_code.co_name + "----"
 
@@ -1339,27 +1317,6 @@ class CodeGenLLVM:
             # int, float, vec, ...
             return self.handleInitializeTypeCall(ty, args)
 
-        #
-        # TODO vector math function?
-        #
-        # UNCOMMENT:
-        #orginal=comment start
-        #ret = self.isVectorMathFunction(node.node.name)
-        #if ret is not False:
-        #    return self.emitVMath(ret[1], args)
-
-        #
-        # Special function?
-        #
-        #if (node.node.name == "vsel"):
-        #    func = self.getExternalSymbolInstruction("vsel")
-        #    tmp  = symbolTable.genUniqueSymbol(vec)
-
-            #print "; ", args
-         #   c    = self.builder.call(func, args, tmp.name)
-
-         #   return c
-        #original=commented end
         #
         # Defined in the source?
         #
@@ -1450,7 +1407,6 @@ class CodeGenLLVM:
 
     def mkLLConstInst(self, ty, value):
         #print ";----" + sys._getframe().f_code.co_name + " = " + str(value) + "----"
-        # STR: add construction of string type
 
         llTy   = toLLVMTy(ty)
         bufSym = symbolTable.genUniqueSymbol(ty)
@@ -1503,29 +1459,12 @@ class CodeGenLLVM:
 
         return self.mkLLConstInst(ty, node.value)
 
+# here is where you would add any LLVM code directly to the output. Just return a string with the LLVM code
     def emitCommonHeader(self):
         #print ";----" + sys._getframe().f_code.co_name + "----"
-
-#        s = """ 
-#        
-#define float @_Z5fsqrtf(float %i)  {
-#entry:
-#  %i.addr = alloca float, align 4
-#  store float %i, float* %i.addr, align 4
-#  %0 = load float* %i.addr, align 4
-#  %conv = fpext float %0 to double
-#  %call = call double @sqrt(double %conv) 
-#  %conv1 = fptrunc double %call to float
-#  ret float %conv1
-#}
-
-#declare double @sqrt(double) 
-#        """
         return ""# s
 
-    #
-    # TODO
-    # THIS IS WHERE HEADER DEFS LIVE
+    # This is where header defs live, but none of these are functional right now
     def emitExternalSymbols(self):
         #print ";----" + sys._getframe().f_code.co_name + "----"
 
@@ -1534,8 +1473,6 @@ class CodeGenLLVM:
             , 'expf'   : ( llFloatType, [llFloatType] )
             , 'logf'   : ( llFloatType, [llFloatType] )
             , 'sqrtf'  : ( llFloatType, [llFloatType] )
-            #, 'vsel'   : ( llFVec4Type, [llFVec4Type, llFVec4Type, llIVec4Type] )
-            # FOR SOME REASON, REDEFINITION OF vsel BREAKS LLI, TODO:FIX
             }
 
         for k, v in d.items():
@@ -1621,20 +1558,11 @@ class CodeGenLLVM:
         r3 = self.builder.insert_element(r2   , f3, i3, s3.name)
         return r3
 
-        # r0 = self.builder.insert_element(vzero, f2, i2, s0.name)
-        # r1 = self.builder.insert_element(r0   , e1, i1, s1.name)
-        # r2 = self.builder.insert_element(r1   , e2, i0, s2.name)
-        # return r2
 
     def emitVAbs(self, llargs):
         #print ";----" + sys._getframe().f_code.co_name + "----"
 
         return self.emitVMath("fabsf", llargs)
-
-def _test():
-    import doctest
-    doctest.testmod()
-    sys.exit()
 
 def pyllvm(filename):
     ast = compiler.parseFile(filename)
