@@ -1636,7 +1636,7 @@ def _test():
     doctest.testmod()
     sys.exit()
 
-def py2llvm(filename):
+def pyllvm(filename):
     ast = compiler.parseFile(filename)
     #print ";AST=" +  str(ast)
     codegen = compiler.walk(ast, CodeGenLLVM())

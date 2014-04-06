@@ -1,4 +1,4 @@
-from py2llvm import compiler
+from pyllvm import compiler
 import timeit
 import sys
 
